@@ -1,15 +1,13 @@
-﻿using SimEd.Models.Languages.CsharpLang;
+﻿using SimEd.Common.Extensions;
+using SimEd.Models.Languages.CsharpLang;
 
 namespace SimEd.Models.Languages.CurlyBasedLanguages;
 
 public static class CurlyLexerRules
 {
     public static char[][] BuildCharsArrays(string[] operators)
-    {
-        return operators
-            .Select(c => c.ToCharArray())
-            .ToArray();
-    }
+        => operators
+            .SelectToArray(c => c.ToCharArray());
 
     public static int CommentMatch(ArraySegment<char> text)
     {

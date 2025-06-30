@@ -1,3 +1,5 @@
+using SimEd.Common.Extensions;
+
 namespace SimEd.Common.Mediator;
 
 public class HandlerList<T> : BaseHandler

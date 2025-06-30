@@ -1,4 +1,4 @@
-namespace SimEd.Common.Mediator;
+namespace SimEd.Common.Extensions;
 
 public static class CollectionExtensions
 {

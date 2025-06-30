@@ -8,7 +8,7 @@ namespace SimEd.ViewModels.Settings;
 public class OptionsDialogViewModel : ObservableObject
 {
     private readonly IMiniPubSub _pubSub;
-    
+
     private string _cascadiaFont = "avares://SimEd/Assets/Fonts/CascadiaCode-SemiBold.ttf#Cascadia Code";
     private string _lexendFont = "avares://SimEd/Assets/Fonts/Lexend-SemiBold.ttf#Lexend";
     private string _robotoMonoFont = "avares://SimEd/Assets/Fonts/RobotoMono-SemiBold.ttf#Roboto Mono";
@@ -19,7 +19,7 @@ public class OptionsDialogViewModel : ObservableObject
     {
         _pubSub = miniPubSub;
     }
-    
+
     public string CascadiaFont
     {
         get => _cascadiaFont;
@@ -45,11 +45,16 @@ public class OptionsDialogViewModel : ObservableObject
         {
             SetProperty(ref _selectedFont, value);
             PublishNewFont();
-        } 
+        }
     }
 
     private void PublishNewFont()
     {
+        if (_selectedFont is null)
+        {
+            return;
+        }
+
         var newFont = new OnChangeFontEvent(_selectedFont.FontFamily);
         _pubSub.Publish<OnChangeFontEvent>(newFont);
     }
