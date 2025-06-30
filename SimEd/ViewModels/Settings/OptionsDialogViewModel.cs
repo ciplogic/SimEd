@@ -43,19 +43,10 @@ public class OptionsDialogViewModel : ObservableObject
         get => _selectedFont;
         set
         {
-            SetProperty(ref _selectedFont, value);
-            PublishNewFont();
+            if (SetProperty(ref _selectedFont, value))
+            {
+                _pubSub.Publish<OnChangeFontEvent>(new(_selectedFont.FontFamily));
+            }
         }
-    }
-
-    private void PublishNewFont()
-    {
-        if (_selectedFont is null)
-        {
-            return;
-        }
-
-        var newFont = new OnChangeFontEvent(_selectedFont.FontFamily);
-        _pubSub.Publish<OnChangeFontEvent>(newFont);
     }
 }
