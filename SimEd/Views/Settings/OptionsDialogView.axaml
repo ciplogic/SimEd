@@ -1,0 +1,28 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:converters="clr-namespace:SimEd.Converters"
+        xmlns:settings="clr-namespace:SimEd.ViewModels.Settings"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        x:Class="SimEd.Views.Settings.OptionsDialogView"
+        Title="Options"
+        x:DataType="settings:OptionsDialogViewModel">
+    <Window.Resources>
+        <converters:StringToFontFamilyConverter x:Key="StringToFontFamilyConverter" />
+    </Window.Resources>
+    
+    <Design.DataContext>
+        <settings:OptionsDialogViewModel />
+    </Design.DataContext>
+    
+    <StackPanel Margin="5">
+        <TextBlock Text="Font Family" FontSize="14" TextAlignment="Left"/>
+        <ListBox BorderThickness="1"
+                 SelectedItem="{Binding SelectedFont}">
+            <ListBoxItem Content="Cascadia Code" FontFamily="{Binding Path=CascadiaFont, Converter={StaticResource StringToFontFamilyConverter}}" />
+            <ListBoxItem Content="Lexend" FontFamily="{Binding Path=LexendFont, Converter={StaticResource StringToFontFamilyConverter}}" />
+            <ListBoxItem Content="Roboto Mono" FontFamily="{Binding Path=RobotoMonoFont, Converter={StaticResource StringToFontFamilyConverter}}" />
+        </ListBox>
+    </StackPanel>
+</Window>

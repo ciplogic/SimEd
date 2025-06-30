@@ -14,6 +14,8 @@
             <MenuItem Header="Save" Command="{Binding FileSave}" />
             <MenuItem Header="Save _As..." Command="{Binding FileSaveAs}" />
             <Separator />
+            <MenuItem Header="Options" Command="{Binding OpenOptions}"/>
+            <Separator />
             <MenuItem Header="E_xit" Command="{Binding FileExit}" />
         </MenuItem>
         <MenuItem Header="_Edit">

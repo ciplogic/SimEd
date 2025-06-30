@@ -19,7 +19,7 @@
             x:Name="MainTextEditor"
             Grid.Row="0"
             BorderThickness="0"
-            FontFamily="Consolas, Inconsolata"
+            FontFamily="{Binding SelectedFont}"
             FontWeight="Light"
             ShowLineNumbers="True" 
             FontSize="{Binding FontSize}"

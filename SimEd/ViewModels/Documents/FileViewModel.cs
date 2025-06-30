@@ -1,10 +1,12 @@
 ﻿using Avalonia.Controls;
+using Avalonia.Media;
 using AvaloniaEdit.TextMate;
 using Dock.Model.Mvvm.Controls;
 using SimEd.Common.Interfaces;
 using SimEd.Events;
 using SimEd.Interfaces;
 using SimEd.Models;
+using SimEd.Models.Settings;
 using SimEd.Views.Documents;
 using TextMateSharp.Grammars;
 
@@ -15,11 +17,14 @@ public class FileViewModel : Document, IViewAware
     private readonly IMiniPubSub _pubSub;
     private readonly IAppSettingsReader _settingsReader;
 
+    private FontFamily _selectedFont;
+
     public FileViewModel(IMiniPubSub pubSub, IAppSettingsReader settingsReader)
     {
         _pubSub = pubSub;
         _settingsReader = settingsReader;
         _pubSub.AddEventHandler<ZoomFontLevelChanged>(OnZoomChanged);
+        _pubSub.AddEventHandler<OnChangeFontEvent>(OnFontFamilyChange);
     }
 
     public override bool OnClose()
@@ -62,13 +67,23 @@ public class FileViewModel : Document, IViewAware
         }
     }
 
+    public Avalonia.Media.FontFamily SelectedFont
+    {
+        get => new (_settingsReader.Get().Font);
+        set
+        {
+            if (_selectedFont == value) return;
+            _settingsReader.Update(s => s.Font = value.Key + "#" +value.Name);
+            SetProperty(ref _selectedFont, value);   
+        }
+    }
+
     public void SetControl(Control control)
     {
         MainControl = (FileView)control;
 
         UpdateView();
     }
-
 
     private string _path = string.Empty;
     private string _text = string.Empty;
@@ -119,4 +134,7 @@ public class FileViewModel : Document, IViewAware
             _pubSub.Publish<ZoomFontLevelChanged>(new(fontSize));
         });
     }
+
+    private void OnFontFamilyChange(OnChangeFontEvent fontEvent)
+        => SelectedFont = fontEvent.SelectedFont;
 }

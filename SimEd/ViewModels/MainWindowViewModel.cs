@@ -15,6 +15,9 @@ using SimEd.Interfaces;
 using SimEd.Models;
 using SimEd.Models.Settings;
 using SimEd.ViewModels.Documents;
+using SimEd.ViewModels.Settings;
+using SimEd.Views.Help;
+using SimEd.Views.Settings;
 using SimEd.ViewModels.Search;
 using SimEd.Views.Help;
 using SimEd.Views.Search;
@@ -276,6 +279,18 @@ public class MainWindowViewModel : ObservableObject, IDropTarget
         {
             await FileSaveAsImpl(fileViewModel);
         }
+    }
+
+    public void OpenOptions()
+    {
+        var dataContext = Provider.GetService<OptionsDialogViewModel>();
+        OptionsDialogView window = new()
+        {
+            DataContext = dataContext
+        };
+        window.Width = 350;
+        window.Height = 200; 
+        window.ShowDialog(GetWindow()!);
     }
 
     private async Task FileSaveAsImpl(FileViewModel fileViewModel)

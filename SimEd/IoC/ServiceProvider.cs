@@ -9,6 +9,7 @@ using SimEd.Models.Languages;
 using SimEd.Models.Languages.CsharpLang;
 using SimEd.ViewModels;
 using SimEd.ViewModels.Documents;
+using SimEd.ViewModels.Settings;
 using SimEd.ViewModels.Search;
 using SimEd.ViewModels.Solution;
 
@@ -26,5 +27,6 @@ namespace SimEd.IoC;
 [Singleton<SolutionLanguageExtractors>]
 //[Singleton<IFileDialogChooser, ClassicFileDialogChooser>]
 [Transient<FileViewModel>]
+[Singleton(typeof(OptionsDialogViewModel))]
 [Transient<ShowGenericFinderWindowViewModel>]
 public partial class ServiceProvider;

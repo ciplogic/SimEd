@@ -51,7 +51,16 @@
         <ProjectReference Include="..\SimEd.Common\SimEd.Common.csproj"/>
         <ProjectReference Include="..\SimEd.Models\SimEd.Models.csproj" />
     </ItemGroup>
+
     <ItemGroup>
-      <Folder Include="Assets\" />
+        <AvaloniaResource Include="Assets\Fonts\RobotoMono-SemiBold.ttf">
+          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </AvaloniaResource>
+        <AvaloniaResource Include="Assets\Fonts\Lexend-SemiBold.ttf">
+          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </AvaloniaResource>
+        <AvaloniaResource Include="Assets\Fonts\CascadiaCode-SemiBold.ttf">
+          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </AvaloniaResource>
     </ItemGroup>
 </Project>
