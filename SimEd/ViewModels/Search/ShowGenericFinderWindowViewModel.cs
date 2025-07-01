@@ -1,9 +1,10 @@
 ﻿using System.Collections.ObjectModel;
 using System.Diagnostics;
 using CommunityToolkit.Mvvm.ComponentModel;
+using SimEd.Common.Interfaces;
+using SimEd.Common.Mediator;
 using SimEd.Models.Languages;
 using SimEd.Models.Languages.Common;
-using SimEd.Models.Languages.CsharpLang;
 using SimEd.ViewModels.Solution;
 
 namespace SimEd.ViewModels.Search;
@@ -11,64 +12,85 @@ namespace SimEd.ViewModels.Search;
 public class ShowGenericFinderWindowViewModel : ObservableObject
 {
     private readonly SolutionLanguageExtractors _extractions;
+    private readonly IMiniPubSub _miniPubSub;
     private string _typesText = string.Empty;
+    private int _selectedIndex;
 
-    public ShowGenericFinderWindowViewModel(SolutionViewModel solution, SolutionLanguageExtractors extractions)
+    public ShowGenericFinderWindowViewModel(
+        SolutionViewModel solution, 
+        SolutionLanguageExtractors extractions,
+        IMiniPubSub miniPubSub)
     {
         _extractions = extractions;
-        BuildIndexTask = BuildIndex(solution);
+        _miniPubSub = miniPubSub;
+        BuildIndexTask = BuildIndex(solution).GetAwaiter().GetResult();
+        UpdateFilter();
     }
 
-    public Task<SolutionIndex>? BuildIndexTask { get; set; }
+    public SolutionIndex BuildIndexTask { get; set; }
 
     public string TypesText
     {
         get => _typesText;
         set
         {
-            SetProperty(ref _typesText, value);
+            if (!SetProperty(ref _typesText, value))
+            {
+                return;
+            }
+
             UpdateFilter();
+            SelectedIndex = 0;
         }
     }
 
     private void UpdateFilter()
     {
-        var values = this.BuildIndexTask.Result.Items.Where(it => it.Name.Contains(TypesText)).ToArray();;
+        var values =
+            BuildIndexTask
+                .Items
+                .Where(it => it.Name.Contains(TypesText))
+                .ToArray();
         FoundTypes.Clear();
-        foreach (var value in values)
+        foreach (SolutionIndexItem value in values)
         {
             FoundTypes.Add(new FindItemViewModel()
             {
-                FileName = value.Name
+                SolutionItem = value
             });
         }
     }
 
-    public ObservableCollection<FindItemViewModel> FoundTypes { get; private set; } =
-    [
-        new FindItemViewModel()
+    public ObservableCollection<FindItemViewModel> FoundTypes { get; } = [];
+
+    public int SelectedIndex
+    {
+        get => _selectedIndex;
+        set => SetProperty(ref _selectedIndex, value);
+    }
+
+    public void OnChosenItem()
+    {
+        if (SelectedIndex == -1)
         {
-            FileName = "File1.cs"
+            return;
         }
-    ];
+
+        FindItemViewModel index = FoundTypes[SelectedIndex];
+        
+        _miniPubSub.Command<OpenFileFromAnywhere>(new (index.SolutionItem.FileName));
+    }
 
     private async Task<SolutionIndex> BuildIndex(SolutionViewModel solution)
     {
         var sw = Stopwatch.StartNew();
-        SolutionItem[] files = solution.Nodes.Leafs(it => it.Children).ToArray();
-        SolutionIndex result = new();
-        List<Task<SolutionIndexItem[]>> tasks = [];
-        tasks.AddRange(files.Select(solutionItem => _extractions.Parse(solutionItem)));
-        //await Task.WhenAll(tasks).ConfigureAwait(false);
-        foreach (var task in tasks)
-        {
-            await task.ConfigureAwait(false);
-        }
+        var tasks = await IndexAllFilesForDeclarationsTasks(solution)
+            .ConfigureAwait(false);
 
+        SolutionIndex result = new();
         foreach (Task<SolutionIndexItem[]> solutionItem in tasks)
         {
-            SolutionIndexItem[] resultedItems = solutionItem.Result;
-            result.Items.AddRange(resultedItems);
+            result.Items.AddRange(solutionItem.Result);
         }
 
         sw.Stop();
@@ -76,5 +98,26 @@ public class ShowGenericFinderWindowViewModel : ObservableObject
         Console.WriteLine(sw.Elapsed);
 
         return result;
+    }
+
+    private async Task<Task<SolutionIndexItem[]>[]> IndexAllFilesForDeclarationsTasks(SolutionViewModel solution,
+        bool processInParallel = true)
+    {
+        SolutionItem[] files = solution.Nodes.Leafs(it => it.Children).ToArray();
+        List<Task<SolutionIndexItem[]>> tasks = [];
+        tasks.AddRange(files.Select(solutionItem => _extractions.Parse(solutionItem)));
+        if (processInParallel)
+        {
+            await Task.WhenAll(tasks).ConfigureAwait(false);
+        }
+        else
+        {
+            foreach (var task in tasks)
+            {
+                await task.ConfigureAwait(false);
+            }
+        }
+
+        return tasks.ToArray();
     }
 }

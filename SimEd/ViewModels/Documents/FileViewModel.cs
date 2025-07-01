@@ -6,7 +6,6 @@ using SimEd.Common.Interfaces;
 using SimEd.Events;
 using SimEd.Interfaces;
 using SimEd.Models;
-using SimEd.Models.Settings;
 using SimEd.Views.Documents;
 using TextMateSharp.Grammars;
 
@@ -67,7 +66,7 @@ public class FileViewModel : Document, IViewAware
         }
     }
 
-    public Avalonia.Media.FontFamily SelectedFont
+    public FontFamily SelectedFont
     {
         get => new (_settingsReader.Get().Font);
         set

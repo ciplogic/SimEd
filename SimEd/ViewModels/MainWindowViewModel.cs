@@ -19,7 +19,6 @@ using SimEd.ViewModels.Settings;
 using SimEd.Views.Help;
 using SimEd.Views.Settings;
 using SimEd.ViewModels.Search;
-using SimEd.Views.Help;
 using SimEd.Views.Search;
 
 namespace SimEd.ViewModels;
@@ -54,6 +53,7 @@ public class MainWindowViewModel : ObservableObject, IDropTarget
         _pubSub.AddEventHandler<FileIsOpened>(OnFileOpened);
         AppSettings settings = appSettingsReader.Get();
         _pubSub.Publish(new ChangeSolutionFolderCommand(settings.Path));
+        _pubSub.AddCommandHandler<OpenFileFromAnywhere>(HandleOpenFileFromAnywhere);
     }
 
 
@@ -72,7 +72,11 @@ public class MainWindowViewModel : ObservableObject, IDropTarget
 
     public void FileNew()
     {
-        FileViewModel untitledFileViewModel = GetUntitledFileViewModel();
+        FileViewModel untitledFileViewModel = Provider.GetService<FileViewModel>();
+        untitledFileViewModel.Path = string.Empty;
+        untitledFileViewModel.Title = "Untitled";
+        untitledFileViewModel.Text = "";
+        untitledFileViewModel.Encoding = Encoding.Default.WebName;
         AddFileViewModel(untitledFileViewModel);
     }
 
@@ -164,6 +168,18 @@ public class MainWindowViewModel : ObservableObject, IDropTarget
         AddFileViewModel(untitledFileViewModel);
     }
 
+
+    private void HandleOpenFileFromAnywhere(OpenFileFromAnywhere arg)
+    {
+        var openedFileViewModel = OpenFileViewModel(arg.FileName).GetAwaiter().GetResult();
+        if (openedFileViewModel is null)
+        {
+            return;
+        }
+
+        AddFileViewModel(openedFileViewModel);
+    }
+
     private async Task<FileViewModel?> OpenFileViewModel(string path)
     {
         if (TryFindAlreadyOpenedTab(path, out FileViewModel fileViewModel))
@@ -236,16 +252,6 @@ public class MainWindowViewModel : ObservableObject, IDropTarget
     {
         IDocumentDock? files = _factory?.GetDockable<IDocumentDock>("Files");
         return files?.ActiveDockable as FileViewModel;
-    }
-
-    private FileViewModel GetUntitledFileViewModel()
-    {
-        FileViewModel untitledFileViewModel = Provider.GetService<FileViewModel>();
-        untitledFileViewModel.Path = string.Empty;
-        untitledFileViewModel.Title = "Untitled";
-        untitledFileViewModel.Text = "";
-        untitledFileViewModel.Encoding = Encoding.Default.WebName;
-        return untitledFileViewModel;
     }
 
     private static List<FilePickerFileType> GetOpenOpenLayoutFileTypes() =>
@@ -361,3 +367,5 @@ public class MainWindowViewModel : ObservableObject, IDropTarget
         await window.ShowDialog<object>(GetWindow());
     }
 }
+
+public record OpenFileFromAnywhere(string FileName);

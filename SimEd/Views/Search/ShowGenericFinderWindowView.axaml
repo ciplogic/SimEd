@@ -7,31 +7,28 @@
         x:Class="SimEd.Views.Search.ShowGenericFinderWindowView"
         Title="ShowGenericFinderWindow"
         WindowStartupLocation="CenterScreen"
+        KeyDown="OnKeyDownHandler"
         x:DataType="search:ShowGenericFinderWindowViewModel">
 
-    <TabControl>
-        <TabControl.Items>
-            <TabItem Header="Types">
-                <Grid RowDefinitions="Auto,*">
+    <Grid RowDefinitions="Auto,*">
+        <StackPanel>
+            <TextBlock>Search:</TextBlock>
+            <TextBox
+                Text="{Binding TypesText}">
+            </TextBox>
+
+        </StackPanel>
+        <ListBox
+            Grid.Row="1"
+            SelectedIndex="{Binding SelectedIndex}"
+            ItemsSource="{Binding FoundTypes}">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
                     <StackPanel>
-                        <TextBlock>Search:</TextBlock>
-                        <TextBox Text="{Binding TypesText}"></TextBox>
-
+                        <TextBlock FontWeight="Bold" Text="{Binding FileName}" />
                     </StackPanel>
-                    <ListBox
-                        Grid.Row="1"
-                        ItemsSource="{Binding FoundTypes}">
-                        <ListBox.ItemTemplate>
-                            <DataTemplate>
-                                <StackPanel>
-                                    <TextBlock FontWeight="Bold" Text="{Binding FileName}" />
-                                </StackPanel>
-                            </DataTemplate>
-                        </ListBox.ItemTemplate>
-                    </ListBox>
-                </Grid>
-            </TabItem>
-        </TabControl.Items>
-
-    </TabControl>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+    </Grid>
 </Window>

@@ -12,10 +12,6 @@
         <converters:StringToFontFamilyConverter x:Key="StringToFontFamilyConverter" />
     </Window.Resources>
     
-    <Design.DataContext>
-        <settings:OptionsDialogViewModel />
-    </Design.DataContext>
-    
     <StackPanel Margin="5">
         <TextBlock Text="Font Family" FontSize="14" TextAlignment="Left"/>
         <ListBox BorderThickness="1"
