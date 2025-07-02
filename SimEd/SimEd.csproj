@@ -28,9 +28,9 @@
         <PackageReference Include="Avalonia.Xaml.Interactions" Version="11.3.0.6" />
         <PackageReference Include="AvaloniaEdit.TextMate" Version="11.3.0"/>
         <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0"/>
-        <PackageReference Include="Dock.Avalonia" Version="11.3.0.2" />
-        <PackageReference Include="Dock.Model.Avalonia" Version="11.3.0.2" />
-        <PackageReference Include="Dock.Model.Mvvm" Version="11.3.0.2" />
+        <PackageReference Include="Dock.Avalonia" Version="11.3.0.4" />
+        <PackageReference Include="Dock.Model.Avalonia" Version="11.3.0.4" />
+        <PackageReference Include="Dock.Model.Mvvm" Version="11.3.0.4" />
         <PackageReference Include="Jab" Version="0.11.0"/>
         <PackageReference Include="StaticViewLocator" Version="0.0.1">
             <PrivateAssets>all</PrivateAssets>

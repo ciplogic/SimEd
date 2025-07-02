@@ -1,11 +1,11 @@
 <Project>
     <PropertyGroup>
-        <TargetFramework>net9.0</TargetFramework>
+        <TargetFramework>net10.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
-        <Version>0.0.2-pre</Version>
+        <Version>0.0.2</Version>
         <OptimizationPreference>Speed</OptimizationPreference>
-        <StripSymbols>false</StripSymbols>
+        <StripSymbols>true</StripSymbols>
     </PropertyGroup>
 
 </Project>
