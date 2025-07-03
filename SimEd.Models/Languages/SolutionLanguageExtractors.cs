@@ -32,7 +32,7 @@ public class SolutionLanguageExtractors
         string dataBytes = await File.ReadAllTextAsync(solutionItem.Path)
             .ConfigureAwait(false);
         SolutionIndexItem[] items = extraction.ExtractFileDefinitions(
-            solutionItem.Path,
+            solutionItem,
             dataBytes.ToCharArray());
         return items;
     }

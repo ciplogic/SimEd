@@ -49,7 +49,7 @@ public class ShowGenericFinderWindowViewModel : ObservableObject
         var values =
             BuildIndexTask
                 .Items
-                .Where(it => it.Name.Contains(TypesText))
+                .Where(it => it.Token.AText.Contains(TypesText))
                 .ToArray();
         FoundTypes.Clear();
         foreach (SolutionIndexItem value in values)
@@ -78,7 +78,7 @@ public class ShowGenericFinderWindowViewModel : ObservableObject
 
         FindItemViewModel index = FoundTypes[SelectedIndex];
         
-        _miniPubSub.Command<OpenFileFromAnywhere>(new (index.SolutionItem.FileName));
+        _miniPubSub.Command<OpenFileFromAnywhere>(new (index.SolutionItem.FileName.Path, index.SolutionItem.Token.Position));
     }
 
     private async Task<SolutionIndex> BuildIndex(SolutionViewModel solution)

@@ -368,4 +368,4 @@ public class MainWindowViewModel : ObservableObject, IDropTarget
     }
 }
 
-public record OpenFileFromAnywhere(string FileName);
+public record OpenFileFromAnywhere(string FileName, int Position);

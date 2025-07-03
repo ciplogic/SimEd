@@ -10,31 +10,31 @@ public class CsDeclarationsExtraction : IDeclarationsExtraction
         return fileName.EndsWith(".cs");
     }
 
-    public SolutionIndexItem[] ExtractFileDefinitions(string fileName, char[] fileData)
+    public SolutionIndexItem[] ExtractFileDefinitions(SolutionItem solutionItem, char[] fileData)
     {
         SimpleScanner scanner = CsScanner.Instance;
 
-        var tokens = scanner.Tokenize(fileData, SkipSpaces).ToArray();
-        return BuildDeclarationsFromTokens(tokens, fileName);
+        Token[] tokens = scanner.Tokenize(fileData, SkipSpaces);
+        return BuildDeclarationsFromTokens(tokens, solutionItem);
     }
 
-    private SolutionIndexItem[] BuildDeclarationsFromTokens(Token[] tokens, string fileName)
+    private static SolutionIndexItem[] BuildDeclarationsFromTokens(Token[] tokens, SolutionItem solutionItem)
     {
+        string[] declarations = Declarations;
         var resultList = new List<SolutionIndexItem>();
-        for (var index = 0; index < tokens.Length; index++)
+        for (var index = 0; index < tokens.Length - 1; index++)
         {
             var token = tokens[index];
-            if (!IsDeclaration(token))
+            if (!IsDeclaration(token, declarations))
             {
                 continue;
             }
 
-            if (tokens[index + 1].Kind != TokenKindsCSharp.Identifier)
+            Token nextToken = tokens[index + 1];
+            if (nextToken.Kind == TokenKindsCSharp.Identifier)
             {
-                continue;
+                resultList.Add(new SolutionIndexItem(nextToken, solutionItem, token.GetText()));
             }
-
-            resultList.Add(new SolutionIndexItem(tokens[index + 1].GetText(), fileName, token.GetText()));
         }
 
         return resultList.ToArray();
@@ -49,9 +49,9 @@ public class CsDeclarationsExtraction : IDeclarationsExtraction
         "enum"
     ];
 
-    private static bool IsDeclaration(Token token)
+    private static bool IsDeclaration(Token token, string[] declarations)
         => token.Kind == TokenKindsCSharp.Reserved
-           && token.IsInTexts(Declarations);
+           && token.IsInTexts(declarations);
 
     private static bool SkipSpaces(Token token)
     {

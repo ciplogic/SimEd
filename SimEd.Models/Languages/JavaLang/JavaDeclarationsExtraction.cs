@@ -10,15 +10,15 @@ public class JavaDeclarationsExtraction: IDeclarationsExtraction
         return fileName.EndsWith(".java");
     }
 
-    public SolutionIndexItem[] ExtractFileDefinitions(string fileName, char[] fileData)
+    public SolutionIndexItem[] ExtractFileDefinitions(SolutionItem solutionItem, char[] fileData)
     {
         SimpleScanner scanner = JavaScanner.Instance;
 
         var tokens = scanner.Tokenize(fileData, SkipSpaces).ToArray();
-        return BuildDeclarationsFromTokens(tokens, fileName);
+        return BuildDeclarationsFromTokens(tokens, solutionItem);
     }
 
-    private SolutionIndexItem[] BuildDeclarationsFromTokens(Token[] tokens, string fileName)
+    private static SolutionIndexItem[] BuildDeclarationsFromTokens(Token[] tokens, SolutionItem solutionItem)
     {
         var resultList = new List<SolutionIndexItem>();
         for (var index = 0; index < tokens.Length; index++)
@@ -29,12 +29,13 @@ public class JavaDeclarationsExtraction: IDeclarationsExtraction
                 continue;
             }
 
-            if (tokens[index + 1].Kind != TokenKindsJava.Identifier)
+            Token nextToken = tokens[index + 1];
+            if (nextToken.Kind != TokenKindsJava.Identifier)
             {
                 continue;
             }
 
-            resultList.Add(new SolutionIndexItem(tokens[index + 1].GetText(), fileName, token.GetText()));
+            resultList.Add(new SolutionIndexItem(nextToken, solutionItem, token.GetText()));
         }
 
         return resultList.ToArray();

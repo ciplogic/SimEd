@@ -9,7 +9,7 @@ public class FindItemViewModel : ObservableObject
 
     private string GetFileName()
     {
-        return $"{SolutionItem.Name}:{SolutionItem.Kind}";
+        return $"{SolutionItem.Token}:{SolutionItem.Kind}";
     }
 
     public string ClassName {get; set; }  = string.Empty;
