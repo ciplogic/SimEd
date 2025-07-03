@@ -3,6 +3,7 @@ using System.Diagnostics;
 using CommunityToolkit.Mvvm.ComponentModel;
 using SimEd.Common.Interfaces;
 using SimEd.Common.Mediator;
+using SimEd.Events;
 using SimEd.Models.Languages;
 using SimEd.Models.Languages.Common;
 using SimEd.ViewModels.Solution;

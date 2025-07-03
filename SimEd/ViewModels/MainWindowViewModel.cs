@@ -4,6 +4,7 @@ using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Input;
 using Avalonia.Platform.Storage;
+using AvaloniaEdit;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Dock.Model.Controls;
 using Dock.Model.Core;
@@ -178,6 +179,10 @@ public class MainWindowViewModel : ObservableObject, IDropTarget
         }
 
         AddFileViewModel(openedFileViewModel);
+
+        TextEditor textEditor = openedFileViewModel.MainControl.MainTextEditor;
+        textEditor.CaretOffset = arg.CaretOffset;
+        textEditor.Focus();
     }
 
     private async Task<FileViewModel?> OpenFileViewModel(string path)
@@ -367,5 +372,3 @@ public class MainWindowViewModel : ObservableObject, IDropTarget
         await window.ShowDialog<object>(GetWindow());
     }
 }
-
-public record OpenFileFromAnywhere(string FileName, int Position);
