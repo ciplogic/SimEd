@@ -182,7 +182,7 @@ public class MainWindowViewModel : ObservableObject, IDropTarget
 
         TextEditor textEditor = openedFileViewModel.MainControl.MainTextEditor;
         textEditor.CaretOffset = arg.CaretOffset;
-        textEditor.Focus();
+        textEditor.TextArea.Caret.Show();
     }
 
     private async Task<FileViewModel?> OpenFileViewModel(string path)

@@ -7,7 +7,7 @@ public class SimpleScanner
     public Token[] Tokenize(ArraySegment<char> segment, Func<Token, bool> tokenFilter)
     {
         List<Token> tokens = [];
-        var pos = 0;
+        int pos = 0;
         BaseRule[] rules = Rules;
         var originalSegment = segment;
 
@@ -46,7 +46,6 @@ public class SimpleScanner
                 continue;
             }
 
-            pos += matchLen;
 
             Token token = new Token(segment.Slice(0, matchLen), pos, rule.Kind);
             return token;

@@ -32,7 +32,9 @@
             <avaloniaEdit:TextEditor.TextArea>
             </avaloniaEdit:TextEditor.TextArea>
         </avaloniaEdit:TextEditor>
-        <Grid Grid.Row="1"
+        <Grid 
+            x:Name="MainStatusBar"
+            Grid.Row="1"
               ColumnDefinitions="*,Auto">
             <TextBlock Grid.Column="0"
                        Margin="2"

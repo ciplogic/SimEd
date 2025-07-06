@@ -1,5 +1,7 @@
-﻿using Avalonia.Controls;
+﻿using Avalonia;
+using Avalonia.Controls;
 using Avalonia.Media;
+using Avalonia.Styling;
 using AvaloniaEdit.TextMate;
 using Dock.Model.Mvvm.Controls;
 using SimEd.Common.Interfaces;
@@ -90,8 +92,10 @@ public class FileViewModel : Document, IViewAware
 
     private void UpdateView()
     {
-        RegistryOptions registryOptions = new RegistryOptions(ThemeName.Light);
-        TextMate.Installation? textMateInstallation = MainControl.MainTextEditor.InstallTextMate(registryOptions);
+        RegistryOptions registryOptions = new RegistryOptions(ThemeName.DarkPlus);
+        TextMate.Installation textMateInstallation = MainControl.MainTextEditor.InstallTextMate(registryOptions);
+
+        textMateInstallation.AppliedTheme += TextMateInstallationOnAppliedTheme;
         string extension = ExtensionOfFile(Path);
         if (string.IsNullOrEmpty(extension))
         {
@@ -100,6 +104,9 @@ public class FileViewModel : Document, IViewAware
 
         Language csharpLanguage = registryOptions.GetLanguageByExtension(extension);
         string scopeName = registryOptions.GetScopeByLanguageId(csharpLanguage?.Id ?? "");
+        var loadTheme = registryOptions.LoadTheme(ThemeName.Dark);
+        MainControl.MainTextEditor.Options.HighlightCurrentLine = true;
+        textMateInstallation.SetTheme(loadTheme);
         textMateInstallation.SetGrammar(scopeName);
     }
 
@@ -136,4 +143,79 @@ public class FileViewModel : Document, IViewAware
 
     private void OnFontFamilyChange(OnChangeFontEvent fontEvent)
         => SelectedFont = fontEvent.SelectedFont;
+    
+    
+    private void TextMateInstallationOnAppliedTheme(object sender, TextMate.Installation e)
+    {
+        ApplyThemeColorsToEditor(e);
+        ApplyThemeColorsToWindow(e);
+    }
+
+    void ApplyThemeColorsToEditor(TextMate.Installation e)
+    {
+        var _textEditor = MainControl.MainTextEditor;
+        ApplyBrushAction(e, "editor.background",brush => _textEditor.Background = brush);
+        ApplyBrushAction(e, "editor.foreground",brush => _textEditor.Foreground = brush);
+
+        if (!ApplyBrushAction(e, "editor.selectionBackground",
+                brush => _textEditor.TextArea.SelectionBrush = brush))
+        {
+            if (Application.Current!.TryGetResource("TextAreaSelectionBrush", out var resourceObject))
+            {
+                if (resourceObject is IBrush brush)
+                {
+                    _textEditor.TextArea.SelectionBrush = brush;
+                }
+            }
+        }
+
+        if (!ApplyBrushAction(e, "editor.lineHighlightBackground",
+                brush =>
+                {
+                    _textEditor.TextArea.TextView.CurrentLineBackground = brush;
+                    _textEditor.TextArea.TextView.CurrentLineBorder = new Pen(brush); // Todo: VS Code didn't seem to have a border but it might be nice to have that option. For now just make it the same..
+                }))
+        {
+            _textEditor.TextArea.TextView.SetDefaultHighlightLineColors();
+        }
+
+        //Todo: looks like the margin doesn't have a active line highlight, would be a nice addition
+        if (!ApplyBrushAction(e, "editorLineNumber.foreground",
+                brush => _textEditor.LineNumbersForeground = brush))
+        {
+            _textEditor.LineNumbersForeground = _textEditor.Foreground;
+        }
+    }
+
+    private void ApplyThemeColorsToWindow(TextMate.Installation e)
+    {
+        var statusBar = MainControl.MainStatusBar;
+
+        if (!ApplyBrushAction(e, "statusBar.background", brush => statusBar.Background = brush))
+        {
+            statusBar.Background = Brushes.Purple;
+        }
+
+        if (!ApplyBrushAction(e, "statusBar.foreground", brush => MainControl.Foreground = brush))
+        {
+            MainControl.Foreground = Brushes.White;
+        }
+
+        //Applying the Editor background to the whole window for demo sake.
+        ApplyBrushAction(e, "editor.background",brush => MainControl.MainTextEditor.Background = brush);
+        ApplyBrushAction(e, "editor.foreground",brush => MainControl.MainTextEditor.Foreground = brush);
+    }
+
+    bool ApplyBrushAction(TextMate.Installation e, string colorKeyNameFromJson, Action<IBrush> applyColorAction)
+    {
+        if (!e.TryGetThemeColor(colorKeyNameFromJson, out var colorString))
+            return false;
+
+        if (!Color.TryParse(colorString, out Color color))
+            return false;
+
+        var colorBrush = new SolidColorBrush(color);
+        applyColorAction(colorBrush);
+        return true;
+    }
 }
