@@ -34,8 +34,6 @@
             x:Name="MainStatusBar"
             Grid.Row="1"
             ColumnDefinitions="Auto,*,Auto">
-            
-                    
             <Menu Grid.Column="2">
                 <MenuItem Header="...">
                     <MenuItem Header="Show Spaces" Command="{Binding OnShowSpaces}"></MenuItem>
@@ -48,13 +46,18 @@
                 Text="{Binding Path}"
                 TextWrapping="Wrap" />
             <StackPanel x:Name="OptionsContextMenu"
-                        Grid.Column="1"
+                        Grid.Column="2"
                         Orientation="Horizontal">
                 <TextBlock
                     Margin="2"
                     VerticalAlignment="Center"
                     Text="{Binding Options}"
                     TextWrapping="Wrap">
+                    <TextBlock.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem Header="Show Spaces" Command="{Binding OnShowSpaces}"></MenuItem>
+                        </ContextMenu>
+                    </TextBlock.ContextMenu>
                 </TextBlock>
                 <TextBlock
                     Margin="2"
