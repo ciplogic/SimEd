@@ -1,9 +1,11 @@
-﻿using Avalonia;
+﻿using System.Reactive;
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Media;
-using Avalonia.Styling;
+using AvaloniaEdit;
 using AvaloniaEdit.TextMate;
 using Dock.Model.Mvvm.Controls;
+using ReactiveUI;
 using SimEd.Common.Interfaces;
 using SimEd.Events;
 using SimEd.Interfaces;
@@ -19,6 +21,7 @@ public class FileViewModel : Document, IViewAware
     private readonly IAppSettingsReader _settingsReader;
 
     private FontFamily _selectedFont;
+    public ReactiveCommand<Unit, Unit>  ShowSpaces { get; set; }
 
     public FileViewModel(IMiniPubSub pubSub, IAppSettingsReader settingsReader)
     {
@@ -26,6 +29,12 @@ public class FileViewModel : Document, IViewAware
         _settingsReader = settingsReader;
         _pubSub.AddEventHandler<ZoomFontLevelChanged>(OnZoomChanged);
         _pubSub.AddEventHandler<OnChangeFontEvent>(OnFontFamilyChange);
+        ShowSpaces = ReactiveCommand.Create(OnShowSpacesHandler);
+    }
+
+    private void OnShowSpacesHandler()
+    {
+        throw new NotImplementedException();
     }
 
     public override bool OnClose()
@@ -53,6 +62,25 @@ public class FileViewModel : Document, IViewAware
     {
         get => _encoding;
         set => SetProperty(ref _encoding, value);
+    }
+
+    public string Options
+    {
+        get => _options;
+        set
+        {
+            if(SetProperty(ref _options, value))
+            {
+                ApplyEditorOptions();
+            }
+        }
+    }
+
+    private void ApplyEditorOptions()
+    {
+        MainControl.MainTextEditor.Options.ShowSpaces = true;
+        MainControl.MainTextEditor.Options.ShowTabs = true;
+        MainControl.MainTextEditor.Options.ShowEndOfLine = true;
     }
 
     public FileView MainControl { get; set; }
@@ -89,7 +117,18 @@ public class FileViewModel : Document, IViewAware
     private string _path = string.Empty;
     private string _text = string.Empty;
     private string _encoding = string.Empty;
+    private string _options = "[]";
 
+    public void OnShowSpaces()
+    {
+        TextEditorOptions options = MainControl.MainTextEditor.Options;
+        bool flagToToggle = options.ShowSpaces;
+        flagToToggle = !flagToToggle;
+        options.ShowSpaces = flagToToggle;
+        options.ShowTabs = flagToToggle;
+        options.ShowEndOfLine = flagToToggle;
+        options.ShowEndOfLine = flagToToggle;
+    }
     private void UpdateView()
     {
         RegistryOptions registryOptions = new RegistryOptions(ThemeName.DarkPlus);
@@ -151,20 +190,20 @@ public class FileViewModel : Document, IViewAware
         ApplyThemeColorsToWindow(e);
     }
 
-    void ApplyThemeColorsToEditor(TextMate.Installation e)
+    private void ApplyThemeColorsToEditor(TextMate.Installation e)
     {
-        var _textEditor = MainControl.MainTextEditor;
-        ApplyBrushAction(e, "editor.background",brush => _textEditor.Background = brush);
-        ApplyBrushAction(e, "editor.foreground",brush => _textEditor.Foreground = brush);
+        TextEditor textEditor = MainControl.MainTextEditor!;
+        ApplyBrushAction(e, "editor.background",brush => textEditor.Background = brush);
+        ApplyBrushAction(e, "editor.foreground",brush => textEditor.Foreground = brush);
 
         if (!ApplyBrushAction(e, "editor.selectionBackground",
-                brush => _textEditor.TextArea.SelectionBrush = brush))
+                brush => textEditor.TextArea.SelectionBrush = brush))
         {
             if (Application.Current!.TryGetResource("TextAreaSelectionBrush", out var resourceObject))
             {
                 if (resourceObject is IBrush brush)
                 {
-                    _textEditor.TextArea.SelectionBrush = brush;
+                    textEditor.TextArea.SelectionBrush = brush;
                 }
             }
         }
@@ -172,18 +211,18 @@ public class FileViewModel : Document, IViewAware
         if (!ApplyBrushAction(e, "editor.lineHighlightBackground",
                 brush =>
                 {
-                    _textEditor.TextArea.TextView.CurrentLineBackground = brush;
-                    _textEditor.TextArea.TextView.CurrentLineBorder = new Pen(brush); // Todo: VS Code didn't seem to have a border but it might be nice to have that option. For now just make it the same..
+                    textEditor.TextArea.TextView.CurrentLineBackground = brush;
+                    textEditor.TextArea.TextView.CurrentLineBorder = new Pen(brush); // Todo: VS Code didn't seem to have a border but it might be nice to have that option. For now just make it the same..
                 }))
         {
-            _textEditor.TextArea.TextView.SetDefaultHighlightLineColors();
+            textEditor.TextArea.TextView.SetDefaultHighlightLineColors();
         }
 
         //Todo: looks like the margin doesn't have a active line highlight, would be a nice addition
         if (!ApplyBrushAction(e, "editorLineNumber.foreground",
-                brush => _textEditor.LineNumbersForeground = brush))
+                brush => textEditor.LineNumbersForeground = brush))
         {
-            _textEditor.LineNumbersForeground = _textEditor.Foreground;
+            textEditor.LineNumbersForeground = textEditor.Foreground;
         }
     }
 
@@ -206,7 +245,7 @@ public class FileViewModel : Document, IViewAware
         ApplyBrushAction(e, "editor.foreground",brush => MainControl.MainTextEditor.Foreground = brush);
     }
 
-    bool ApplyBrushAction(TextMate.Installation e, string colorKeyNameFromJson, Action<IBrush> applyColorAction)
+    private bool ApplyBrushAction(TextMate.Installation e, string colorKeyNameFromJson, Action<IBrush> applyColorAction)
     {
         if (!e.TryGetThemeColor(colorKeyNameFromJson, out var colorString))
             return false;

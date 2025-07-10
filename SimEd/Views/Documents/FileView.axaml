@@ -12,7 +12,6 @@
              x:CompileBindings="True"
              x:DataType="vm:FileViewModel"
              mc:Ignorable="d"
-
              >
     <Grid RowDefinitions="*,Auto">
         <avaloniaEdit:TextEditor
@@ -21,9 +20,8 @@
             BorderThickness="0"
             FontFamily="{Binding SelectedFont}"
             FontWeight="Light"
-            ShowLineNumbers="True" 
-            FontSize="{Binding FontSize}"
-            >
+            ShowLineNumbers="True"
+            FontSize="{Binding FontSize}">
 
             <i:Interaction.Behaviors>
                 <documents:DocumentTextBindingBehavior Text="{Binding Text, Mode=TwoWay}" />
@@ -32,20 +30,38 @@
             <avaloniaEdit:TextEditor.TextArea>
             </avaloniaEdit:TextEditor.TextArea>
         </avaloniaEdit:TextEditor>
-        <Grid 
+        <Grid
             x:Name="MainStatusBar"
             Grid.Row="1"
-              ColumnDefinitions="*,Auto">
-            <TextBlock Grid.Column="0"
-                       Margin="2"
-                       VerticalAlignment="Center"
-                       Text="{Binding Path}"
-                       TextWrapping="Wrap" />
-            <TextBlock Grid.Column="1"
-                       Margin="2"
-                       VerticalAlignment="Center"
-                       Text="{Binding Encoding}"
-                       TextWrapping="Wrap" />
+            ColumnDefinitions="Auto,*,Auto">
+            
+                    
+            <Menu Grid.Column="2">
+                <MenuItem Header="...">
+                    <MenuItem Header="Show Spaces" Command="{Binding OnShowSpaces}"></MenuItem>
+                </MenuItem>
+            </Menu>
+            <TextBlock
+                Grid.Column="0"
+                Margin="2"
+                VerticalAlignment="Center"
+                Text="{Binding Path}"
+                TextWrapping="Wrap" />
+            <StackPanel x:Name="OptionsContextMenu"
+                        Grid.Column="1"
+                        Orientation="Horizontal">
+                <TextBlock
+                    Margin="2"
+                    VerticalAlignment="Center"
+                    Text="{Binding Options}"
+                    TextWrapping="Wrap">
+                </TextBlock>
+                <TextBlock
+                    Margin="2"
+                    VerticalAlignment="Center"
+                    Text="{Binding Encoding}"
+                    TextWrapping="Wrap" />
+            </StackPanel>
         </Grid>
     </Grid>
 </UserControl>
