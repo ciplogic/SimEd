@@ -2,13 +2,13 @@ namespace SimEd.Models.Languages.Lexer;
 
 public class SimpleScanner
 {
-    public BaseRule[] Rules { get; init; } = [];
+    public LambdaRule[] Rules { get; init; } = [];
 
     public Token[] Tokenize(ArraySegment<char> segment, Func<Token, bool> tokenFilter)
     {
         List<Token> tokens = [];
         int pos = 0;
-        BaseRule[] rules = Rules;
+        LambdaRule[] rules = Rules;
         var originalSegment = segment;
 
         while (segment.Count > 0)
@@ -35,7 +35,7 @@ public class SimpleScanner
 
     private static Token? Match(
         ArraySegment<char> segment,
-        BaseRule[] rules,
+        LambdaRule[] rules,
         int pos)
     {
         foreach (var rule in rules)

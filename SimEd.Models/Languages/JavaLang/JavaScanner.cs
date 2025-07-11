@@ -24,13 +24,13 @@ internal static class JavaScanner
             "[", "]",
             "{", "}",
             "=",
-            
+
             "@",
         ]);
 
 
-    private static char[][] BuildReservedWordsArray()
-        => CurlyLexerRules.BuildCharsArrays([
+    private static WordsIndex BuildReservedWordsArray()
+        => new WordsIndex([
             "class", "record", "interface", "enum",
             "public", "protected", "private",
             "package",
@@ -59,23 +59,25 @@ internal static class JavaScanner
         => CurlyLexerRules.MatchArrayOfWordsLength(arg, Operators);
 
 
-    private static readonly char[][] ReservedWords = BuildReservedWordsArray();
+    private static readonly WordsIndex ReservedWords = BuildReservedWordsArray();
 
     private static int ReservedMatch(ArraySegment<char> segment)
     {
+        int matchReservedLength = ReservedWords.MatchLen(segment);
+        if (matchReservedLength == 0)
+        {
+            return 0;
+        }
+
         var matchIdentifier = CurlyLexerRules.IdentifierMatch(segment);
         if (matchIdentifier == 0)
         {
             return 0;
         }
 
-        var matchReservedLength = CurlyLexerRules.MatchArrayOfWordsLength(segment, ReservedWords);
-        if (matchReservedLength == 0 || matchIdentifier != matchReservedLength)
-        {
-            return 0;
-        }
-
-        return matchReservedLength;
+        return matchIdentifier == matchReservedLength
+            ? matchReservedLength
+            : 0;
     }
 
 

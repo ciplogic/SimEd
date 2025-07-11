@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using SimEd.Models.Languages.CurlyBasedLanguages;
 using SimEd.Models.Languages.Lexer;
 
@@ -7,9 +8,9 @@ internal static class CsScanner
 {
     public static SimpleScanner Instance { get; } = BuildScanner();
 
-    private static char[][] BuildOperatorsArray()
-        => CurlyLexerRules.BuildCharsArrays([
-            ".", ",", ";", ":", "%","^",
+    private static WordsIndex BuildOperatorsIndex()
+        => new WordsIndex([
+            ".", ",", ";", ":", "%", "^",
             "~",
             "+=", "-=", "*=", "/=",
             "+", "-", "*", "/",
@@ -33,6 +34,14 @@ internal static class CsScanner
             "return", "abstract", "as", "base", "break", "case", "catch",
         ]);
 
+    private static WordsIndex BuildReservedWordsIndex()
+        => CurlyLexerRules.BuildWordsIndex([
+            "class", "record", "interface", "struct", "enum", "delegate",
+            "public", "protected", "internal", "private",
+            "namespace", "using",
+            "return", "abstract", "as", "base", "break", "case", "catch",
+        ]);
+
     private static SimpleScanner BuildScanner()
         => new()
         {
@@ -49,13 +58,9 @@ internal static class CsScanner
             ]
         };
 
-    private static readonly char[][] Operators = BuildOperatorsArray();
+    private static readonly WordsIndex OperatorsIndex = BuildOperatorsIndex();
 
-    private static int OperatorsMatch(ArraySegment<char> arg)
-    {
-        var operators = Operators;
-        return CurlyLexerRules.MatchArrayOfWordsLength(arg, operators);
-    }
+    private static int OperatorsMatch(ArraySegment<char> arg) => OperatorsIndex.MatchLen(arg);
 
     private static int SpacesMatch(ArraySegment<char> segment)
         => segment.MatchInSegmentByLambda(c => c == ' ' || c == '\t');
@@ -64,24 +69,20 @@ internal static class CsScanner
         => segment.MatchInSegmentByLambda(c => c == '\n' || c == '\r');
 
 
-    private static readonly char[][] ReservedWords = BuildReservedWordsArray();
-
+    private static readonly WordsIndex ReservedWordsIndex = BuildReservedWordsIndex();
 
     private static int ReservedMatch(ArraySegment<char> segment)
     {
+        var matchReservedLength = ReservedWordsIndex.MatchLen(segment);
+        if (matchReservedLength == 0)
+        {
+            return 0;
+        }
+
         var matchIdentifier = CurlyLexerRules.IdentifierMatch(segment);
-        if (matchIdentifier == 0)
-        {
-            return 0;
-        }
-
-        var matchReservedLength = CurlyLexerRules.MatchArrayOfWordsLength(segment, ReservedWords);
-        if (matchReservedLength == 0 || matchIdentifier != matchReservedLength)
-        {
-            return 0;
-        }
-
-        return matchReservedLength;
+        return matchIdentifier == matchReservedLength 
+            ? matchReservedLength
+            : 0;
     }
 
 

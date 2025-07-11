@@ -9,6 +9,9 @@ public static class CurlyLexerRules
         => operators
             .SelectToArray(c => c.ToCharArray());
 
+    public static WordsIndex BuildWordsIndex(string[] operators)
+        => new( operators);
+
     public static int CommentMatch(ArraySegment<char> text)
     {
         if (text.Count < 2 || text[0] != '/')
@@ -90,6 +93,11 @@ public static class CurlyLexerRules
 
     static bool IsMatchForIdentifier(char c)
         => IsMatchStartForIdentifier(c) || Char.IsDigit(c);
+
+    public static int MatchArrayOfWordsLength(ArraySegment<char> arg, WordsIndex wordsIndex)
+    {
+        return wordsIndex.MatchLen(arg);
+    }
 
     public static int MatchArrayOfWordsLength(ArraySegment<char> arg, char[][] wordsToMatch)
     {
