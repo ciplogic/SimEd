@@ -1,10 +1,10 @@
-namespace SimEd.Models.Languages.CsharpLang;
+namespace SimEd.Models.Languages.Common;
 
 public static class LexerHelpers
 {
     public static int MatchInSegmentByLambda(this ArraySegment<char> segment, Func<char, bool> predicate)
     {
-        var pos = 0;
+        int pos = 0;
         foreach (char b in segment)
         {
             if (!predicate(b))
@@ -27,7 +27,7 @@ public static class LexerHelpers
         }
 
         segment = segment[1..];
-        var pos = 1;
+        int pos = 1;
         foreach (char b in segment)
         {
             if (!predicate(b))

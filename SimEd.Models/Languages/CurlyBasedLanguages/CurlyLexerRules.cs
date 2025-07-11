@@ -1,4 +1,5 @@
 ﻿using SimEd.Common.Extensions;
+using SimEd.Models.Languages.Common;
 using SimEd.Models.Languages.CsharpLang;
 
 namespace SimEd.Models.Languages.CurlyBasedLanguages;
@@ -23,7 +24,7 @@ public static class CurlyLexerRules
         {
             case '/':
             {
-                for (var i = 2; i < text.Count; i++)
+                for (int i = 2; i < text.Count; i++)
                 {
                     if (text[i] == '\n' || text[i] == '\r')
                     {
@@ -35,7 +36,7 @@ public static class CurlyLexerRules
             }
             case '*':
             {
-                for (var i = 2; i < text.Count - 1; i++)
+                for (int i = 2; i < text.Count - 1; i++)
                 {
                     if (text[i] == '*' && text[i + 1] == '/')
                     {
@@ -58,7 +59,7 @@ public static class CurlyLexerRules
             return 0;
         }
 
-        var i = 1;
+        int i = 1;
         while (i < arg.Count)
         {
             if (arg[i] == '\\')
@@ -101,16 +102,16 @@ public static class CurlyLexerRules
 
     public static int MatchArrayOfWordsLength(ArraySegment<char> arg, char[][] wordsToMatch)
     {
-        var firstChar = arg[0];
-        foreach (var op in wordsToMatch)
+        char firstChar = arg[0];
+        foreach (char[] op in wordsToMatch)
         {
             if (op[0] != firstChar)
             {
                 continue;
             }
 
-            var found = true;
-            for (var i = 1; i < op.Length; i++)
+            bool found = true;
+            for (int i = 1; i < op.Length; i++)
             {
                 if (op[i] != arg[i])
                 {

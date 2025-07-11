@@ -9,7 +9,7 @@ public class SimpleScanner
         List<Token> tokens = [];
         int pos = 0;
         LambdaRule[] rules = Rules;
-        var originalSegment = segment;
+        ArraySegment<char> originalSegment = segment;
 
         while (segment.Count > 0)
         {
@@ -38,7 +38,7 @@ public class SimpleScanner
         LambdaRule[] rules,
         int pos)
     {
-        foreach (var rule in rules)
+        foreach (LambdaRule rule in rules)
         {
             int matchLen = rule.Match(segment);
             if (matchLen == 0)

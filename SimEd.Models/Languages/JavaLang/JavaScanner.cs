@@ -1,4 +1,5 @@
-﻿using SimEd.Models.Languages.CsharpLang;
+﻿using SimEd.Models.Languages.Common;
+using SimEd.Models.Languages.CsharpLang;
 using SimEd.Models.Languages.CurlyBasedLanguages;
 using SimEd.Models.Languages.Lexer;
 
@@ -69,7 +70,7 @@ internal static class JavaScanner
             return 0;
         }
 
-        var matchIdentifier = CurlyLexerRules.IdentifierMatch(segment);
+        int matchIdentifier = CurlyLexerRules.IdentifierMatch(segment);
         if (matchIdentifier == 0)
         {
             return 0;

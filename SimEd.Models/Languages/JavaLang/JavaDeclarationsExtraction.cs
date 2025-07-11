@@ -14,16 +14,16 @@ public class JavaDeclarationsExtraction: IDeclarationsExtraction
     {
         SimpleScanner scanner = JavaScanner.Instance;
 
-        var tokens = scanner.Tokenize(fileData, SkipSpaces).ToArray();
+        Token[] tokens = scanner.Tokenize(fileData, SkipSpaces).ToArray();
         return BuildDeclarationsFromTokens(tokens, solutionItem);
     }
 
     private static SolutionIndexItem[] BuildDeclarationsFromTokens(Token[] tokens, SolutionItem solutionItem)
     {
-        var resultList = new List<SolutionIndexItem>();
-        for (var index = 0; index < tokens.Length; index++)
+        List<SolutionIndexItem> resultList = new List<SolutionIndexItem>();
+        for (int index = 0; index < tokens.Length; index++)
         {
-            var token = tokens[index];
+            Token token = tokens[index];
             if (!IsDeclaration(token))
             {
                 continue;

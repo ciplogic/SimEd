@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using SimEd.Models.Languages.Common;
 using SimEd.Models.Languages.CurlyBasedLanguages;
 using SimEd.Models.Languages.Lexer;
 
@@ -73,13 +74,13 @@ internal static class CsScanner
 
     private static int ReservedMatch(ArraySegment<char> segment)
     {
-        var matchReservedLength = ReservedWordsIndex.MatchLen(segment);
+        int matchReservedLength = ReservedWordsIndex.MatchLen(segment);
         if (matchReservedLength == 0)
         {
             return 0;
         }
 
-        var matchIdentifier = CurlyLexerRules.IdentifierMatch(segment);
+        int matchIdentifier = CurlyLexerRules.IdentifierMatch(segment);
         return matchIdentifier == matchReservedLength 
             ? matchReservedLength
             : 0;

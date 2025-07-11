@@ -21,10 +21,10 @@ public class CsDeclarationsExtraction : IDeclarationsExtraction
     private static SolutionIndexItem[] BuildDeclarationsFromTokens(Token[] tokens, SolutionItem solutionItem)
     {
         string[] declarations = Declarations;
-        var resultList = new List<SolutionIndexItem>();
-        for (var index = 0; index < tokens.Length - 1; index++)
+        List<SolutionIndexItem> resultList = new List<SolutionIndexItem>();
+        for (int index = 0; index < tokens.Length - 1; index++)
         {
-            var token = tokens[index];
+            Token token = tokens[index];
             if (!IsDeclaration(token, declarations))
             {
                 continue;
