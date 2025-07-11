@@ -11,7 +11,7 @@ public static class CurlyLexerRules
             .SelectToArray(c => c.ToCharArray());
 
     public static WordsIndex BuildWordsIndex(string[] operators)
-        => new( operators);
+        => new(operators);
 
     public static int CommentMatch(ArraySegment<char> text)
     {
@@ -79,15 +79,49 @@ public static class CurlyLexerRules
         return arg.Count;
     }
 
-
     public static int SpacesMatch(ArraySegment<char> segment)
-        => segment.MatchInSegmentByLambda(c => c == ' ' || c == '\t');
+    {
+        int pos = 0;
+        foreach (char c in segment)
+        {
+            bool result = c == ' ' || c == '\t';
+            if (!result)
+            {
+                return pos;
+            }
+
+            pos++;
+        }
+
+        return segment.Count;
+    }
 
     public static int EolnMatch(ArraySegment<char> segment)
-        => segment.MatchInSegmentByLambda(c => c == '\n' || c == '\r');
+    {
+        int pos = 0;
+        foreach (char c in segment)
+        {
+            bool result = c == '\n' || c == '\r';
+            if (!result)
+            {
+                return pos;
+            }
+
+            pos++;
+        }
+
+        return segment.Count;
+    }
 
     public static int IdentifierMatch(ArraySegment<char> segment)
-        => segment.MatchInSegmentByLambda(IsMatchStartForIdentifier, IsMatchForIdentifier);
+    {
+        if (!IsMatchStartForIdentifier(segment[0]))
+        {
+            return 0;
+        }
+
+        return segment.MatchInSegmentByLambda(IsMatchStartForIdentifier, IsMatchForIdentifier);
+    }
 
     static bool IsMatchStartForIdentifier(char c)
         => Char.IsLetter(c) || c == '_';

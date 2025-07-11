@@ -7,7 +7,8 @@ public static class LexerHelpers
         int pos = 0;
         foreach (char b in segment)
         {
-            if (!predicate(b))
+            bool result = predicate(b);
+            if (!result)
             {
                 return pos;
             }
