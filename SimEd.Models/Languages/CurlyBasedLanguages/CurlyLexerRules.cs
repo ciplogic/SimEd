@@ -1,16 +1,9 @@
 ﻿using System.Runtime.CompilerServices;
-using SimEd.Common.Extensions;
-using SimEd.Models.Languages.Common;
-using SimEd.Models.Languages.CsharpLang;
 
 namespace SimEd.Models.Languages.CurlyBasedLanguages;
 
 public static class CurlyLexerRules
 {
-    public static char[][] BuildCharsArrays(string[] operators)
-        => operators
-            .SelectToArray(c => c.ToCharArray());
-
     public static WordsIndex BuildWordsIndex(string[] operators)
         => new(operators);
 
@@ -145,4 +138,25 @@ public static class CurlyLexerRules
 
     public static int MatchArrayOfWordsLength(ArraySegment<char> arg, WordsIndex wordsIndex) 
         => wordsIndex.MatchLen(arg);
+    
+    
+    public static int NumberMatch(ArraySegment<char> segment)
+    {
+        if (!Char.IsDigit(segment[0]))
+        {
+            return 0;
+        }
+
+        for (var index = 0; index < segment.Count; index++)
+        {
+            var b = segment[index];
+            bool result = Char.IsDigit(b);
+            if (!result)
+            {
+                return index;
+            }
+        }
+
+        return segment.Count;
+    }
 }

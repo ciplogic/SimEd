@@ -1,5 +1,4 @@
-﻿using SimEd.Models.Languages.Common;
-using SimEd.Models.Languages.CsharpLang;
+﻿using SimEd.Models.Languages.CsharpLang;
 using SimEd.Models.Languages.CurlyBasedLanguages;
 using SimEd.Models.Languages.Lexer;
 
@@ -49,7 +48,7 @@ internal static class JavaScanner
                 new LambdaRule(TokenKindsCSharp.Operator, OperatorsMatch),
                 new LambdaRule(TokenKindsCSharp.Eoln, CurlyLexerRules.EolnMatch),
                 
-                new LambdaRule(TokenKindsCSharp.Number, NumberMatch),
+                new LambdaRule(TokenKindsCSharp.Number, CurlyLexerRules.NumberMatch),
                 new LambdaRule(TokenKindsCSharp.QuotedString, CurlyLexerRules.StringMatch),
 
                 new LambdaRule(TokenKindsCSharp.Comment, CurlyLexerRules.CommentMatch),
@@ -82,11 +81,4 @@ internal static class JavaScanner
             ? matchReservedLength
             : 0;
     }
-
-
-    private static int NumberMatch(ArraySegment<char> segment)
-        => segment.MatchInSegmentByLambda(IsMatchForNumber);
-
-    static bool IsMatchForNumber(char c)
-        => Char.IsDigit(c);
 }

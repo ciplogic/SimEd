@@ -1,4 +1,3 @@
-using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using SimEd.Models.Languages.Common;
 using SimEd.Models.Languages.CurlyBasedLanguages;
@@ -47,7 +46,7 @@ internal static class CsScanner
                 new LambdaRule(TokenKindsCSharp.Operator, OperatorsMatch),
                 new LambdaRule(TokenKindsCSharp.Eoln, CurlyLexerRules.EolnMatch),
                 
-                new LambdaRule(TokenKindsCSharp.Number, NumberMatch),
+                new LambdaRule(TokenKindsCSharp.Number, CurlyLexerRules.NumberMatch),
                 new LambdaRule(TokenKindsCSharp.QuotedString, CurlyLexerRules.StringMatch),
 
                 new LambdaRule(TokenKindsCSharp.Comment, CurlyLexerRules.CommentMatch),
@@ -74,19 +73,5 @@ internal static class CsScanner
             ? matchReservedLength
             : 0;
     }
-
-
-    private static int NumberMatch(ArraySegment<char> segment)
-    {
-        if (!Char.IsDigit(segment[0]))
-        {
-            return 0;
-        }
-
-        return segment.MatchInSegmentByLambda(IsMatchForNumber);
-    }
-
-
-    static bool IsMatchForNumber(char c)
-        => Char.IsDigit(c);
+    
 }
