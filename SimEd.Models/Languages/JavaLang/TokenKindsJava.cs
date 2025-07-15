@@ -2,12 +2,13 @@
 
 static class TokenKindsJava
 {
-    public const string Spaces = "Spaces";
-    public const string Eoln = "Eoln";
-    public const string Operator = "Operator";
-    public const string Identifier = "Identifier";
-    public const string Reserved = "Reserved";
-    public const string Number = "Number";
-    public const string QuotedString = "QuotedString";
-    public const string Comment = "Comment";
+    public const int Unknown = 0;
+    public const int Spaces = 'S';
+    public const int Eoln = 'E';
+    public const int Operator = 'O';
+    public const int Identifier = 'I';
+    public const int Reserved = 'R';
+    public const int Number = 'N';
+    public const int QuotedString = 'Q';
+    public const int Comment = 'C';
 }

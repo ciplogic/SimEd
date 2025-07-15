@@ -1,4 +1,5 @@
-﻿using SimEd.Common.Extensions;
+﻿using System.Runtime.CompilerServices;
+using SimEd.Common.Extensions;
 using SimEd.Models.Languages.Common;
 using SimEd.Models.Languages.CsharpLang;
 
@@ -79,40 +80,40 @@ public static class CurlyLexerRules
         return arg.Count;
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
     public static int SpacesMatch(ArraySegment<char> segment)
     {
-        int pos = 0;
-        foreach (char c in segment)
+        for (var index = 0; index < segment.Count; index++)
         {
+            var c = segment[index];
             bool result = c == ' ' || c == '\t';
             if (!result)
             {
-                return pos;
+                return index;
             }
-
-            pos++;
         }
 
         return segment.Count;
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
     public static int EolnMatch(ArraySegment<char> segment)
     {
-        int pos = 0;
-        foreach (char c in segment)
+        for (var index = 0; index < segment.Count; index++)
         {
+            var c = segment[index];
             bool result = c == '\n' || c == '\r';
             if (!result)
             {
-                return pos;
+                return index;
             }
 
-            pos++;
         }
 
         return segment.Count;
     }
 
+    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
     public static int IdentifierMatch(ArraySegment<char> segment)
     {
         if (!IsMatchStartForIdentifier(segment[0]))
@@ -120,46 +121,28 @@ public static class CurlyLexerRules
             return 0;
         }
 
-        return segment.MatchInSegmentByLambda(IsMatchStartForIdentifier, IsMatchForIdentifier);
-    }
-
-    static bool IsMatchStartForIdentifier(char c)
-        => Char.IsLetter(c) || c == '_';
-
-    static bool IsMatchForIdentifier(char c)
-        => IsMatchStartForIdentifier(c) || Char.IsDigit(c);
-
-    public static int MatchArrayOfWordsLength(ArraySegment<char> arg, WordsIndex wordsIndex)
-    {
-        return wordsIndex.MatchLen(arg);
-    }
-
-    public static int MatchArrayOfWordsLength(ArraySegment<char> arg, char[][] wordsToMatch)
-    {
-        char firstChar = arg[0];
-        foreach (char[] op in wordsToMatch)
+        segment = segment[1..];
+        int pos = 1;
+        for (var index = 0; index < segment.Count; index++)
         {
-            if (op[0] != firstChar)
+            var b = segment[index];
+            if (!IsMatchForIdentifier(b))
             {
-                continue;
+                return pos;
             }
 
-            bool found = true;
-            for (int i = 1; i < op.Length; i++)
-            {
-                if (op[i] != arg[i])
-                {
-                    found = false;
-                    break;
-                }
-            }
-
-            if (found)
-            {
-                return op.Length;
-            }
+            pos++;
         }
 
-        return 0;
+        return segment.Count;
     }
+
+    private static bool IsMatchStartForIdentifier(char c)
+        => Char.IsLetter(c) || c == '_';
+
+    private static bool IsMatchForIdentifier(char c)
+        => IsMatchStartForIdentifier(c) || Char.IsDigit(c);
+
+    public static int MatchArrayOfWordsLength(ArraySegment<char> arg, WordsIndex wordsIndex) 
+        => wordsIndex.MatchLen(arg);
 }

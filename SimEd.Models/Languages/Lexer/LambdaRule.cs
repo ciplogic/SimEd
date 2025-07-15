@@ -4,9 +4,9 @@ public struct LambdaRule
 {
     private readonly Func<ArraySegment<char>, int> _func;
 
-    public string Kind { get; }
+    public int Kind { get; }
 
-    public LambdaRule(string kind, Func<ArraySegment<char>, int> func)
+    public LambdaRule(int kind, Func<ArraySegment<char>, int> func)
     {
         _func = func;
         Kind = kind;
