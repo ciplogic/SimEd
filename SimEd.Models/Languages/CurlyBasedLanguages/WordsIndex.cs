@@ -1,23 +1,39 @@
-﻿using System.Runtime.CompilerServices;
+﻿using System.Collections;
+using System.Runtime.CompilerServices;
 using SimEd.Common.Extensions;
 
 namespace SimEd.Models.Languages.CurlyBasedLanguages;
 
 public class WordsIndex
 {
+    private readonly BitArray _bitArray;
     private readonly char[] _firstChars;
     private readonly char[][] _wordsToMatch;
-    
+
     public WordsIndex(string[] wordStrings)
     {
         _wordsToMatch = wordStrings.Order().ToArray().SelectToArray(w => w.ToCharArray());
         _firstChars = _wordsToMatch.SelectToArray(w => w[0]);
+        _bitArray = new BitArray(new byte[32]);
+        foreach (var c in _firstChars)
+        {
+            _bitArray.Set((int)c, true);
+        }
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
     public int MatchLen(ArraySegment<char> arraySegment)
     {
         char firstChar = arraySegment[0];
+        if (firstChar >= 256)
+        {
+            return 0;
+        }
+
+        if (!_bitArray[firstChar])
+        {
+            return 0;
+        }
 
         for (int index = 0; index < _firstChars.Length; index++)
         {
