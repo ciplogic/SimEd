@@ -9,6 +9,15 @@
              d:DesignWidth="600" d:DesignHeight="20"
              x:CompileBindings="True" x:DataType="solution:SolutionViewModel">
 
+    <UserControl.Resources>
+        <SvgSource x:Key="SquareIcon"
+                   Path="/Assets/Icons/square.svg"/>
+        <SvgSource x:Key="JavaIcon"
+                   Path="/Assets/Icons/java-plain.svg" />
+        <SvgSource x:Key="CSharpIcon"
+                   Path="/Assets/Icons/csharp-line.svg" />
+    </UserControl.Resources>
+    
     <Grid RowDefinitions="Auto,*,Auto">
         <StackPanel>
             <Grid ColumnDefinitions="Auto,*,Auto">
@@ -29,9 +38,39 @@
                     </Button>
 
                     <ComboBox SelectedIndex="2" Margin="2">
-                        <ComboBoxItem>Generic</ComboBoxItem>
-                        <ComboBoxItem>Java</ComboBoxItem>
-                        <ComboBoxItem>C#</ComboBoxItem>
+                        <ComboBoxItem>
+                            <DockPanel>
+                                <Image Height="{Binding IconDiameter}"
+                                       Width="{Binding IconDiameter}">
+                                    <Image.Source>
+                                        <SvgImage Source="{DynamicResource SquareIcon}"></SvgImage>
+                                    </Image.Source>
+                                </Image>
+                                <TextBlock Text="Generic" />
+                            </DockPanel>
+                        </ComboBoxItem>
+                        <ComboBoxItem>
+                            <DockPanel>
+                                <Image Height="{Binding IconDiameter}"
+                                       Width="{Binding IconDiameter}">
+                                    <Image.Source>
+                                        <SvgImage Source="{DynamicResource JavaIcon}"></SvgImage>
+                                    </Image.Source>
+                                </Image>
+                                <TextBlock Text="Java" />
+                            </DockPanel>
+                        </ComboBoxItem>
+                        <ComboBoxItem>
+                            <DockPanel>
+                                <Image Height="{Binding IconDiameter}"
+                                       Width="{Binding IconDiameter}">
+                                    <Image.Source>
+                                        <SvgImage Source="{DynamicResource CSharpIcon}"></SvgImage>
+                                    </Image.Source>
+                                </Image>
+                                <TextBlock Text="C#" />
+                            </DockPanel>
+                        </ComboBoxItem>
                     </ComboBox>
 
                 </StackPanel>
