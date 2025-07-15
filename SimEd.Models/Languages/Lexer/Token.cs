@@ -1,8 +1,8 @@
 namespace SimEd.Models.Languages.Lexer;
 
-public record struct Token(ArraySegment<char> Text, int Position, string Kind)
+public record struct Token(int Kind, ArraySegment<char> Text, int Position)
 {
-    override public string ToString()
+    public override string ToString()
         => $"{GetText()}: {Kind}";
 
     public string AText
@@ -11,29 +11,9 @@ public record struct Token(ArraySegment<char> Text, int Position, string Kind)
     public string GetText() => new(Text.ToArray());
 
 
-    public bool IsText(ReadOnlySpan<char> text)
-    {
-        if (text.Length != Text.Count)
-        {
-            return false;
-        }
-
-        for (var index = 0; index < text.Length; index++)
-        {
-            var origText = Text[index];
-            var ch = text[index];
-            if (origText != ch)
-            {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
     public bool IsInTexts(string[] texts)
     {
-        foreach (var text in texts)
+        foreach (string text in texts)
         {
             if (IsText(text))
             {
@@ -43,4 +23,25 @@ public record struct Token(ArraySegment<char> Text, int Position, string Kind)
 
         return false;
     }
+    private bool IsText(ReadOnlySpan<char> text)
+    {
+        if (text.Length != Text.Count)
+        {
+            return false;
+        }
+
+        for (int index = 0; index < text.Length; index++)
+        {
+            char origText = Text[index];
+            char ch = text[index];
+            if (origText != ch)
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+
 }

@@ -8,8 +8,8 @@ internal static class JavaScanner
 {
     public static SimpleScanner Instance { get; } = BuildScanner();
 
-    private static char[][] BuildOperatorsArray()
-        => CurlyLexerRules.BuildCharsArrays([
+    private static WordsIndex BuildOperatorsArray()
+        => CurlyLexerRules.BuildWordsIndex([
             ".", ",", ";", ":", "%", "^",
             "~",
             "+=", "-=", "*=", "/=",
@@ -24,13 +24,13 @@ internal static class JavaScanner
             "[", "]",
             "{", "}",
             "=",
-            
+
             "@",
         ]);
 
 
-    private static char[][] BuildReservedWordsArray()
-        => CurlyLexerRules.BuildCharsArrays([
+    private static WordsIndex BuildReservedWordsArray()
+        => new([
             "class", "record", "interface", "enum",
             "public", "protected", "private",
             "package",
@@ -42,46 +42,43 @@ internal static class JavaScanner
         {
             Rules =
             [
-                new LambdaRule(TokenKindsJava.Spaces, CurlyLexerRules.SpacesMatch),
-                new LambdaRule(TokenKindsJava.Eoln, CurlyLexerRules.EolnMatch),
-                new LambdaRule(TokenKindsJava.Comment, CurlyLexerRules.CommentMatch),
-                new LambdaRule(TokenKindsJava.QuotedString, CurlyLexerRules.StringMatch),
-                new LambdaRule(TokenKindsJava.Operator, OperatorsMatch),
-                new LambdaRule(TokenKindsJava.Reserved, ReservedMatch),
-                new LambdaRule(TokenKindsJava.Identifier, CurlyLexerRules.IdentifierMatch),
-                new LambdaRule(TokenKindsJava.Number, NumberMatch),
+                new LambdaRule(TokenKindsCSharp.Reserved, ReservedMatch),
+                new LambdaRule(TokenKindsCSharp.Spaces, CurlyLexerRules.SpacesMatch),
+                new LambdaRule(TokenKindsCSharp.Identifier, CurlyLexerRules.IdentifierMatch),
+                new LambdaRule(TokenKindsCSharp.Operator, OperatorsMatch),
+                new LambdaRule(TokenKindsCSharp.Eoln, CurlyLexerRules.EolnMatch),
+                
+                new LambdaRule(TokenKindsCSharp.Number, CurlyLexerRules.NumberMatch),
+                new LambdaRule(TokenKindsCSharp.QuotedString, CurlyLexerRules.StringMatch),
+
+                new LambdaRule(TokenKindsCSharp.Comment, CurlyLexerRules.CommentMatch),
             ]
         };
 
-    private static readonly char[][] Operators = BuildOperatorsArray();
+    private static readonly WordsIndex Operators = BuildOperatorsArray();
 
     private static int OperatorsMatch(ArraySegment<char> arg)
         => CurlyLexerRules.MatchArrayOfWordsLength(arg, Operators);
 
 
-    private static readonly char[][] ReservedWords = BuildReservedWordsArray();
+    private static readonly WordsIndex ReservedWords = BuildReservedWordsArray();
 
     private static int ReservedMatch(ArraySegment<char> segment)
     {
-        var matchIdentifier = CurlyLexerRules.IdentifierMatch(segment);
+        int matchReservedLength = ReservedWords.MatchLen(segment);
+        if (matchReservedLength == 0)
+        {
+            return 0;
+        }
+
+        int matchIdentifier = CurlyLexerRules.IdentifierMatch(segment);
         if (matchIdentifier == 0)
         {
             return 0;
         }
 
-        var matchReservedLength = CurlyLexerRules.MatchArrayOfWordsLength(segment, ReservedWords);
-        if (matchReservedLength == 0 || matchIdentifier != matchReservedLength)
-        {
-            return 0;
-        }
-
-        return matchReservedLength;
+        return matchIdentifier == matchReservedLength
+            ? matchReservedLength
+            : 0;
     }
-
-
-    private static int NumberMatch(ArraySegment<char> segment)
-        => segment.MatchInSegmentByLambda(IsMatchForNumber);
-
-    static bool IsMatchForNumber(char c)
-        => Char.IsDigit(c);
 }

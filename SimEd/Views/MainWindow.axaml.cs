@@ -17,6 +17,7 @@ public partial class MainWindow : Window
         if (e is { Key: Key.T, KeyModifiers: KeyModifiers.Control })
         {
             ViewModel.OnShowGenericFinder();
+            e.Handled = true;
         }
     }
 }

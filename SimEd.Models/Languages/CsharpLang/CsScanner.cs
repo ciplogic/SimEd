@@ -1,3 +1,5 @@
+using System.Runtime.CompilerServices;
+using SimEd.Models.Languages.Common;
 using SimEd.Models.Languages.CurlyBasedLanguages;
 using SimEd.Models.Languages.Lexer;
 
@@ -7,9 +9,9 @@ internal static class CsScanner
 {
     public static SimpleScanner Instance { get; } = BuildScanner();
 
-    private static char[][] BuildOperatorsArray()
-        => CurlyLexerRules.BuildCharsArrays([
-            ".", ",", ";", ":", "%","^",
+    private static WordsIndex BuildOperatorsIndex()
+        => new([
+            ".", ",", ";", ":", "%", "^",
             "~",
             "+=", "-=", "*=", "/=",
             "+", "-", "*", "/",
@@ -25,8 +27,8 @@ internal static class CsScanner
             "=",
         ]);
 
-    private static char[][] BuildReservedWordsArray()
-        => CurlyLexerRules.BuildCharsArrays([
+    private static WordsIndex BuildReservedWordsIndex()
+        => CurlyLexerRules.BuildWordsIndex([
             "class", "record", "interface", "struct", "enum", "delegate",
             "public", "protected", "internal", "private",
             "namespace", "using",
@@ -38,57 +40,38 @@ internal static class CsScanner
         {
             Rules =
             [
-                new LambdaRule(TokenKindsCSharp.Spaces, SpacesMatch),
-                new LambdaRule(TokenKindsCSharp.Eoln, EolnMatch),
-                new LambdaRule(TokenKindsCSharp.Comment, CurlyLexerRules.CommentMatch),
-                new LambdaRule(TokenKindsCSharp.QuotedString, CurlyLexerRules.StringMatch),
-                new LambdaRule(TokenKindsCSharp.Operator, OperatorsMatch),
                 new LambdaRule(TokenKindsCSharp.Reserved, ReservedMatch),
                 new LambdaRule(TokenKindsCSharp.Identifier, CurlyLexerRules.IdentifierMatch),
-                new LambdaRule(TokenKindsCSharp.Number, NumberMatch),
+                new LambdaRule(TokenKindsCSharp.Spaces, CurlyLexerRules.SpacesMatch),
+                new LambdaRule(TokenKindsCSharp.Operator, OperatorsMatch),
+                new LambdaRule(TokenKindsCSharp.Eoln, CurlyLexerRules.EolnMatch),
+                
+                new LambdaRule(TokenKindsCSharp.Number, CurlyLexerRules.NumberMatch),
+                new LambdaRule(TokenKindsCSharp.QuotedString, CurlyLexerRules.StringMatch),
+
+                new LambdaRule(TokenKindsCSharp.Comment, CurlyLexerRules.CommentMatch),
             ]
         };
 
-    private static readonly char[][] Operators = BuildOperatorsArray();
+    private static readonly WordsIndex OperatorsIndex = BuildOperatorsIndex();
 
-    private static int OperatorsMatch(ArraySegment<char> arg)
-    {
-        var operators = Operators;
-        return CurlyLexerRules.MatchArrayOfWordsLength(arg, operators);
-    }
+    private static int OperatorsMatch(ArraySegment<char> arg) => OperatorsIndex.MatchLen(arg);
 
-    private static int SpacesMatch(ArraySegment<char> segment)
-        => segment.MatchInSegmentByLambda(c => c == ' ' || c == '\t');
+    private static readonly WordsIndex ReservedWordsIndex = BuildReservedWordsIndex();
 
-    private static int EolnMatch(ArraySegment<char> segment)
-        => segment.MatchInSegmentByLambda(c => c == '\n' || c == '\r');
-
-
-    private static readonly char[][] ReservedWords = BuildReservedWordsArray();
-
-
+    [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
     private static int ReservedMatch(ArraySegment<char> segment)
     {
-        var matchIdentifier = CurlyLexerRules.IdentifierMatch(segment);
-        if (matchIdentifier == 0)
+        int matchReservedLength = ReservedWordsIndex.MatchLen(segment);
+        if (matchReservedLength == 0)
         {
             return 0;
         }
 
-        var matchReservedLength = CurlyLexerRules.MatchArrayOfWordsLength(segment, ReservedWords);
-        if (matchReservedLength == 0 || matchIdentifier != matchReservedLength)
-        {
-            return 0;
-        }
-
-        return matchReservedLength;
+        int matchIdentifier = CurlyLexerRules.IdentifierMatch(segment.Slice(matchReservedLength));
+        return matchIdentifier == 0
+            ? matchReservedLength
+            : 0;
     }
-
-
-    private static int NumberMatch(ArraySegment<char> segment)
-        => segment.MatchInSegmentByLambda(IsMatchForNumber);
-
-
-    static bool IsMatchForNumber(char c)
-        => Char.IsDigit(c);
+    
 }

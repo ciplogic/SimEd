@@ -7,7 +7,7 @@ namespace SimEd.Views.Documents;
 
 public partial class FileView : UserControl
 {
-    private FileViewModel ViewModel => DataContext as FileViewModel;
+    private FileViewModel ViewModel => (FileViewModel)DataContext! ;
 
     public FileView()
     {

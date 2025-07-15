@@ -21,20 +21,27 @@ public class CsDeclarationsExtraction : IDeclarationsExtraction
     private static SolutionIndexItem[] BuildDeclarationsFromTokens(Token[] tokens, SolutionItem solutionItem)
     {
         string[] declarations = Declarations;
-        var resultList = new List<SolutionIndexItem>();
-        for (var index = 0; index < tokens.Length - 1; index++)
+        List<SolutionIndexItem> resultList = new List<SolutionIndexItem>();
+        for (int index = 1; index < tokens.Length; index++)
         {
-            var token = tokens[index];
+            Token nextToken = tokens[index];
+            if (nextToken.Kind != TokenKindsCSharp.Identifier)
+            {
+                continue;
+            }
+
+            Token token = tokens[index - 1];
+            if (token.Kind != TokenKindsCSharp.Reserved)
+            {
+                continue;
+            }
+
             if (!IsDeclaration(token, declarations))
             {
                 continue;
             }
 
-            Token nextToken = tokens[index + 1];
-            if (nextToken.Kind == TokenKindsCSharp.Identifier)
-            {
-                resultList.Add(new SolutionIndexItem(nextToken, solutionItem, token.GetText()));
-            }
+            resultList.Add(new SolutionIndexItem(nextToken, solutionItem, token.GetText()));
         }
 
         return resultList.ToArray();
@@ -50,8 +57,7 @@ public class CsDeclarationsExtraction : IDeclarationsExtraction
     ];
 
     private static bool IsDeclaration(Token token, string[] declarations)
-        => token.Kind == TokenKindsCSharp.Reserved
-           && token.IsInTexts(declarations);
+        => token.IsInTexts(declarations);
 
     private static bool SkipSpaces(Token token)
     {
