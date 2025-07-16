@@ -109,7 +109,7 @@ public class MainWindowViewModel : ObservableObject, IDropTarget
                 continue;
             }
 
-            FileViewModel untitledFileViewModel = await OpenFileViewModel(path);
+            BaseFileViewModel? untitledFileViewModel = await OpenFileViewModel(path);
             AddFileViewModel(untitledFileViewModel);
         }
     }
@@ -160,7 +160,7 @@ public class MainWindowViewModel : ObservableObject, IDropTarget
 
     private async void OnFileOpened(FileIsOpened fileIsOpened)
     {
-        FileViewModel? untitledFileViewModel = await OpenFileViewModel(fileIsOpened.FileItem.Path);
+        BaseFileViewModel? untitledFileViewModel = await OpenFileViewModel(fileIsOpened.FileItem.Path);
         if (untitledFileViewModel is null)
         {
             return;
@@ -172,7 +172,7 @@ public class MainWindowViewModel : ObservableObject, IDropTarget
 
     private void HandleOpenFileFromAnywhere(OpenFileFromAnywhere arg)
     {
-        FileViewModel? openedFileViewModel = OpenFileViewModel(arg.FileName).GetAwaiter().GetResult();
+        BaseFileViewModel? openedFileViewModel = OpenFileViewModel(arg.FileName).GetAwaiter().GetResult();
         if (openedFileViewModel is null)
         {
             return;
@@ -180,12 +180,15 @@ public class MainWindowViewModel : ObservableObject, IDropTarget
 
         AddFileViewModel(openedFileViewModel);
 
-        TextEditor textEditor = openedFileViewModel.MainControl.MainTextEditor;
-        textEditor.CaretOffset = arg.CaretOffset;
-        textEditor.TextArea.Caret.Show();
+        if (openedFileViewModel is FileViewModel fileViewModel)
+        {
+            TextEditor textEditor = fileViewModel.MainControl.MainTextEditor;
+            textEditor.CaretOffset = arg.CaretOffset;
+            textEditor.TextArea.Caret.Show();
+        }
     }
 
-    private async Task<FileViewModel?> OpenFileViewModel(string path)
+    private async Task<BaseFileViewModel?> OpenFileViewModel(string path)
     {
         if (TryFindAlreadyOpenedTab(path, out FileViewModel fileViewModel))
         {
@@ -196,10 +199,19 @@ public class MainWindowViewModel : ObservableObject, IDropTarget
         {
             return null;
         }
-
+        
+        var fileExtension = Path.GetExtension(path);
+        string title = Path.GetFileName(path);
+        if (ImageFileViewModel.SupportedFormats.Contains(fileExtension))
+        {
+            var  imageFileModel = Provider.GetService<ImageFileViewModel>();
+            imageFileModel.Path = path;
+            imageFileModel.Title = title;
+            
+            return imageFileModel;
+        }
         Encoding encoding = FileTools.GetEncoding(path);
         string text = await File.ReadAllTextAsync(path, encoding).ConfigureAwait(false);
-        string title = Path.GetFileName(path);
         FileViewModel openFileViewModel = Provider.GetService<FileViewModel>();
         openFileViewModel.Path = path;
         openFileViewModel.Title = title;
@@ -242,7 +254,7 @@ public class MainWindowViewModel : ObservableObject, IDropTarget
         fileViewModel.Title = Path.GetFileName(path);
     }
 
-    private void AddFileViewModel(FileViewModel fileViewModel)
+    private void AddFileViewModel(BaseFileViewModel? fileViewModel)
     {
         IDocumentDock? files = _factory?.GetDockable<IDocumentDock>("Files");
         if (Layout is { } && files is { })
@@ -346,7 +358,7 @@ public class MainWindowViewModel : ObservableObject, IDropTarget
                 continue;
             }
 
-            FileViewModel? untitledFileViewModel = await OpenFileViewModel(path);
+            BaseFileViewModel? untitledFileViewModel = await OpenFileViewModel(path);
             AddFileViewModel(untitledFileViewModel);
         }
     }

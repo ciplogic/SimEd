@@ -19,12 +19,12 @@ public class SimpleScanner
             if (foundToken == null)
             {
                 Token token = new( TokenKindsCSharp.Unknown, segment, pos);
-                yield return (token);
+                yield return token;
                 yield break;
             }
 
             {
-                yield return (foundToken.Value);
+                yield return foundToken.Value;
             }
 
             pos += foundToken.Value.Text.Count;

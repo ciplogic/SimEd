@@ -69,6 +69,10 @@ public class ShowGenericFinderWindowViewModel : ObservableObject
         set => SetProperty(ref _selectedIndex, value);
     }
 
+    public void OnDoubleTapped( ){
+        
+    }
+
     public void OnChosenItem()
     {
         if (SelectedIndex == -1)

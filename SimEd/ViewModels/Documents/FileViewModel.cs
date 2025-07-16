@@ -1,11 +1,8 @@
-﻿using System.Reactive;
-using Avalonia;
+﻿using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Media;
 using AvaloniaEdit;
 using AvaloniaEdit.TextMate;
-using Dock.Model.Mvvm.Controls;
-using ReactiveUI;
 using SimEd.Common.Interfaces;
 using SimEd.Events;
 using SimEd.Interfaces;
@@ -16,13 +13,12 @@ using TextMateSharp.Themes;
 
 namespace SimEd.ViewModels.Documents;
 
-public class FileViewModel : Document, IViewAware
+public class FileViewModel : BaseFileViewModel, IViewAware
 {
     private readonly IMiniPubSub _pubSub;
     private readonly IAppSettingsReader _settingsReader;
 
     private FontFamily _selectedFont;
-    public ReactiveCommand<Unit, Unit> ShowSpaces { get; set; }
 
     public FileViewModel(IMiniPubSub pubSub, IAppSettingsReader settingsReader)
     {
@@ -30,12 +26,6 @@ public class FileViewModel : Document, IViewAware
         _settingsReader = settingsReader;
         _pubSub.AddEventHandler<ZoomFontLevelChanged>(OnZoomChanged);
         _pubSub.AddEventHandler<OnChangeFontEvent>(OnFontFamilyChange);
-        ShowSpaces = ReactiveCommand.Create(OnShowSpacesHandler);
-    }
-
-    private void OnShowSpacesHandler()
-    {
-        throw new NotImplementedException();
     }
 
     public override bool OnClose()
@@ -47,11 +37,6 @@ public class FileViewModel : Document, IViewAware
     private void OnZoomChanged(ZoomFontLevelChanged zoomFontLevel)
         => FontSize = zoomFontLevel.FontSize;
 
-    public string Path
-    {
-        get => _path;
-        set => SetProperty(ref _path, value);
-    }
 
     public string Text
     {
@@ -115,7 +100,6 @@ public class FileViewModel : Document, IViewAware
         UpdateView();
     }
 
-    private string _path = string.Empty;
     private string _text = string.Empty;
     private string _encoding = string.Empty;
     private string _options = "[]";
