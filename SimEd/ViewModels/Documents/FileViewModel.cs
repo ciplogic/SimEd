@@ -12,6 +12,7 @@ using SimEd.Interfaces;
 using SimEd.Models;
 using SimEd.Views.Documents;
 using TextMateSharp.Grammars;
+using TextMateSharp.Themes;
 
 namespace SimEd.ViewModels.Documents;
 
@@ -143,7 +144,7 @@ public class FileViewModel : Document, IViewAware
 
         Language csharpLanguage = registryOptions.GetLanguageByExtension(extension);
         string scopeName = registryOptions.GetScopeByLanguageId(csharpLanguage?.Id ?? "");
-        var loadTheme = registryOptions.LoadTheme(ThemeName.Dark);
+        IRawTheme? loadTheme = registryOptions.LoadTheme(ThemeName.Dark);
         MainControl.MainTextEditor.Options.HighlightCurrentLine = true;
         textMateInstallation.SetTheme(loadTheme);
         textMateInstallation.SetGrammar(scopeName);
@@ -199,7 +200,7 @@ public class FileViewModel : Document, IViewAware
         if (!ApplyBrushAction(e, "editor.selectionBackground",
                 brush => textEditor.TextArea.SelectionBrush = brush))
         {
-            if (Application.Current!.TryGetResource("TextAreaSelectionBrush", out var resourceObject))
+            if (Application.Current!.TryGetResource("TextAreaSelectionBrush", out object? resourceObject))
             {
                 if (resourceObject is IBrush brush)
                 {
@@ -228,7 +229,7 @@ public class FileViewModel : Document, IViewAware
 
     private void ApplyThemeColorsToWindow(TextMate.Installation e)
     {
-        var statusBar = MainControl.MainStatusBar;
+        Grid? statusBar = MainControl.MainStatusBar;
 
         if (!ApplyBrushAction(e, "statusBar.background", brush => statusBar.Background = brush))
         {
@@ -247,13 +248,13 @@ public class FileViewModel : Document, IViewAware
 
     private bool ApplyBrushAction(TextMate.Installation e, string colorKeyNameFromJson, Action<IBrush> applyColorAction)
     {
-        if (!e.TryGetThemeColor(colorKeyNameFromJson, out var colorString))
+        if (!e.TryGetThemeColor(colorKeyNameFromJson, out string? colorString))
             return false;
 
         if (!Color.TryParse(colorString, out Color color))
             return false;
 
-        var colorBrush = new SolidColorBrush(color);
+        SolidColorBrush colorBrush = new SolidColorBrush(color);
         applyColorAction(colorBrush);
         return true;
     }

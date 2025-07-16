@@ -48,7 +48,7 @@ public class ShowGenericFinderWindowViewModel : ObservableObject
 
     private void UpdateFilter()
     {
-        var values =
+        SolutionIndexItem[] values =
             BuildIndexTask
                 .Items
                 .Where(it => it.Token.AText.IsSmartMatch(TypesText.ToLower()))
@@ -85,8 +85,8 @@ public class ShowGenericFinderWindowViewModel : ObservableObject
 
     private async Task<SolutionIndex> BuildIndex(SolutionViewModel solution)
     {
-        var sw = Stopwatch.StartNew();
-        var tasks = await IndexAllFilesForDeclarationsTasks(solution)
+        Stopwatch sw = Stopwatch.StartNew();
+        Task<SolutionIndexItem[]>[] tasks = await IndexAllFilesForDeclarationsTasks(solution)
             .ConfigureAwait(false);
 
         SolutionIndex result = new();
@@ -114,7 +114,7 @@ public class ShowGenericFinderWindowViewModel : ObservableObject
         }
         else
         {
-            foreach (var task in tasks)
+            foreach (Task<SolutionIndexItem[]> task in tasks)
             {
                 await task.ConfigureAwait(false);
             }

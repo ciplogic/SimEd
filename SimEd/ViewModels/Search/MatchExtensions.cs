@@ -1,6 +1,6 @@
 ﻿namespace SimEd.ViewModels.Search;
 
-static class MatchExtensions
+internal static class MatchExtensions
 {
     public static bool IsSmartMatch(this string token, string filterText)
     {
@@ -9,13 +9,13 @@ static class MatchExtensions
             return true;
         }
 
-        var wordsSplit = SplitIntoTokens(token);
-        var currentWordIndex = 0;
-        var indexInWord = 0;
-        var i = 0;
+        string[] wordsSplit = SplitIntoTokens(token);
+        int currentWordIndex = 0;
+        int indexInWord = 0;
+        int i = 0;
         while (i < filterText.Length)
         {
-            var c = filterText[i];
+            char c = filterText[i];
             if (currentWordIndex >= wordsSplit.Length)
             {
                 return true;
@@ -32,7 +32,7 @@ static class MatchExtensions
                 return true;
             }
 
-            var nextCharFilter = filterText[i + 1];
+            char nextCharFilter = filterText[i + 1];
             if (currentWord.Length > indexInWord + 1 && currentWord[indexInWord + 1] == nextCharFilter)
             {
                 indexInWord++;
@@ -50,11 +50,11 @@ static class MatchExtensions
         return true;
     }
 
-    static string[] SplitIntoTokens(this string token)
+    private static string[] SplitIntoTokens(this string token)
     {
-        var currentWord = new List<char>();
-        var words = new List<string>();
-        foreach (var c in token)
+        List<char> currentWord = new List<char>();
+        List<string> words = new List<string>();
+        foreach (char c in token)
         {
             if (char.IsUpper(c))
             {
