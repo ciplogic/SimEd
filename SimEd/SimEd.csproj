@@ -69,6 +69,7 @@
         </AvaloniaResource>
         <AvaloniaResource Include="Assets\Icons\csharp-original.png">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </AvaloniaResource>
         <None Remove="Assets\Icons\csharp-line.svg" />
         <AvaloniaResource Include="Assets\Icons\csharp-line.svg">
           <CopyToOutputDirectory>Always</CopyToOutputDirectory>
