@@ -16,7 +16,6 @@
         <PackageReference Include="Avalonia" Version="11.3.2" />
         <PackageReference Include="Avalonia.AvaloniaEdit" Version="11.3.0"/>
         <PackageReference Include="Avalonia.Desktop" Version="11.3.2" />
-        <PackageReference Include="Avalonia.Svg.Skia" Version="11.3.0" />
         <PackageReference Include="Avalonia.Themes.Fluent" Version="11.3.2" />
         <PackageReference Include="Avalonia.Fonts.Inter" Version="11.3.2" />
         <!--Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration.-->
@@ -39,6 +38,7 @@
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
         <PackageReference Include="TextMateSharp.Grammars" Version="1.0.70" />
+		<PackageReference Include="Svg.Controls.Skia.Avalonia" Version="11.3.0.1" />
         <PackageReference Include="ZLinq" Version="1.5.1" />
 
         <Reference Include="Avalonia.Themes.Simple"/>
@@ -69,6 +69,19 @@
         </AvaloniaResource>
         <AvaloniaResource Include="Assets\Icons\csharp-original.png">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </AvaloniaResource>
+        <None Remove="Assets\Icons\csharp-line.svg" />
+        <AvaloniaResource Include="Assets\Icons\csharp-line.svg">
+          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </AvaloniaResource>
+        <None Remove="Assets\Icons\gear.svg" />
+        <None Remove="Assets\Icons\java-plain.svg" />
+        <AvaloniaResource Include="Assets\Icons\java-plain.svg">
+          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </AvaloniaResource>
+        <None Remove="Assets\Icons\square.svg" />
+        <AvaloniaResource Include="Assets\Icons\square.svg">
+          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </AvaloniaResource>
     </ItemGroup>
 </Project>

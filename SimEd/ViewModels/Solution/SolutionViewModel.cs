@@ -20,6 +20,7 @@ public class SolutionViewModel : Tool, IViewAware
     private readonly IMiniPubSub _pubSub;
     private readonly IAppSettingsReader _appSettingsReader;
     private readonly IFileDialogChooser _fileChooser;
+    public int IconDiameter { get; } = 9;
 
     public ObservableCollection<SolutionItem> Nodes { get; set; } = [];
     public SolutionView View { get; set; }
