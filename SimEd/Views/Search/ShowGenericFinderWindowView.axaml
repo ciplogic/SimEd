@@ -24,9 +24,18 @@
             ItemsSource="{Binding FoundTypes}">
             <ListBox.ItemTemplate>
                 <DataTemplate>
-                    <StackPanel>
-                        <TextBlock FontWeight="Bold" Text="{Binding FileName}" />
-                    </StackPanel>
+                    <Grid ColumnDefinitions="Auto,*">
+                        <Image
+                            Width="16" Height="16"
+                            Grid.Column="0"
+                            Source="/Assets/Icons/csharp-original.png">
+                        </Image>
+                        <TextBlock
+                            Grid.Column="1"
+                            FontWeight="Bold" 
+                            VerticalAlignment="Center"
+                            Text="{Binding FileName}" />
+                    </Grid>
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>

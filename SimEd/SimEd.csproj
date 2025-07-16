@@ -64,5 +64,11 @@
         <AvaloniaResource Include="Assets\Fonts\CascadiaCode-SemiBold.ttf">
           <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </AvaloniaResource>
+        <AvaloniaResource Include="Assets\Icons\csharp-original.svg">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </AvaloniaResource>
+        <AvaloniaResource Include="Assets\Icons\csharp-original.png">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </AvaloniaResource>
     </ItemGroup>
 </Project>
