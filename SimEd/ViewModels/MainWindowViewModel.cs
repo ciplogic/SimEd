@@ -172,7 +172,7 @@ public class MainWindowViewModel : ObservableObject, IDropTarget
 
     private void HandleOpenFileFromAnywhere(OpenFileFromAnywhere arg)
     {
-        var openedFileViewModel = OpenFileViewModel(arg.FileName).GetAwaiter().GetResult();
+        FileViewModel? openedFileViewModel = OpenFileViewModel(arg.FileName).GetAwaiter().GetResult();
         if (openedFileViewModel is null)
         {
             return;
@@ -294,7 +294,7 @@ public class MainWindowViewModel : ObservableObject, IDropTarget
 
     public void OpenOptions()
     {
-        var dataContext = Provider.GetService<OptionsDialogViewModel>();
+        OptionsDialogViewModel dataContext = Provider.GetService<OptionsDialogViewModel>();
         OptionsDialogView window = new()
         {
             DataContext = dataContext

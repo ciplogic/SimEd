@@ -2,7 +2,6 @@
 using System.Diagnostics;
 using CommunityToolkit.Mvvm.ComponentModel;
 using SimEd.Common.Interfaces;
-using SimEd.Common.Mediator;
 using SimEd.Events;
 using SimEd.Models.Languages;
 using SimEd.Models.Languages.Common;
@@ -18,7 +17,7 @@ public class ShowGenericFinderWindowViewModel : ObservableObject
     private int _selectedIndex;
 
     public ShowGenericFinderWindowViewModel(
-        SolutionViewModel solution, 
+        SolutionViewModel solution,
         SolutionLanguageExtractors extractions,
         IMiniPubSub miniPubSub)
     {
@@ -47,10 +46,10 @@ public class ShowGenericFinderWindowViewModel : ObservableObject
 
     private void UpdateFilter()
     {
-        var values =
+        SolutionIndexItem[] values =
             BuildIndexTask
                 .Items
-                .Where(it => it.Token.AText.Contains(TypesText))
+                .Where(it => it.Token.AText.IsSmartMatch(TypesText.ToLower()))
                 .ToArray();
         FoundTypes.Clear();
         foreach (SolutionIndexItem value in values)
@@ -77,15 +76,24 @@ public class ShowGenericFinderWindowViewModel : ObservableObject
             return;
         }
 
+        if (SelectedIndex >= FoundTypes.Count)
+        {
+            SelectedIndex = FoundTypes.Count - 1;
+        }
+
         FindItemViewModel index = FoundTypes[SelectedIndex];
-        
-        _miniPubSub.Command<OpenFileFromAnywhere>(new (index.SolutionItem.FileName.Path, index.SolutionItem.Token.Position));
+
+        _miniPubSub.Command<OpenFileFromAnywhere>(
+            new(
+                index.SolutionItem.FileName.Path,
+                index.SolutionItem.Token.Position
+            ));
     }
 
     private async Task<SolutionIndex> BuildIndex(SolutionViewModel solution)
     {
-        var sw = Stopwatch.StartNew();
-        var tasks = await IndexAllFilesForDeclarationsTasks(solution)
+        Stopwatch sw = Stopwatch.StartNew();
+        Task<SolutionIndexItem[]>[] tasks = await IndexAllFilesForDeclarationsTasks(solution)
             .ConfigureAwait(false);
 
         SolutionIndex result = new();
@@ -113,7 +121,7 @@ public class ShowGenericFinderWindowViewModel : ObservableObject
         }
         else
         {
-            foreach (var task in tasks)
+            foreach (Task<SolutionIndexItem[]> task in tasks)
             {
                 await task.ConfigureAwait(false);
             }
