@@ -8,7 +8,7 @@ internal class SolutionItemScanner
     {
         DirectoryInfo[] directoryInfos = dirInfo.GetDirectories();
         FileInfo[] fileInfos = dirInfo.GetFiles();
-        SolutionItem result = new SolutionItem(dirInfo.Name, dirInfo.FullName, [], false);
+        SolutionItem result = new SolutionItem(dirInfo.Name, dirInfo.FullName, [], false, dirInfo.Extension);
 
         foreach (DirectoryInfo directory in directoryInfos)
         {
@@ -26,7 +26,7 @@ internal class SolutionItemScanner
             {
                 continue;
             }
-            result.AddChild(file.Name, file.FullName);
+            result.AddChild(file.Name, file.FullName, file.Extension.Replace(".", ""));
         }
 
         return result;
