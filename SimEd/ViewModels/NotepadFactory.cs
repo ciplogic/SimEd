@@ -9,26 +9,20 @@ using SimEd.ViewModels.Solution;
 
 namespace SimEd.ViewModels;
 
-public class NotepadFactory : Factory
+public class NotepadFactory(IInjector injector) : Factory
 {
-    private readonly IInjector _injector;
     private IRootDock? _rootDock;
     private IDocumentDock? _documentDock;
 
-    public NotepadFactory(IInjector injector)
-    {
-        _injector = injector;
-    }
-
-    public override IDocumentDock CreateDocumentDock() => new FilesDocumentDock(_injector);
+    public override IDocumentDock CreateDocumentDock() => new FilesDocumentDock(injector);
 
     public override IRootDock CreateLayout()
     {
-        SolutionViewModel solutionViewModel = _injector.GetService<SolutionViewModel>();
+        SolutionViewModel solutionViewModel = injector.GetService<SolutionViewModel>();
         solutionViewModel.Id = "Solution";
         solutionViewModel.Title = "Solution";
         
-        FilesDocumentDock documentDock = new(_injector)
+        FilesDocumentDock documentDock = new(injector)
         {
             Id = "Files",
             Title = "Files",

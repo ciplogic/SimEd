@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using System.Diagnostics;
 using Avalonia.Controls;
 using Avalonia.Media.Imaging;
 using SimEd.Interfaces;
@@ -12,6 +13,7 @@ public class ImageFileViewModel : BaseFileViewModel, IViewAware
     private double _width;
     private double _height;
 
+
     public void SetControl(Control control)
     {
         MainControl = (ImageFileView)control;
@@ -19,7 +21,7 @@ public class ImageFileViewModel : BaseFileViewModel, IViewAware
 
     public ImageFileView MainControl { get; set; } = null!;
 
-    public static HashSet<string> SupportedFormats { get; } = [".png"];
+    public static HashSet<string> SupportedFormats { get; } = [".png", ".jpg", ".bmp"];
 
     public Bitmap? ImageFromPicture
     {
@@ -53,5 +55,17 @@ public class ImageFileViewModel : BaseFileViewModel, IViewAware
             Width = ImageFromPicture.Size.Width;
             Height = ImageFromPicture.Size.Height;
         }
+    }
+
+    public void OnOpen()
+    {
+        FileInfo fileInfo = new (Path);
+        Process.Start(new ProcessStartInfo()
+        {
+            UseShellExecute = true,
+            Verb = "open",
+            FileName = fileInfo.FullName,
+            WorkingDirectory = fileInfo.DirectoryName
+        });
     }
 }
