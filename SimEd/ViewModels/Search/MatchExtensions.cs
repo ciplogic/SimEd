@@ -1,6 +1,6 @@
 ﻿namespace SimEd.ViewModels.Search;
 
-internal static class MatchExtensions
+public static class MatchExtensions
 {
     public static bool IsSmartMatch(this string token, string filterText)
     {
@@ -10,40 +10,34 @@ internal static class MatchExtensions
         }
 
         string[] wordsSplit = SplitIntoTokens(token);
-        int currentWordIndex = 0;
-        int indexInWord = 0;
-        int i = 0;
-        while (i < filterText.Length)
+        ReadOnlySpan<char> filterSpan = filterText.AsSpan();
+        Span<string> wordsSplitSpan = wordsSplit.AsSpan();
+        return FilterViaSpans(filterSpan, wordsSplitSpan);
+    }
+
+    private static bool FilterViaSpans(ReadOnlySpan<char> filterSpan, Span<string> wordsSplitSpan)
+    {
+        while (filterSpan.Length > 0)
         {
-            char c = filterText[i];
-            if (currentWordIndex >= wordsSplit.Length)
+            string currentWord = wordsSplitSpan[0];
+            int minWords = Math.Min(filterSpan.Length, currentWord.Length);
+            int positionInWord = 0;
+            while (positionInWord < minWords && currentWord[positionInWord] == filterSpan[positionInWord])
             {
-                return i + 1 == filterText.Length;;
+                positionInWord++;
             }
 
-            string currentWord = wordsSplit[currentWordIndex];
-            if (currentWord[indexInWord] != c)
+            if (positionInWord == 0)
             {
                 return false;
             }
 
-            if (i == filterText.Length - 1)
+            filterSpan = filterSpan.Slice(positionInWord);
+            wordsSplitSpan = wordsSplitSpan.Slice(1);
+            if (wordsSplitSpan.Length == 0)
             {
-                return true;
+                return filterSpan.Length == 0;
             }
-
-            char nextCharFilter = filterText[i + 1];
-            if (currentWord.Length > indexInWord + 1 && currentWord[indexInWord + 1] == nextCharFilter)
-            {
-                indexInWord++;
-            }
-            else
-            {
-                currentWordIndex++;
-                indexInWord = 0;
-            }
-
-            i++;
         }
 
         return true;
@@ -51,10 +45,37 @@ internal static class MatchExtensions
 
     private static string[] SplitIntoTokens(this string token)
     {
-        List<char> currentWord = new List<char>();
-        List<string> words = new List<string>();
-        foreach (char c in token)
+        List<char> currentWord = [];
+        List<char> currentNumber = [];
+        List<string> words = [];
+        for (var index = 0; index < token.Length; index++)
         {
+            var c = token[index];
+            if (char.IsDigit(c))
+            {
+                if (currentWord.Count > 0)
+                {
+                    words.Add(new string(currentWord.ToArray()));
+                }
+
+                currentWord.Clear();
+                currentNumber.Add(c);
+                continue;
+            }
+
+            if (currentNumber.Count > 0)
+            {
+                if (char.IsDigit(c))
+                {
+                    currentNumber.Add(c);
+                    continue;
+                }
+
+                words.Add(new string(currentNumber.ToArray()));
+                currentNumber.Clear();
+            }
+
+
             if (char.IsUpper(c))
             {
                 if (currentWord.Count > 0)
@@ -73,6 +94,11 @@ internal static class MatchExtensions
         if (currentWord.Count > 0)
         {
             words.Add(new string(currentWord.ToArray()));
+        }
+
+        if (currentNumber.Count > 0)
+        {
+            words.Add(new string(currentNumber.ToArray()));
         }
 
         return words.ToArray();

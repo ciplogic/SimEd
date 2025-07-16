@@ -6,7 +6,7 @@ public static class DocumentUtilities
 {
     public static void ShowInExplorer(string filePath)
     {
-        var osId = Environment.OSVersion.Platform;
+        PlatformID osId = Environment.OSVersion.Platform;
         switch (osId)
         {
             case PlatformID.Win32NT:
@@ -20,7 +20,7 @@ public static class DocumentUtilities
 
     private static void ShowExplorerInMacOs(string filePath)
     {
-        var directoryInfo = new FileInfo(filePath).Directory;
+        DirectoryInfo? directoryInfo = new FileInfo(filePath).Directory;
         Process.Start("finder", directoryInfo!.FullName);
     }
 

@@ -17,7 +17,7 @@ public class ShowGenericFinderWindowViewModel : ObservableObject
     private int _selectedIndex;
 
     public ShowGenericFinderWindowViewModel(
-        SolutionViewModel solution, 
+        SolutionViewModel solution,
         SolutionLanguageExtractors extractions,
         IMiniPubSub miniPubSub)
     {
@@ -76,9 +76,18 @@ public class ShowGenericFinderWindowViewModel : ObservableObject
             return;
         }
 
+        if (SelectedIndex >= FoundTypes.Count)
+        {
+            SelectedIndex = FoundTypes.Count - 1;
+        }
+
         FindItemViewModel index = FoundTypes[SelectedIndex];
-        
-        _miniPubSub.Command<OpenFileFromAnywhere>(new (index.SolutionItem.FileName.Path, index.SolutionItem.Token.Position));
+
+        _miniPubSub.Command<OpenFileFromAnywhere>(
+            new(
+                index.SolutionItem.FileName.Path,
+                index.SolutionItem.Token.Position
+            ));
     }
 
     private async Task<SolutionIndex> BuildIndex(SolutionViewModel solution)

@@ -23,6 +23,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\..\SimEd.Models\SimEd.Models.csproj" />
+      <ProjectReference Include="..\..\SimEd\SimEd.csproj" />
     </ItemGroup>
 
 </Project>
