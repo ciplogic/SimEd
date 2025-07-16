@@ -4,9 +4,6 @@ namespace SimEd.Models.Languages.CurlyBasedLanguages;
 
 public static class CurlyLexerRules
 {
-    public static WordsIndex BuildWordsIndex(string[] operators)
-        => new(operators);
-
     public static int CommentMatch(ArraySegment<char> text)
     {
         if (text.Count < 2 || text[0] != '/')

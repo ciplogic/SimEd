@@ -1,4 +1,3 @@
-using Avalonia.Media.Imaging;
 using CommunityToolkit.Mvvm.ComponentModel;
 using SimEd.Models.Languages.Common;
 

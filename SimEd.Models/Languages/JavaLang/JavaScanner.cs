@@ -9,7 +9,7 @@ internal static class JavaScanner
     public static SimpleScanner Instance { get; } = BuildScanner();
 
     private static WordsIndex BuildOperatorsArray()
-        => CurlyLexerRules.BuildWordsIndex([
+        => new([
             ".", ",", ";", ":", "%", "^",
             "~",
             "+=", "-=", "*=", "/=",

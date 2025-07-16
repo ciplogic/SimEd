@@ -1,5 +1,4 @@
 using System.Runtime.CompilerServices;
-using SimEd.Models.Languages.Common;
 using SimEd.Models.Languages.CurlyBasedLanguages;
 using SimEd.Models.Languages.Lexer;
 
@@ -28,7 +27,7 @@ internal static class CsScanner
         ]);
 
     private static WordsIndex BuildReservedWordsIndex()
-        => CurlyLexerRules.BuildWordsIndex([
+        => new([
             "class", "record", "interface", "struct", "enum", "delegate",
             "public", "protected", "internal", "private",
             "namespace", "using",

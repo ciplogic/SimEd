@@ -17,7 +17,7 @@ public class WordsIndex
         _bitArray = new BitArray(new byte[32]);
         foreach (var c in _firstChars)
         {
-            _bitArray.Set((int)c, true);
+            _bitArray.Set(c, true);
         }
     }
 

@@ -18,7 +18,7 @@ internal static class MatchExtensions
             char c = filterText[i];
             if (currentWordIndex >= wordsSplit.Length)
             {
-                return true;
+                return i + 1 == filterText.Length;;
             }
 
             string currentWord = wordsSplit[currentWordIndex];
