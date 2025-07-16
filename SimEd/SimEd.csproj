@@ -29,17 +29,17 @@
         <PackageReference Include="AvaloniaEdit.TextMate" Version="11.3.0"/>
         <PackageReference Include="AvaloniaEdit.TextMate.Grammars" Version="0.10.12" />
         <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0"/>
-        <PackageReference Include="Dock.Avalonia" Version="11.3.0.4" />
-        <PackageReference Include="Dock.Model.Avalonia" Version="11.3.0.4" />
-        <PackageReference Include="Dock.Model.Mvvm" Version="11.3.0.4" />
+        <PackageReference Include="Dock.Avalonia" Version="11.3.0.14" />
+        <PackageReference Include="Dock.Model.Avalonia" Version="11.3.0.14" />
+        <PackageReference Include="Dock.Model.Mvvm" Version="11.3.0.14" />
         <PackageReference Include="Jab" Version="0.11.0"/>
         <PackageReference Include="ReactiveUI" Version="20.4.1" />
         <PackageReference Include="StaticViewLocator" Version="0.0.1">
             <PrivateAssets>all</PrivateAssets>
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="TextMateSharp.Grammars" Version="1.0.69" />
-        <PackageReference Include="ZLinq" Version="1.4.12" />
+        <PackageReference Include="TextMateSharp.Grammars" Version="1.0.70" />
+        <PackageReference Include="ZLinq" Version="1.5.1" />
 
         <Reference Include="Avalonia.Themes.Simple"/>
     </ItemGroup>
