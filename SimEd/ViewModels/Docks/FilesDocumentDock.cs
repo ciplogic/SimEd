@@ -27,7 +27,7 @@ public class FilesDocumentDock : DocumentDock
         document.Path = string.Empty;
         document.Title = "Untitled";
         document.Text = "";
-        document.Encoding = Encoding.Default.WebName;
+        document.Encoding = Encoding.UTF8.WebName;
 
         Factory?.AddDockable(this, document);
         Factory?.SetActiveDockable(document);

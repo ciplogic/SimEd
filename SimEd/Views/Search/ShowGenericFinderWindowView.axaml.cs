@@ -6,7 +6,7 @@ namespace SimEd.Views.Search;
 
 public partial class ShowGenericFinderWindowView : Window
 {
-    ShowGenericFinderWindowViewModel ViewModel => ((ShowGenericFinderWindowViewModel)DataContext!);
+    ShowGenericFinderWindowViewModel ViewModel => (ShowGenericFinderWindowViewModel)DataContext!;
 
     public ShowGenericFinderWindowView()
     {
@@ -28,5 +28,12 @@ public partial class ShowGenericFinderWindowView : Window
                 Close();
                 break;
         }
+    }
+
+    private void OnDoubleTapped(object? sender, PointerReleasedEventArgs e)
+    {
+        ViewModel.OnChosenItem();
+        Close();
+        e.Handled = true;
     }
 }

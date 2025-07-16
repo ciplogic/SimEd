@@ -26,6 +26,7 @@ namespace SimEd.IoC;
 [Singleton<SolutionLanguageExtractors>]
 //[Singleton<IFileDialogChooser, ClassicFileDialogChooser>]
 [Transient<FileViewModel>]
+[Transient<ImageFileViewModel>]
 [Singleton(typeof(OptionsDialogViewModel))]
 [Transient<ShowGenericFinderWindowViewModel>]
 public partial class ServiceProvider;

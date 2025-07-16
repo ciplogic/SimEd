@@ -21,6 +21,8 @@
         <ListBox
             Grid.Row="1"
             SelectedIndex="{Binding SelectedIndex}"
+            PointerReleased="OnDoubleTapped"
+            
             ItemsSource="{Binding FoundTypes}">
             <ListBox.ItemTemplate>
                 <DataTemplate>
