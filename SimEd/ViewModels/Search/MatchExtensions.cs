@@ -44,7 +44,6 @@ internal static class MatchExtensions
             }
 
             i++;
-            continue;
         }
 
         return true;

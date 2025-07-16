@@ -22,7 +22,7 @@ public class FileViewModel : Document, IViewAware
     private readonly IAppSettingsReader _settingsReader;
 
     private FontFamily _selectedFont;
-    public ReactiveCommand<Unit, Unit>  ShowSpaces { get; set; }
+    public ReactiveCommand<Unit, Unit> ShowSpaces { get; set; }
 
     public FileViewModel(IMiniPubSub pubSub, IAppSettingsReader settingsReader)
     {
@@ -70,7 +70,7 @@ public class FileViewModel : Document, IViewAware
         get => _options;
         set
         {
-            if(SetProperty(ref _options, value))
+            if (SetProperty(ref _options, value))
             {
                 ApplyEditorOptions();
             }
@@ -99,12 +99,12 @@ public class FileViewModel : Document, IViewAware
 
     public FontFamily SelectedFont
     {
-        get => new (_settingsReader.Get().Font);
+        get => new(_settingsReader.Get().Font);
         set
         {
             if (_selectedFont == value) return;
-            _settingsReader.Update(s => s.Font = value.Key + "#" +value.Name);
-            SetProperty(ref _selectedFont, value);   
+            _settingsReader.Update(s => s.Font = value.Key + "#" + value.Name);
+            SetProperty(ref _selectedFont, value);
         }
     }
 
@@ -130,6 +130,12 @@ public class FileViewModel : Document, IViewAware
         options.ShowEndOfLine = flagToToggle;
         options.ShowEndOfLine = flagToToggle;
     }
+
+    public void OnShowInExplorer()
+    {
+        DocumentUtilities.ShowInExplorer(Path);
+    }
+
     private void UpdateView()
     {
         RegistryOptions registryOptions = new RegistryOptions(ThemeName.DarkPlus);
@@ -169,10 +175,10 @@ public class FileViewModel : Document, IViewAware
         {
             int fontSize = appSettings.FontSize;
 
-            fontSize = deltaY > 0 
-                ? fontSize + 1 
-                : fontSize > 1 
-                    ? fontSize - 1 
+            fontSize = deltaY > 0
+                ? fontSize + 1
+                : fontSize > 1
+                    ? fontSize - 1
                     : 1;
 
             appSettings.FontSize = fontSize;
@@ -183,8 +189,8 @@ public class FileViewModel : Document, IViewAware
 
     private void OnFontFamilyChange(OnChangeFontEvent fontEvent)
         => SelectedFont = fontEvent.SelectedFont;
-    
-    
+
+
     private void TextMateInstallationOnAppliedTheme(object sender, TextMate.Installation e)
     {
         ApplyThemeColorsToEditor(e);
@@ -194,8 +200,8 @@ public class FileViewModel : Document, IViewAware
     private void ApplyThemeColorsToEditor(TextMate.Installation e)
     {
         TextEditor textEditor = MainControl.MainTextEditor!;
-        ApplyBrushAction(e, "editor.background",brush => textEditor.Background = brush);
-        ApplyBrushAction(e, "editor.foreground",brush => textEditor.Foreground = brush);
+        ApplyBrushAction(e, "editor.background", brush => textEditor.Background = brush);
+        ApplyBrushAction(e, "editor.foreground", brush => textEditor.Foreground = brush);
 
         if (!ApplyBrushAction(e, "editor.selectionBackground",
                 brush => textEditor.TextArea.SelectionBrush = brush))
@@ -213,7 +219,8 @@ public class FileViewModel : Document, IViewAware
                 brush =>
                 {
                     textEditor.TextArea.TextView.CurrentLineBackground = brush;
-                    textEditor.TextArea.TextView.CurrentLineBorder = new Pen(brush); // Todo: VS Code didn't seem to have a border but it might be nice to have that option. For now just make it the same..
+                    textEditor.TextArea.TextView.CurrentLineBorder =
+                        new Pen(brush); // Todo: VS Code didn't seem to have a border but it might be nice to have that option. For now just make it the same..
                 }))
         {
             textEditor.TextArea.TextView.SetDefaultHighlightLineColors();
@@ -242,8 +249,8 @@ public class FileViewModel : Document, IViewAware
         }
 
         //Applying the Editor background to the whole window for demo sake.
-        ApplyBrushAction(e, "editor.background",brush => MainControl.MainTextEditor.Background = brush);
-        ApplyBrushAction(e, "editor.foreground",brush => MainControl.MainTextEditor.Foreground = brush);
+        ApplyBrushAction(e, "editor.background", brush => MainControl.MainTextEditor.Background = brush);
+        ApplyBrushAction(e, "editor.foreground", brush => MainControl.MainTextEditor.Foreground = brush);
     }
 
     private bool ApplyBrushAction(TextMate.Installation e, string colorKeyNameFromJson, Action<IBrush> applyColorAction)
