@@ -6,6 +6,7 @@ using SimEd.Common.Mediator;
 using SimEd.Events;
 using SimEd.Models.Languages;
 using SimEd.Models.Languages.Common;
+using SimEd.Models.Languages.Lexer;
 using SimEd.ViewModels.Solution;
 
 namespace SimEd.ViewModels.Search;
@@ -50,7 +51,7 @@ public class ShowGenericFinderWindowViewModel : ObservableObject
         var values =
             BuildIndexTask
                 .Items
-                .Where(it => it.Token.AText.Contains(TypesText))
+                .Where(it => it.Token.AText.IsSmartMatch(TypesText.ToLower()))
                 .ToArray();
         FoundTypes.Clear();
         foreach (SolutionIndexItem value in values)

@@ -1,17 +1,9 @@
 namespace SimEd.Models.Languages.Lexer;
 
-public struct LambdaRule
+public readonly struct LambdaRule(int kind, Func<ArraySegment<char>, int> func)
 {
-    private readonly Func<ArraySegment<char>, int> _func;
-
-    public int Kind { get; }
-
-    public LambdaRule(int kind, Func<ArraySegment<char>, int> func)
-    {
-        _func = func;
-        Kind = kind;
-    }
+    public int Kind { get; } = kind;
 
     public int Match(ArraySegment<char> segment)
-        => _func(segment);
+        => func(segment);
 }

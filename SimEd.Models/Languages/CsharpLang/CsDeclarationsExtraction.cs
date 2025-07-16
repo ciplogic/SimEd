@@ -21,30 +21,30 @@ public class CsDeclarationsExtraction : IDeclarationsExtraction
     private static SolutionIndexItem[] BuildDeclarationsFromTokens(Token[] tokens, SolutionItem solutionItem)
     {
         string[] declarations = Declarations;
-        List<SolutionIndexItem> resultList = new List<SolutionIndexItem>();
+        List<SolutionIndexItem>? resultList = null;
         for (int index = 1; index < tokens.Length; index++)
         {
-            Token nextToken = tokens[index];
-            if (nextToken.Kind != TokenKindsCSharp.Identifier)
+            Token currentToken = tokens[index];
+            if (currentToken.Kind != TokenKindsCSharp.Identifier)
             {
                 continue;
             }
 
-            Token token = tokens[index - 1];
-            if (token.Kind != TokenKindsCSharp.Reserved)
+            Token prevToken = tokens[index - 1];
+            if (prevToken.Kind != TokenKindsCSharp.Reserved)
             {
                 continue;
             }
 
-            if (!IsDeclaration(token, declarations))
+            if (!IsDeclaration(prevToken, declarations))
             {
                 continue;
             }
-
-            resultList.Add(new SolutionIndexItem(nextToken, solutionItem, token.GetText()));
+            resultList ??= [];
+            resultList.Add(new SolutionIndexItem(currentToken, solutionItem, prevToken.GetText()));
         }
 
-        return resultList.ToArray();
+        return resultList?.ToArray() ?? [];
     }
 
     private static readonly string[] Declarations =

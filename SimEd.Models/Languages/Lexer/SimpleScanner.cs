@@ -76,7 +76,7 @@ public class SimpleScanner
             }
 
 
-            Token token = new Token(rule.Kind, segment.Slice(0, matchLen), pos);
+            Token token = new (rule.Kind, segment.Slice(0, matchLen), pos);
             return token;
         }
 
