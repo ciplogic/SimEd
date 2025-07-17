@@ -87,5 +87,9 @@
         <AvaloniaResource Include="Assets\Icons\folder.svg">
           <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </AvaloniaResource>
+        <None Remove="Assets\Icons\csproj.svg" />
+        <AvaloniaResource Include="Assets\Icons\csproj.svg">
+          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </AvaloniaResource>
     </ItemGroup>
 </Project>

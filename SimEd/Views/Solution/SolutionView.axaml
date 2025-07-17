@@ -20,7 +20,9 @@
         <SvgSource x:Key="CSharpIcon"
                    Path="/Assets/Icons/csharp-line.svg" />        
         <SvgSource x:Key="FolderIcon"
-                   Path="/Assets/Icons/folder.svg" />
+                   Path="/Assets/Icons/folder.svg" /> 
+        <SvgSource x:Key="CSProjIcon"
+                   Path="/Assets/Icons/csproj.svg" />
     </UserControl.Resources>
     
     <UserControl.Styles>
@@ -38,6 +40,15 @@
                 <Setter Property="Source">
                     <Setter.Value>
                         <SvgImage Source="{DynamicResource CSharpIcon}"></SvgImage>
+                    </Setter.Value>
+                </Setter>
+            </Style.Setters>
+        </Style>
+        <Style Selector="Image.CSProj">
+            <Style.Setters>
+                <Setter Property="Source">
+                    <Setter.Value>
+                        <SvgImage Source="{DynamicResource CSProjIcon}"></SvgImage>
                     </Setter.Value>
                 </Setter>
             </Style.Setters>
@@ -124,7 +135,8 @@
                                Width="10"
                                Margin="0 0 2 0"
                                Classes.Folder="{Binding Kind, Converter={StaticResource StringToBoolByKindTypeParameter}, ConverterParameter=''}" 
-                               Classes.CSharp="{Binding Kind, Converter={StaticResource StringToBoolByKindTypeParameter}, ConverterParameter='cs'}" >
+                               Classes.CSharp="{Binding Kind, Converter={StaticResource StringToBoolByKindTypeParameter}, ConverterParameter='cs'}"
+                               Classes.CSProj="{Binding Kind, Converter={StaticResource StringToBoolByKindTypeParameter}, ConverterParameter='csproj'}">
                         </Image>
                         <TextBlock Text="{Binding Name}" />
                     </DockPanel>
