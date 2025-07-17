@@ -8,7 +8,7 @@ internal class SolutionItemScanner
     {
         DirectoryInfo[] directoryInfos = dirInfo.GetDirectories();
         FileInfo[] fileInfos = dirInfo.GetFiles();
-        SolutionItem result = new SolutionItem(dirInfo.Name, dirInfo.FullName, [], false, dirInfo.Extension);
+        SolutionItem result = new SolutionItem(dirInfo.Name, dirInfo.FullName, [], false, string.Empty);
 
         foreach (DirectoryInfo directory in directoryInfos)
         {
