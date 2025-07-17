@@ -1,6 +1,7 @@
 using SimEd.Models.Languages.Common;
 using SimEd.Models.Languages.CsharpLang;
 using SimEd.Models.Languages.JavaLang;
+using SimEd.Models.Languages.JsTsLang;
 using ZLinq;
 
 namespace SimEd.Models.Languages;
@@ -14,7 +15,8 @@ public class SolutionLanguageExtractors
         IDeclarationsExtraction[] extractions =
         [
             new CsDeclarationsExtraction(),
-            new JavaDeclarationsExtraction()
+            new JavaDeclarationsExtraction(),
+            new JsDeclarationsExtraction()
         ];
         return extractions;
     }
