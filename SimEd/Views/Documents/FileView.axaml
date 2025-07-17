@@ -12,10 +12,38 @@
              x:CompileBindings="True"
              x:DataType="vm:FileViewModel"
              mc:Ignorable="d">
-    <Grid RowDefinitions="*,Auto">
+    <Grid RowDefinitions="Auto,*,Auto">
+        <Grid
+            x:Name="MainStatusBar"
+            Grid.Row="0"
+            ColumnDefinitions="Auto,*,Auto">
+            <StackPanel x:Name="OptionsContextMenu"
+                        Grid.Column="0"
+                        Orientation="Horizontal">
+                <Menu>
+                    <MenuItem Header="Tools" Background="DarkSlateGray">
+                        <MenuItem
+                            Background="BlueViolet"
+                            Header="Show in Explorer"
+                            Command="{Binding OnShowInExplorer}">
+                        </MenuItem>
+                        <MenuItem
+                            Background="BlueViolet"
+                            Header="Show Spaces"
+                            Command="{Binding OnShowSpaces}">
+                        </MenuItem>
+                    </MenuItem>
+                </Menu>
+                <TextBlock
+                    Margin="2"
+                    VerticalAlignment="Center"
+                    Text="{Binding Encoding}"
+                    TextWrapping="Wrap" />
+            </StackPanel>
+        </Grid>
         <avaloniaEdit:TextEditor
             x:Name="MainTextEditor"
-            Grid.Row="0"
+            Grid.Row="1"
             BorderThickness="0"
             FontFamily="{Binding SelectedFont}"
             FontWeight="Light"
@@ -29,50 +57,5 @@
             <avaloniaEdit:TextEditor.TextArea>
             </avaloniaEdit:TextEditor.TextArea>
         </avaloniaEdit:TextEditor>
-        <Grid
-            x:Name="MainStatusBar"
-            Grid.Row="1"
-            ColumnDefinitions="Auto,*,Auto">
-            <TextBlock
-                Grid.Column="0"
-                Margin="2"
-                VerticalAlignment="Center"
-                Text="{Binding Path}"
-                TextWrapping="Wrap" />
-            <StackPanel x:Name="OptionsContextMenu"
-                        Grid.Column="2"
-                        Orientation="Horizontal">
-                <TextBlock
-                    Margin="2"
-                    VerticalAlignment="Center"
-                    Text="{Binding Options}"
-                    TextWrapping="Wrap">
-                    <TextBlock.ContextMenu>
-                        <ContextMenu>
-                            <MenuItem Header="Show Spaces" Command="{Binding OnShowSpaces}"></MenuItem>
-                        </ContextMenu>
-                    </TextBlock.ContextMenu>
-                </TextBlock>
-                <TextBlock
-                    Margin="2"
-                    VerticalAlignment="Center"
-                    Text="{Binding Encoding}"
-                    TextWrapping="Wrap" />
-                <Menu>
-                    <MenuItem Header="..." Background="DarkSlateGray">
-                        <MenuItem
-                            Background="BlueViolet"
-                            Header="Show in Explorer"
-                            Command="{Binding OnShowInExplorer}">
-                        </MenuItem>
-                        <MenuItem
-                            Background="BlueViolet"
-                            Header="Show Spaces"
-                            Command="{Binding OnShowSpaces}">
-                        </MenuItem>
-                    </MenuItem>
-                </Menu>
-            </StackPanel>
-        </Grid>
     </Grid>
 </UserControl>

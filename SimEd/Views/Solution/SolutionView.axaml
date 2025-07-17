@@ -48,7 +48,9 @@
         <StackPanel>
             <Grid ColumnDefinitions="Auto,*,Auto">
 
-                <Label Margin="2" Content="Directory"></Label>
+                <TextBlock
+                    VerticalAlignment="Bottom"
+                    Margin="2,2,2,6" Text="Folder:" ></TextBlock>
                 <TextBox
                     Grid.Column="1"
                     Margin="2"
