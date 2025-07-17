@@ -1,7 +1,7 @@
 
 [Setup]
 AppName=Sim(ple) Ed(itor)
-AppVersion=0.0.2
+AppVersion=0.0.3
 WizardStyle=modern
 DefaultDirName={autopf}\SimpleEditor
 DefaultGroupName=Simple Editor
