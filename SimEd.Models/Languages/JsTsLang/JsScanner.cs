@@ -1,5 +1,4 @@
-﻿using SimEd.Models.Languages.CsharpLang;
-using SimEd.Models.Languages.CurlyBasedLanguages;
+﻿using SimEd.Models.Languages.CurlyBasedLanguages;
 using SimEd.Models.Languages.Lexer;
 
 namespace SimEd.Models.Languages.JsTsLang;
