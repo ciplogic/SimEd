@@ -102,5 +102,21 @@
         <AvaloniaResource Include="Assets\Icons\python.svg">
           <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </AvaloniaResource>
+        <None Remove="Assets\Icons\brackets-svgrepo-com.svg" />
+        <AvaloniaResource Include="Assets\Icons\brackets-svgrepo-com.svg">
+          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </AvaloniaResource>
+        <None Remove="Assets\Icons\sln-svgrepo-com.svg" />
+        <AvaloniaResource Include="Assets\Icons\sln-svgrepo-com.svg">
+          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </AvaloniaResource>
+        <None Remove="Assets\Icons\settings-svgrepo-com.svg" />
+        <AvaloniaResource Include="Assets\Icons\settings-svgrepo-com.svg">
+          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </AvaloniaResource>
+        <None Remove="Assets\Icons\markdown-svgrepo-com.svg" />
+        <AvaloniaResource Include="Assets\Icons\markdown-svgrepo-com.svg">
+          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </AvaloniaResource>
     </ItemGroup>
 </Project>

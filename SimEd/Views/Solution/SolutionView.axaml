@@ -29,6 +29,14 @@
                    Path="/Assets/Icons/pdb.svg" />
         <SvgSource x:Key="PyIcon"
                    Path="/Assets/Icons/python.svg" />
+        <SvgSource x:Key="SlnIcon"
+                   Path="/Assets/Icons/sln-svgrepo-com.svg" />
+        <SvgSource x:Key="JsonIcon"
+                   Path="/Assets/Icons/brackets-svgrepo-com.svg" />
+        <SvgSource x:Key="SettingsIcon"
+                   Path="/Assets/Icons/settings-svgrepo-com.svg" />
+        <SvgSource x:Key="MdIcon"
+                   Path="/Assets/Icons/markdown-svgrepo-com.svg" />
     </UserControl.Resources>
     
     <UserControl.Styles>
@@ -82,6 +90,42 @@
                 <Setter Property="Source">
                     <Setter.Value>
                         <SvgImage Source="{DynamicResource PyIcon}"></SvgImage>
+                    </Setter.Value>
+                </Setter>
+            </Style.Setters>
+        </Style>
+        <Style Selector="Image.Sln">
+            <Style.Setters>
+                <Setter Property="Source">
+                    <Setter.Value>
+                        <SvgImage Source="{DynamicResource SlnIcon}"></SvgImage>
+                    </Setter.Value>
+                </Setter>
+            </Style.Setters>
+        </Style>
+        <Style Selector="Image.Json">
+            <Style.Setters>
+                <Setter Property="Source">
+                    <Setter.Value>
+                        <SvgImage Source="{DynamicResource JsonIcon}"></SvgImage>
+                    </Setter.Value>
+                </Setter>
+            </Style.Setters>
+        </Style>
+        <Style Selector="Image.Settings">
+            <Style.Setters>
+                <Setter Property="Source">
+                    <Setter.Value>
+                        <SvgImage Source="{DynamicResource SettingsIcon}"></SvgImage>
+                    </Setter.Value>
+                </Setter>
+            </Style.Setters>
+        </Style>
+        <Style Selector="Image.Md">
+            <Style.Setters>
+                <Setter Property="Source">
+                    <Setter.Value>
+                        <SvgImage Source="{DynamicResource MdIcon}"></SvgImage>
                     </Setter.Value>
                 </Setter>
             </Style.Setters>
@@ -172,7 +216,11 @@
                                Classes.CSProj="{Binding Kind, Converter={StaticResource StringToBoolByKindTypeParameter}, ConverterParameter='csproj'}"
                                Classes.Dll="{Binding Kind, Converter={StaticResource StringToBoolByKindTypeParameter}, ConverterParameter='dll'}"
                                Classes.Pdb="{Binding Kind, Converter={StaticResource StringToBoolByKindTypeParameter}, ConverterParameter='pdb'}"
-                               Classes.Py="{Binding Kind, Converter={StaticResource StringToBoolByKindTypeParameter}, ConverterParameter='py'}">
+                               Classes.Py="{Binding Kind, Converter={StaticResource StringToBoolByKindTypeParameter}, ConverterParameter='py'}"
+                               Classes.Sln="{Binding Kind, Converter={StaticResource StringToBoolByKindTypeParameter}, ConverterParameter='sln'}"
+                               Classes.Json="{Binding Kind, Converter={StaticResource StringToBoolByKindTypeParameter}, ConverterParameter='json'}"
+                               Classes.Md="{Binding Kind, Converter={StaticResource StringToBoolByKindTypeParameter}, ConverterParameter='md'}"
+                               Classes.Settings="{Binding Kind, Converter={StaticResource StringToBoolByKindTypeParameter}, ConverterParameter='props,manifest,userSettings,settings,config,user'}">
                         </Image>
                         <TextBlock Text="{Binding Name}" />
                     </DockPanel>
