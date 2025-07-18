@@ -80,6 +80,9 @@
           <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </AvaloniaResource>
         <None Remove="Assets\Icons\square.svg" />
+        <AvaloniaResource Include="Assets\Icons\pdb.svg">
+          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </AvaloniaResource>
         <AvaloniaResource Include="Assets\Icons\square.svg">
           <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </AvaloniaResource>
@@ -89,6 +92,10 @@
         </AvaloniaResource>
         <None Remove="Assets\Icons\csproj.svg" />
         <AvaloniaResource Include="Assets\Icons\csproj.svg">
+          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </AvaloniaResource>
+        <None Remove="Assets\Icons\dll.svg" />
+        <AvaloniaResource Include="Assets\Icons\dll.svg">
           <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </AvaloniaResource>
     </ItemGroup>

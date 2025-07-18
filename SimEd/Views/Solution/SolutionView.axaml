@@ -21,8 +21,12 @@
                    Path="/Assets/Icons/csharp-line.svg" />        
         <SvgSource x:Key="FolderIcon"
                    Path="/Assets/Icons/folder.svg" /> 
-        <SvgSource x:Key="CSProjIcon"
-                   Path="/Assets/Icons/csproj.svg" />
+        <SvgSource x:Key="CsProjIcon"
+                   Path="/Assets/Icons/csproj.svg" />        
+        <SvgSource x:Key="DllIcon"
+                   Path="/Assets/Icons/dll.svg" />
+        <SvgSource x:Key="PdbIcon"
+                   Path="/Assets/Icons/pdb.svg" />
     </UserControl.Resources>
     
     <UserControl.Styles>
@@ -48,7 +52,25 @@
             <Style.Setters>
                 <Setter Property="Source">
                     <Setter.Value>
-                        <SvgImage Source="{DynamicResource CSProjIcon}"></SvgImage>
+                        <SvgImage Source="{DynamicResource CsProjIcon}"></SvgImage>
+                    </Setter.Value>
+                </Setter>
+            </Style.Setters>
+        </Style>
+        <Style Selector="Image.Dll">
+            <Style.Setters>
+                <Setter Property="Source">
+                    <Setter.Value>
+                        <SvgImage Source="{DynamicResource DllIcon}"></SvgImage>
+                    </Setter.Value>
+                </Setter>
+            </Style.Setters>
+        </Style>
+        <Style Selector="Image.Pdb">
+            <Style.Setters>
+                <Setter Property="Source">
+                    <Setter.Value>
+                        <SvgImage Source="{DynamicResource PdbIcon}"></SvgImage>
                     </Setter.Value>
                 </Setter>
             </Style.Setters>
@@ -136,7 +158,9 @@
                                Margin="0 0 2 0"
                                Classes.Folder="{Binding Kind, Converter={StaticResource StringToBoolByKindTypeParameter}, ConverterParameter=''}" 
                                Classes.CSharp="{Binding Kind, Converter={StaticResource StringToBoolByKindTypeParameter}, ConverterParameter='cs'}"
-                               Classes.CSProj="{Binding Kind, Converter={StaticResource StringToBoolByKindTypeParameter}, ConverterParameter='csproj'}">
+                               Classes.CSProj="{Binding Kind, Converter={StaticResource StringToBoolByKindTypeParameter}, ConverterParameter='csproj'}"
+                               Classes.Dll="{Binding Kind, Converter={StaticResource StringToBoolByKindTypeParameter}, ConverterParameter='dll'}"
+                               Classes.Pdb="{Binding Kind, Converter={StaticResource StringToBoolByKindTypeParameter}, ConverterParameter='pdb'}">
                         </Image>
                         <TextBlock Text="{Binding Name}" />
                     </DockPanel>
