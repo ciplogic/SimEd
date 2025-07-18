@@ -10,3 +10,8 @@ basic editor.
 To reach faster responsitivity, it is based on .Net AOT (aka native compilation) and 
 we recommend .Net 9+ for best experience.
 
+
+### Icons:
+* SvgRepo https://www.svgrepo.com/svg/
+* DevIcons https://devicon.dev/
+* Font Awesome https://fontawesome.com
