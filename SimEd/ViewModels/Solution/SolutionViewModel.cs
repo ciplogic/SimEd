@@ -7,6 +7,7 @@ using Dock.Model.Mvvm.Controls;
 using SimEd.Common.Interfaces;
 using SimEd.Events;
 using SimEd.Interfaces;
+using SimEd.IoC.Interfaces;
 using SimEd.Models;
 using SimEd.Models.FileChoosers;
 using SimEd.Models.Languages;
@@ -20,6 +21,7 @@ public class SolutionViewModel : Tool, IViewAware
     private readonly IMiniPubSub _pubSub;
     private readonly IAppSettingsReader _appSettingsReader;
     private readonly IFileDialogChooser _fileChooser;
+    private readonly IFileExtensionMapper _fileExtensionMapper;
     public int IconDiameter { get; } = 9;
 
     public ObservableCollection<SolutionItem> Nodes { get; set; } = [];
@@ -34,11 +36,13 @@ public class SolutionViewModel : Tool, IViewAware
     private string _solutionPath = Directory.GetCurrentDirectory();
     private SolutionItem? _selected;
 
-    public SolutionViewModel(IMiniPubSub pubSub, IAppSettingsReader appSettingsReader, IFileDialogChooser fileChooser)
+    public SolutionViewModel(IMiniPubSub pubSub, IAppSettingsReader appSettingsReader,
+        IFileDialogChooser fileChooser, IFileExtensionMapper fileExtensionMapper)
     {
         _pubSub = pubSub;
         _appSettingsReader = appSettingsReader;
         _fileChooser = fileChooser;
+        _fileExtensionMapper = fileExtensionMapper;
 
         _pubSub.AddEventHandler<ChangeSolutionFolderCommand>(OnChangeSolutionFolder);
         _pubSub.AddEventHandler<ChangedFocusedTab>(OnChangedFocusedTab);
@@ -92,7 +96,7 @@ public class SolutionViewModel : Tool, IViewAware
         
         GitIgnoreScanner scanner = new GitIgnoreScanner();
         scanner.ScanDirectory(dirInfo);
-        SolutionItem root = SolutionItemScanner.ScanDirectory(dirInfo, scanner);
+        SolutionItem root = SolutionItemScanner.ScanDirectory(dirInfo, scanner, _fileExtensionMapper);
         Nodes.Clear();
         Nodes.AddRange(root.Children);
     }

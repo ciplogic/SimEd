@@ -1,10 +1,13 @@
-﻿using SimEd.Models.Languages;
+﻿using SimEd.IoC.Interfaces;
+using SimEd.Models.Languages;
+using ZLinq;
 
 namespace SimEd.ViewModels.Solution;
 
-internal class SolutionItemScanner
+internal static class SolutionItemScanner
 {
-    public static SolutionItem ScanDirectory(DirectoryInfo dirInfo, GitIgnoreScanner scanner)
+    public static SolutionItem ScanDirectory(DirectoryInfo dirInfo, GitIgnoreScanner scanner,
+        IFileExtensionMapper fileExtensionMapper)
     {
         DirectoryInfo[] directoryInfos = dirInfo.GetDirectories();
         FileInfo[] fileInfos = dirInfo.GetFiles();
@@ -16,7 +19,8 @@ internal class SolutionItemScanner
             {
                 continue;
             }
-            SolutionItem child = ScanDirectory(directory, scanner);
+
+            SolutionItem child = ScanDirectory(directory, scanner, fileExtensionMapper);
             result.Children.Add(child);
         }
 
@@ -26,7 +30,11 @@ internal class SolutionItemScanner
             {
                 continue;
             }
-            result.AddChild(file.Name, file.FullName, file.Extension.Replace(".", ""));
+
+            string extension = fileExtensionMapper.MapExtension(file.FullName) ?? file.Extension;
+            extension = extension.Replace(".", string.Empty);
+
+            result.AddChild(file.Name, file.FullName, extension);
         }
 
         return result;
