@@ -1,4 +1,6 @@
-﻿namespace SimEd.ViewModels.Search;
+﻿using ZLinq;
+
+namespace SimEd.ViewModels.Search;
 
 public static class MatchExtensions
 {
@@ -53,11 +55,7 @@ public static class MatchExtensions
             var c = token[index];
             if (char.IsDigit(c))
             {
-                if (currentWord.Count > 0)
-                {
-                    words.Add(new string(currentWord.ToArray()));
-                }
-
+                words.Add(new string(currentWord.ToArray()));
                 currentWord.Clear();
                 currentNumber.Add(c);
                 continue;
@@ -75,13 +73,18 @@ public static class MatchExtensions
                 currentNumber.Clear();
             }
 
+            if (c == '_')
+            {
+                words.Add(new string(currentWord.ToArray()));
+                currentWord.Clear();
+                words.Add(new string(currentNumber.ToArray()));
+                currentNumber.Clear();
+                continue;
+            }
 
             if (char.IsUpper(c))
             {
-                if (currentWord.Count > 0)
-                {
-                    words.Add(new string(currentWord.ToArray()));
-                }
+                words.Add(new string(currentWord.ToArray()));
 
                 currentWord.Clear();
                 currentWord.Add(char.ToLower(c));
@@ -91,16 +94,12 @@ public static class MatchExtensions
             currentWord.Add(c);
         }
 
-        if (currentWord.Count > 0)
-        {
-            words.Add(new string(currentWord.ToArray()));
-        }
+        words.Add(new string(currentWord.ToArray()));
+        words.Add(new string(currentNumber.ToArray()));
 
-        if (currentNumber.Count > 0)
-        {
-            words.Add(new string(currentNumber.ToArray()));
-        }
-
-        return words.ToArray();
+        return words
+            .AsValueEnumerable()
+            .Where(w => w.Length > 0)
+            .ToArray();
     }
 }

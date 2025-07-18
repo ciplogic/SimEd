@@ -15,9 +15,10 @@ public class SmartMatchShould
 
     [Theory]
     [InlineData("Allocator32", "all32", true)]
+    [InlineData("rename_files_with_namespaces", "ref", true)]
     public void MatchSimpleCases(string input, string filter, bool isMatching)
     {
-        var actualMatch = MatchExtensions.IsSmartMatch(input, filter);
+        var actualMatch = input.IsSmartMatch(filter);
         actualMatch.ShouldBe(isMatching);
     }
 }
