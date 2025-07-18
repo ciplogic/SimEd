@@ -1,20 +1,19 @@
 ﻿using SimEd.Models.Languages.Common;
-using SimEd.Models.Languages.JavaLang;
 using SimEd.Models.Languages.Lexer;
 
-namespace SimEd.Models.Languages.JsTsLang;
+namespace SimEd.Models.Languages.KotlinLang;
 
-public class JsDeclarationsExtraction : IDeclarationsExtraction
+public class KotlinDeclarationsExtraction: IDeclarationsExtraction
 {
     public bool IsFileMatcher(string fileName)
     {
-        string extension = Path.GetExtension(fileName);
-        return extension is ".js" or ".jsx" or ".ts" or ".tsx";
+        var extension = Path.GetExtension(fileName);
+        return extension is ".kt" or ".kts";
     }
 
     public SolutionIndexItem[] ExtractFileDefinitions(SolutionItem solutionItem, char[] fileData)
     {
-        SimpleScanner scanner = JsScanner.Instance;
+        SimpleScanner scanner = KotlinScanner.Instance;
 
         Token[] tokens = scanner.Tokenize(fileData, SkipSpaces).ToArray();
         return BuildDeclarationsFromTokens(tokens, solutionItem);
@@ -22,7 +21,7 @@ public class JsDeclarationsExtraction : IDeclarationsExtraction
 
     private static SolutionIndexItem[] BuildDeclarationsFromTokens(Token[] tokens, SolutionItem solutionItem)
     {
-        List<SolutionIndexItem> resultList = [];
+        List<SolutionIndexItem> resultList = new List<SolutionIndexItem>();
         for (int index = 0; index < tokens.Length; index++)
         {
             Token token = tokens[index];
@@ -32,7 +31,7 @@ public class JsDeclarationsExtraction : IDeclarationsExtraction
             }
 
             Token nextToken = tokens[index + 1];
-            if (nextToken.Kind != TokenKindsJava.Identifier)
+            if (nextToken.Kind != TokenKindsKotlin.Identifier)
             {
                 continue;
             }
@@ -46,20 +45,22 @@ public class JsDeclarationsExtraction : IDeclarationsExtraction
     private static readonly string[] Declarations =
     [
         "class",
-        "function",
+        "object",
         "interface",
         "enum"
     ];
 
     private static bool IsDeclaration(Token token)
-        => token.Kind == TokenKindsJava.Reserved
+        => token.Kind == TokenKindsKotlin.Reserved
            && token.IsInTexts(Declarations);
 
-    private static bool SkipSpaces(Token token) =>
-        token.Kind switch
+    private static bool SkipSpaces(Token token)
+    {
+        return token.Kind switch
         {
-            TokenKindsJava.Spaces => false,
-            TokenKindsJava.Comment => false,
+            TokenKindsKotlin.Spaces => false,
+            TokenKindsKotlin.Comment => false,
             _ => true
         };
+    }
 }
