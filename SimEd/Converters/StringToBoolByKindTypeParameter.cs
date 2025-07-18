@@ -9,7 +9,6 @@ public class StringToBoolByKindTypeParameter : IValueConverter
     {
         if (parameter is string str && value is string target)
         {
-
             return str.Split(',').Any(x => Equals(x, target));
         }
 
