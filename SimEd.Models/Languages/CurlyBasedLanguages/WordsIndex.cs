@@ -22,9 +22,9 @@ public class WordsIndex
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining | MethodImplOptions.AggressiveOptimization)]
-    public int MatchLen(ArraySegment<char> arraySegment)
+    public int MatchLen(ArraySegment<char> text)
     {
-        char firstChar = arraySegment[0];
+        char firstChar = text[0];
         if (firstChar >= 256)
         {
             return 0;
@@ -44,12 +44,15 @@ public class WordsIndex
             }
 
             char[] op = _wordsToMatch[index];
-
+            if (op.Length > text.Count)
+            {
+                continue;
+            }
 
             bool found = true;
             for (int i = 1; i < op.Length; i++)
             {
-                if (op[i] != arraySegment[i])
+                if (op[i] != text[i])
                 {
                     found = false;
                     break;
