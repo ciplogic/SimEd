@@ -1,9 +1,9 @@
 ﻿using SimEd.Models.Languages.CurlyBasedLanguages;
 using SimEd.Models.Languages.Lexer;
 
-namespace SimEd.Models.Languages.JavaLang;
+namespace SimEd.Models.Languages.JsTsLang;
 
-internal static class JavaScanner
+internal static class JsScanner
 {
     public static SimpleScanner Instance { get; } = BuildScanner();
 
@@ -30,9 +30,10 @@ internal static class JavaScanner
 
     private static WordsIndex BuildReservedWordsArray()
         => new([
-            "class", "record", "interface", "enum",
+            "class", "interface", "enum",
             "public", "protected", "private",
-            "package",
+            "var", "let", "const", "switch",
+            "function",
             "return", "abstract", "as", "base", "break", "case", "catch",
         ]);
 
@@ -41,14 +42,16 @@ internal static class JavaScanner
         {
             Rules =
             [
-                new LambdaRule(TokenKindsJava.Reserved, ReservedMatch),
-                new LambdaRule(TokenKindsJava.Identifier, CurlyLexerRules.IdentifierMatch),
-                new LambdaRule(TokenKindsJava.Comment, CurlyLexerRules.CommentMatch),
-                new LambdaRule(TokenKindsJava.Operator, OperatorsMatch),
-                new LambdaRule(TokenKindsJava.Spaces, CurlyLexerRules.SpacesMatch),
-                new LambdaRule(TokenKindsJava.Eoln, CurlyLexerRules.EolnMatch),
-                new LambdaRule(TokenKindsJava.Number, CurlyLexerRules.NumberMatch),
-                new LambdaRule(TokenKindsJava.QuotedString, CurlyLexerRules.StringMatch),
+                new LambdaRule(TokenKindsJs.Reserved, ReservedMatch),
+                new LambdaRule(TokenKindsJs.Identifier, CurlyLexerRules.IdentifierMatch),
+
+                new LambdaRule(TokenKindsJs.Comment, CurlyLexerRules.CommentMatch),
+                new LambdaRule(TokenKindsJs.Operator, OperatorsMatch),
+                new LambdaRule(TokenKindsJs.Spaces, CurlyLexerRules.SpacesMatch),
+                new LambdaRule(TokenKindsJs.Eoln, CurlyLexerRules.EolnMatch),
+                
+                new LambdaRule(TokenKindsJs.Number, CurlyLexerRules.NumberMatch),
+                new LambdaRule(TokenKindsJs.QuotedString, CurlyLexerRules.StringMatch),
             ]
         };
 

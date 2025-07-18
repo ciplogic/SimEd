@@ -1,6 +1,4 @@
-﻿// See https://aka.ms/new-console-template for more information
-
-using WindowsInstallersCreator;
+﻿using WindowsInstallersCreator;
 
 string pathOfSolution = OsDetector.GetParentOfSolution();
 

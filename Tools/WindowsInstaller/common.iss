@@ -1,12 +1,12 @@
 
 [Setup]
 AppName=Sim(ple) Ed(itor)
-AppVersion=0.0.3
+AppVersion=0.0.4
 WizardStyle=modern
 DefaultDirName={autopf}\SimpleEditor
 DefaultGroupName=Simple Editor
 UninstallDisplayIcon={app}\SimEd.exe
-Compression=zip
+Compression=lzma
 SolidCompression=yes
 
 [Files]
