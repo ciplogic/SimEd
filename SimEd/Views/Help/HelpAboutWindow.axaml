@@ -2,16 +2,25 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:simEd="clr-namespace:SimEd"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="SimEd.Views.Help.HelpAboutWindow"
         Width="300"
         Height="300"
         WindowStartupLocation="CenterScreen"
-        Title="HelpAboutWindow">
+        Title="HelpAboutWindow"
+        x:DataType="simEd:HelpAboutWindowViewModel"
+        >
+    <Window.DataContext>
+        <simEd:HelpAboutWindowViewModel />
+    </Window.DataContext>
 
     <Grid RowDefinitions="Auto,*,Auto">
         <StackPanel Grid.Row="1">
-            <TextBlock Margin="4" FontWeight="Bold">SimEd (Simple Editor) v 0.0.3</TextBlock>
+            <TextBlock Margin="4" FontWeight="Bold">SimEd (Simple Editor)</TextBlock>
+            <TextBlock Margin="4" Text="Version:"></TextBlock>
+            <TextBlock Margin="4" Text="{Binding VersionValue}"></TextBlock>
+
             <TextBlock Margin="4" />
             <TextBlock Margin="4">Brought to you by: </TextBlock>
             <TextBlock Margin="4">Ciprian Khlud aka ciplogic (maintainer)</TextBlock>
