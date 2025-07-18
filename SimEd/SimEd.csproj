@@ -98,5 +98,9 @@
         <AvaloniaResource Include="Assets\Icons\dll.svg">
           <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </AvaloniaResource>
+        <None Remove="Assets\Icons\python.svg" />
+        <AvaloniaResource Include="Assets\Icons\python.svg">
+          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </AvaloniaResource>
     </ItemGroup>
 </Project>

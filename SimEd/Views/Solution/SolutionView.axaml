@@ -27,6 +27,8 @@
                    Path="/Assets/Icons/dll.svg" />
         <SvgSource x:Key="PdbIcon"
                    Path="/Assets/Icons/pdb.svg" />
+        <SvgSource x:Key="PyIcon"
+                   Path="/Assets/Icons/python.svg" />
     </UserControl.Resources>
     
     <UserControl.Styles>
@@ -71,6 +73,15 @@
                 <Setter Property="Source">
                     <Setter.Value>
                         <SvgImage Source="{DynamicResource PdbIcon}"></SvgImage>
+                    </Setter.Value>
+                </Setter>
+            </Style.Setters>
+        </Style>
+        <Style Selector="Image.Py">
+            <Style.Setters>
+                <Setter Property="Source">
+                    <Setter.Value>
+                        <SvgImage Source="{DynamicResource PyIcon}"></SvgImage>
                     </Setter.Value>
                 </Setter>
             </Style.Setters>
@@ -160,7 +171,8 @@
                                Classes.CSharp="{Binding Kind, Converter={StaticResource StringToBoolByKindTypeParameter}, ConverterParameter='cs'}"
                                Classes.CSProj="{Binding Kind, Converter={StaticResource StringToBoolByKindTypeParameter}, ConverterParameter='csproj'}"
                                Classes.Dll="{Binding Kind, Converter={StaticResource StringToBoolByKindTypeParameter}, ConverterParameter='dll'}"
-                               Classes.Pdb="{Binding Kind, Converter={StaticResource StringToBoolByKindTypeParameter}, ConverterParameter='pdb'}">
+                               Classes.Pdb="{Binding Kind, Converter={StaticResource StringToBoolByKindTypeParameter}, ConverterParameter='pdb'}"
+                               Classes.Py="{Binding Kind, Converter={StaticResource StringToBoolByKindTypeParameter}, ConverterParameter='py'}">
                         </Image>
                         <TextBlock Text="{Binding Name}" />
                     </DockPanel>
