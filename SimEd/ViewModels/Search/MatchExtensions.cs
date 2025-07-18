@@ -13,11 +13,11 @@ public static class MatchExtensions
 
         string[] wordsSplit = SplitIntoTokens(token);
         ReadOnlySpan<char> filterSpan = filterText.AsSpan();
-        Span<string> wordsSplitSpan = wordsSplit.AsSpan();
+        ReadOnlySpan<string> wordsSplitSpan = wordsSplit.AsSpan();
         return FilterViaSpans(filterSpan, wordsSplitSpan);
     }
 
-    private static bool FilterViaSpans(ReadOnlySpan<char> filterSpan, Span<string> wordsSplitSpan)
+    private static bool FilterViaSpans(ReadOnlySpan<char> filterSpan, ReadOnlySpan<string> wordsSplitSpan)
     {
         while (filterSpan.Length > 0)
         {

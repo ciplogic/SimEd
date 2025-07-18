@@ -10,6 +10,4 @@ public class FindItemViewModel : ObservableObject
     private string GetFileName() => $"{SolutionItem.Token.GetText()}";
 
     public SolutionIndexItem SolutionItem { get; set; }
-    
-    //public Bitmap? ImageType { get; } = ImageHelper.LoadFromResource(new Uri("avares://Assets/Icons/csharp-original.png"));
 }

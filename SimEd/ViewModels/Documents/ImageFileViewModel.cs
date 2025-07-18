@@ -21,7 +21,7 @@ public class ImageFileViewModel : BaseFileViewModel, IViewAware
 
     public ImageFileView MainControl { get; set; } = null!;
 
-    public static HashSet<string> SupportedFormats { get; } = [".png", ".jpg", ".bmp"];
+    public static string[] SupportedFormats { get; } = [".png", ".jpg", ".bmp", ".webp"];
 
     public Bitmap? ImageFromPicture
     {
@@ -44,14 +44,14 @@ public class ImageFileViewModel : BaseFileViewModel, IViewAware
     protected override void OnPropertyChanged(PropertyChangedEventArgs e)
     {
         base.OnPropertyChanged(e);
-        if (e.PropertyName == nameof(Path))
+        if (e.PropertyName == nameof(FullFilePath))
         {
-            if (!File.Exists(Path))
+            if (!File.Exists(FullFilePath))
             {
                 return;
             }
 
-            ImageFromPicture = new Bitmap(Path);
+            ImageFromPicture = new Bitmap(FullFilePath);
             Width = ImageFromPicture.Size.Width;
             Height = ImageFromPicture.Size.Height;
         }
@@ -59,7 +59,7 @@ public class ImageFileViewModel : BaseFileViewModel, IViewAware
 
     public void OnOpen()
     {
-        FileInfo fileInfo = new (Path);
+        FileInfo fileInfo = new (FullFilePath);
         Process.Start(new ProcessStartInfo()
         {
             UseShellExecute = true,

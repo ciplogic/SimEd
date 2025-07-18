@@ -6,6 +6,7 @@ using AvaloniaEdit.TextMate;
 using SimEd.Common.Interfaces;
 using SimEd.Events;
 using SimEd.Interfaces;
+using SimEd.IoC.Interfaces;
 using SimEd.Models;
 using SimEd.Views.Documents;
 using TextMateSharp.Grammars;
@@ -17,13 +18,16 @@ public class FileViewModel : BaseFileViewModel, IViewAware
 {
     private readonly IMiniPubSub _pubSub;
     private readonly IAppSettingsReader _settingsReader;
+    private readonly IFileExtensionMapper _fileExtensionMapper;
 
     private FontFamily _selectedFont;
 
-    public FileViewModel(IMiniPubSub pubSub, IAppSettingsReader settingsReader)
+    public FileViewModel(IMiniPubSub pubSub, IAppSettingsReader settingsReader,
+        IFileExtensionMapper fileExtensionMapper)
     {
         _pubSub = pubSub;
         _settingsReader = settingsReader;
+        _fileExtensionMapper = fileExtensionMapper;
         _pubSub.AddEventHandler<ZoomFontLevelChanged>(OnZoomChanged);
         _pubSub.AddEventHandler<OnChangeFontEvent>(OnFontFamilyChange);
     }
@@ -117,7 +121,7 @@ public class FileViewModel : BaseFileViewModel, IViewAware
 
     public void OnShowInExplorer()
     {
-        DocumentUtilities.ShowInExplorer(Path);
+        DocumentUtilities.ShowInExplorer(FullFilePath);
     }
 
     private void UpdateView()
@@ -126,7 +130,7 @@ public class FileViewModel : BaseFileViewModel, IViewAware
         TextMate.Installation textMateInstallation = MainControl.MainTextEditor.InstallTextMate(registryOptions);
 
         textMateInstallation.AppliedTheme += TextMateInstallationOnAppliedTheme;
-        string extension = ExtensionOfFile(Path);
+        string extension = _fileExtensionMapper.MapExtension(FullFilePath) ?? ExtensionOfFile(FullFilePath);
         if (string.IsNullOrEmpty(extension))
         {
             extension = ".txt";

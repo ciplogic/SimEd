@@ -24,7 +24,7 @@ public class FilesDocumentDock : DocumentDock
         }
 
         FileViewModel document = _injector.GetService<FileViewModel>();
-        document.Path = string.Empty;
+        document.FullFilePath = string.Empty;
         document.Title = "Untitled";
         document.Text = "";
         document.Encoding = Encoding.UTF8.WebName;

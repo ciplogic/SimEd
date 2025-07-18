@@ -2,6 +2,7 @@
 using Jab;
 using SimEd.Common.Interfaces;
 using SimEd.Common.Mediator;
+using SimEd.IoC.Interfaces;
 using SimEd.IoC.Tools;
 using SimEd.Models;
 using SimEd.Models.FileChoosers;
@@ -20,6 +21,7 @@ namespace SimEd.IoC;
 [Singleton(typeof(NotepadFactory))]
 [Singleton<IInjector, InjectorHost>]
 [Singleton<IAppSettingsReader, AppSettingsReader>]
+[Singleton<IFileExtensionMapper, FileExtensionMapper>]
 [Singleton(typeof(SolutionViewModel))]
 [Singleton(typeof(MainWindowViewModel))]
 [Singleton<IFileDialogChooser, FileDialogChooser>]

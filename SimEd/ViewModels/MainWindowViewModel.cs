@@ -74,7 +74,7 @@ public class MainWindowViewModel : ObservableObject, IDropTarget
     public void FileNew()
     {
         FileViewModel untitledFileViewModel = Provider.GetService<FileViewModel>();
-        untitledFileViewModel.Path = string.Empty;
+        untitledFileViewModel.FullFilePath = string.Empty;
         untitledFileViewModel.Title = "Untitled";
         untitledFileViewModel.Text = "";
         untitledFileViewModel.Encoding = Encoding.Default.WebName;
@@ -205,7 +205,7 @@ public class MainWindowViewModel : ObservableObject, IDropTarget
         if (ImageFileViewModel.SupportedFormats.Contains(fileExtension))
         {
             var  imageFileModel = Provider.GetService<ImageFileViewModel>();
-            imageFileModel.Path = path;
+            imageFileModel.FullFilePath = path;
             imageFileModel.Title = title;
             
             return imageFileModel;
@@ -213,7 +213,7 @@ public class MainWindowViewModel : ObservableObject, IDropTarget
         Encoding encoding = FileTools.GetEncoding(path);
         string text = await File.ReadAllTextAsync(path, encoding).ConfigureAwait(false);
         FileViewModel openFileViewModel = Provider.GetService<FileViewModel>();
-        openFileViewModel.Path = path;
+        openFileViewModel.FullFilePath = path;
         openFileViewModel.Title = title;
         openFileViewModel.Text = text;
         openFileViewModel.Encoding = encoding.WebName;
@@ -231,7 +231,7 @@ public class MainWindowViewModel : ObservableObject, IDropTarget
 
         FileViewModel?[] allFiles =
             files.VisibleDockables.Select(x => x as FileViewModel).Where(x => x != null).ToArray();
-        FileViewModel? foundFileViewModel = allFiles.FirstOrDefault(x => x.Path == path);
+        FileViewModel? foundFileViewModel = allFiles.FirstOrDefault(x => x.FullFilePath == path);
         if (foundFileViewModel is null)
         {
             return false;
@@ -244,13 +244,13 @@ public class MainWindowViewModel : ObservableObject, IDropTarget
 
     private static async Task SaveFileViewModel(FileViewModel fileViewModel)
     {
-        await File.WriteAllTextAsync(fileViewModel.Path, fileViewModel.Text ?? "",
+        await File.WriteAllTextAsync(fileViewModel.FullFilePath, fileViewModel.Text ?? "",
             Encoding.GetEncoding(fileViewModel.Encoding));
     }
 
     private void UpdateFileViewModel(FileViewModel fileViewModel, string path)
     {
-        fileViewModel.Path = path;
+        fileViewModel.FullFilePath = path;
         fileViewModel.Title = Path.GetFileName(path);
     }
 
@@ -286,7 +286,7 @@ public class MainWindowViewModel : ObservableObject, IDropTarget
             return;
         }
 
-        if (string.IsNullOrEmpty(fileViewModel.Path))
+        if (string.IsNullOrEmpty(fileViewModel.FullFilePath))
         {
             await FileSaveAsImpl(fileViewModel);
         }

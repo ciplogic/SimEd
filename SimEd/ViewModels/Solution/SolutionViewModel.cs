@@ -48,7 +48,7 @@ public class SolutionViewModel : Tool, IViewAware
     private void OnChangedFocusedTab(ChangedFocusedTab focused)
     {
         string selectedPath = Selected?.Path ?? "";
-        if (selectedPath == focused.FileViewModel.Path)
+        if (selectedPath == focused.FileViewModel.FullFilePath)
         {
             return;
         }
@@ -65,7 +65,7 @@ public class SolutionViewModel : Tool, IViewAware
                 return true;
             }
 
-            if (solutionItem.Path == focusedFileViewModel.Path)
+            if (solutionItem.Path == focusedFileViewModel.FullFilePath)
             {
                 Selected = solutionItem;
                 return true;

@@ -4,11 +4,11 @@ namespace SimEd.ViewModels.Documents;
 
 public class BaseFileViewModel : Document
 {
-    public string Path
+    public string FullFilePath
     {
-        get => _path;
-        set => SetProperty(ref _path, value);
+        get => _fullFilePath;
+        set => SetProperty(ref _fullFilePath, value);
     }
 
-    private string _path = string.Empty;
+    private string _fullFilePath = string.Empty;
 }

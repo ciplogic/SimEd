@@ -4,6 +4,7 @@
         <BuiltInComInteropSupport>true</BuiltInComInteropSupport>
         <ApplicationManifest>app.manifest</ApplicationManifest>
         <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
+        <ApplicationIcon>SimEd.ico</ApplicationIcon>
     </PropertyGroup>
 
     <PropertyGroup>
