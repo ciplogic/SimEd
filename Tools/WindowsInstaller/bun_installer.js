@@ -1,8 +1,7 @@
 ﻿#!bun
 import {$} from "bun";
 
-const ProjectPath = 'C:\\oss\\SimEd'
-const SimEdVersion = "0.0.4"
+const SimEdVersion = "0.0.5"
 
 const InnoSetupCompiler = `C:\\Program Files (x86)\\Inno Setup 6\\ISCC.exe`
 
