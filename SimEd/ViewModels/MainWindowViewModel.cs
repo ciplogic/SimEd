@@ -184,6 +184,7 @@ public class MainWindowViewModel : ObservableObject, IDropTarget
         {
             TextEditor textEditor = fileViewModel.MainControl.MainTextEditor;
             textEditor.CaretOffset = arg.CaretOffset;
+            textEditor.TextArea.Caret.BringCaretToView(0);
             textEditor.TextArea.Caret.Show();
         }
     }

@@ -18,6 +18,15 @@ public static class CollectionExtensions
             ? []
             : Array.ConvertAll(items, x => selector(x));
 
+    public static T[] SafeToArray<T>(this IList<T> items)
+        => items.Count == 0
+            ? []
+            : items.ToArray();
+
+    public static T[] SafeToArray<T>(this IEnumerable<T>? items)
+        => (items ?? []).ToArray().SafeToArray();
+
+
     public static TDest[] SelectToArray<T, TDest>(this IList<T> items, Func<T, TDest> selector)
     {
         if (items.Count == 0)
@@ -30,6 +39,7 @@ public static class CollectionExtensions
         {
             result[i] = selector(items[i]);
         }
+
         return result;
     }
 }
