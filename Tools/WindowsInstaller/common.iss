@@ -3,7 +3,6 @@
 AppName=Sim(ple) Ed(itor)
 AppVersion=0.0.5
 WizardStyle=modern
-DefaultDirName={autopf}\SimpleEditor
 DefaultGroupName=Simple Editor
 UninstallDisplayIcon={app}\SimEd.exe
 Compression=lzma2

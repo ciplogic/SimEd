@@ -1,7 +1,7 @@
 ﻿#!bun
 import {$} from "bun";
 
-const SimEdVersion = "0.0.5"
+const SimEdVersion = "0.0.6"
 
 const InnoSetupCompiler = `C:\\Program Files (x86)\\Inno Setup 6\\ISCC.exe`
 
