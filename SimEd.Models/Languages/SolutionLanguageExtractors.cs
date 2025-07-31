@@ -4,6 +4,7 @@ using SimEd.Models.Languages.JavaLang;
 using SimEd.Models.Languages.JsTsLang;
 using SimEd.Models.Languages.KotlinLang;
 using SimEd.Models.Languages.PythonLanguage;
+using SimEd.Models.Languages.RustLang;
 using ZLinq;
 
 namespace SimEd.Models.Languages;
@@ -20,7 +21,8 @@ public class SolutionLanguageExtractors
             new JavaDeclarationsExtraction(),
             new JsDeclarationsExtraction(),
             new KotlinDeclarationsExtraction(),
-            new PythonDeclarationsExtraction()
+            new PythonDeclarationsExtraction(), 
+            new RustDeclarationsExtraction()
         ];
         return extractions;
     }
