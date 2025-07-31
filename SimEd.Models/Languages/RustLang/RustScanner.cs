@@ -36,7 +36,7 @@ internal static class RustScanner
 
             // Reserved but not currently used
             "abstract", "become", "box", "do", "final", "macro", "override", "priv",
-            "try", "typeof", "unsized", "virtual", "yield",
+            "try", "typeof", "unsized", "virtual", "yield", "macro_rules!",
 
             // Special lifetime-related keyword
             "'static"

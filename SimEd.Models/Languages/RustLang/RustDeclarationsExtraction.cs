@@ -49,7 +49,7 @@ public class RustDeclarationsExtraction : IDeclarationsExtraction
 
     private static readonly string[] Declarations =
     [
-        "fn"
+        "fn", "struct", "impl", "macro_rules!"
     ];
 
     private static bool IsDeclaration(Token token, string[] declarations)
