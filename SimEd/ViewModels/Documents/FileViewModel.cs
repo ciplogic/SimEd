@@ -253,4 +253,6 @@ public class FileViewModel : BaseFileViewModel, IViewAware
         applyColorAction(colorBrush);
         return true;
     }
+
+    public void SaveToFile() => File.WriteAllText(FullFilePath, MainControl.MainTextEditor.Text);
 }

@@ -21,4 +21,9 @@ public partial class FileView : UserControl
             }
         }, RoutingStrategies.Bubble, true);
     }
+
+    private void MainTextEditor_OnLostFocus(object? sender, RoutedEventArgs e)
+    {
+        ViewModel.SaveToFile();
+    }
 }

@@ -48,6 +48,7 @@
             FontFamily="{Binding SelectedFont}"
             FontWeight="Light"
             ShowLineNumbers="True"
+            LostFocus="MainTextEditor_OnLostFocus"
             FontSize="{Binding FontSize}">
 
             <i:Interaction.Behaviors>

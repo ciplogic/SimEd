@@ -1,7 +1,7 @@
 
 [Setup]
 AppName=Sim(ple) Ed(itor)
-AppVersion=0.0.5
+AppVersion=0.0.6
 WizardStyle=modern
 DefaultGroupName=Simple Editor
 UninstallDisplayIcon={app}\SimEd.exe
