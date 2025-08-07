@@ -20,48 +20,46 @@ public class CobolDeclarationsExtraction : IDeclarationsExtraction
 
     private static SolutionIndexItem[] BuildDeclarationsFromTokens(Token[] tokens, SolutionItem solutionItem)
     {
-        string[] declarations = Declarations;
         List<SolutionIndexItem>? resultList = null;
-        for (int index = 1; index < tokens.Length; index++)
+        for (int index = 2; index < tokens.Length; index++)
         {
-            Token currentToken = tokens[index];
-            if (currentToken.Kind != TokenKindsCobol.Identifier)
-            {
-                continue;
-            }
-
+            Token prevToken2 = tokens[index - 2];
             Token prevToken = tokens[index - 1];
-            if (prevToken.Kind != TokenKindsCobol.Reserved)
+            Token currentToken = tokens[index];
+            bool tokenMatchPrecondition =
+                prevToken2.Kind == TokenKindsCobol.Reserved
+                && prevToken.Kind == TokenKindsCobol.Reserved
+                && currentToken.Kind == TokenKindsCobol.Identifier;
+            if (!tokenMatchPrecondition)
             {
                 continue;
             }
 
-            if (!IsDeclaration(prevToken, declarations))
+            if (!prevToken.IsText("PROGRAM"))
             {
                 continue;
             }
+
+            if (!prevToken2.IsText("END"))
+            {
+                continue;
+            }
+
             resultList ??= [];
-            resultList.Add(new SolutionIndexItem(currentToken, solutionItem, prevToken.GetText()));
+            resultList.Add(new SolutionIndexItem(currentToken, solutionItem, currentToken.GetText()));
         }
 
         return resultList?.ToArray() ?? [];
     }
 
-    private static readonly string[] Declarations =
-    [
-        "PROCEDURE" 
-    ];
-
     private static bool IsDeclaration(Token token, string[] declarations)
         => token.IsInTexts(declarations);
 
     private static bool SkipSpaces(Token token)
-    {
-        return token.Kind switch
+        => token.Kind switch
         {
             TokenKindsCobol.Spaces => false,
             TokenKindsCobol.Comment => false,
             _ => true
         };
-    }
 }

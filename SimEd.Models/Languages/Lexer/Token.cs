@@ -23,7 +23,8 @@ public record struct Token(int Kind, ArraySegment<char> Text, int Position)
 
         return false;
     }
-    private bool IsText(ReadOnlySpan<char> text)
+
+    internal bool IsText(ReadOnlySpan<char> text)
     {
         if (text.Length != Text.Count)
         {

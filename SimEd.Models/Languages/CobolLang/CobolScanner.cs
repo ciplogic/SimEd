@@ -27,28 +27,58 @@ internal static class CobolScanner
         ]);
 
     private static WordsIndex BuildReservedWordsIndex()
-        => new([          
-            // Declaration keywords
-            "var", "const", "type", "func", "package", "import",
-            
-            // Control flow keywords
-            "if", "else", "switch", "case", "default", "for", 
-            "break", "continue", "goto", "fallthrough",
-            
-            // Function-related keywords
-            "return", "defer",
-            
-            // Channel and concurrency keywords
-            "go", "chan", "select",
-            
-            // Interface and type assertion
-            "interface", "struct", "map", "range",
-            
-            // Error handling
-            "error",
-            
-            // Constants
-            "true", "false", "iota", "nil"
+        => new([
+            "ACCEPT", "ACCESS", "ADD", "ADVANCING", "AFTER", "ALL", "ALPHABET",
+            "ALPHABETIC", "ALPHABETIC-LOWER", "ALPHABETIC-UPPER", "ALPHANUMERIC",
+            "ALPHANUMERIC-EDITED", "ALSO", "ALTER", "ALTERNATE", "AND", "ANY",
+            "ARE", "AREA", "AREAS", "AS", "ASCENDING", "ASSIGN", "AT", "AUTHOR",
+            "AUTO", "BASIS", "BEFORE", "BEGINNING", "BINARY", "BLANK", "BLOCK",
+            "BOTTOM", "BY", "CALL", "CANCEL", "CBL", "CHAIN", "CHANGED", "CHARACTER",
+            "CHARACTERS", "CLASS", "CLOSE", "COBOL", "CODE", "CODE-SET", "COLLATING",
+            "COLUMN", "COMMA", "COMMON", "COMMUNICATION", "COMP", "COMPUTE", "CONFIGURATION",
+            "CONTAINS", "CONTENT", "CONTINUE", "CONTROL", "CONVERTING", "COPY",
+            "CORR", "CORRESPONDING", "COUNT", "CURRENCY", "DATA", "DATE", "DAY",
+            "DE", "DEBUGGING", "DECIMAL-POINT", "DECLARE", "DELETE", "DELIMITED",
+            "DELIMITER", "DEPENDING", "DESCENDING", "DESTINATION", "DETAIL", "DISPLAY",
+            "DIVIDE", "DIVISION", "DOWN", "DUPLICATES", "DYNAMIC", "EGI", "ELSE",
+            "END", "END-ADD", "END-CALL", "END-COMPUTE", "END-DELETE", "END-DIVIDE",
+            "END-EVALUATE", "END-IF", "END-MULTIPLY", "END-PERFORM", "END-READ",
+            "END-RETURN", "END-REWRITE", "END-SEARCH", "END-START", "END-STRING",
+            "END-SUBTRACT", "END-UNSTRING", "END-WRITE", "ENTRY", "ENVIRONMENT",
+            "EOP", "EQUAL", "ERROR", "EVALUATE", "EVERY", "EXCEPTION", "EXCLUSIVE",
+            "EXIT", "EXTEND", "EXTERNAL", "FALSE", "FD", "FILE", "FILLER", "FINAL",
+            "FIRST", "FOOTING", "FOR", "FROM", "FUNCTION", "GENERATE", "GIVING",
+            "GLOBAL", "GO", "GOBACK", "GREATER", "GROUP", "HEADING", "HIGH-VALUE",
+            "HIGH-VALUES", "I-O", "I-O-CONTROL", "IDENTIFICATION", "IF", "IN",
+            "INDEX", "INDEXED", "INDICATE", "INITIAL", "INITIALIZE", "INITIATE",
+            "INPUT", "INSPECT", "INSTALLATION", "INTO", "INVALID", "IS", "JUST",
+            "JUSTIFIED", "KEY", "LABEL", "LAST", "LEADING", "LEFT", "LENGTH", "LESS",
+            "LIMIT", "LIMITS", "LINAGE", "LINE", "LINES", "LINKAGE", "LOCAL-STORAGE",
+            "LOCK", "LOW-VALUE", "LOW-VALUES", "MEMORY", "MERGE", "MESSAGE",
+            "MODE", "MODULES", "MOVE", "MULTIPLE", "MULTIPLY", "NATIVE", "NEGATIVE",
+            "NEXT", "NO", "NOT", "NULL", "NULLS", "NUMBER", "NUMERIC", "NUMERIC-EDITED",
+            "OBJECT-COMPUTER", "OCCURS", "OF", "OFF", "OMITTED", "ON", "OPEN",
+            "OPTIONAL", "OR", "ORDER", "ORGANIZATION", "OTHER", "OUTPUT", "OVERFLOW",
+            "PACKED-DECIMAL", "PADDING", "PAGE", "PARAGRAPH", "PERFORM", "PF", "PH",
+            "PIC", "PICTURE", "PLUS", "POINTER", "POSITION", "POSITIVE", "PROCEDURE",
+            "PROCEDURES", "PROCEED", "PROGRAM", "PROGRAM-ID", "QUOTE", "QUOTES",
+            "RANDOM", "RD", "READ", "RECEIVE", "RECORD", "RECORDS", "REDEFINES",
+            "REEL", "REFERENCE", "REFERENCES", "RELATIVE", "RELEASE", "REMAINDER",
+            "REMOVAL", "RENAMES", "REPLACE", "REPLACING", "REPORT", "REPORTING",
+            "REPORTS", "REQUIRED", "RERUN", "RESERVE", "RESET", "RETURN", "RETURNING",
+            "REVERSE-VIDEO", "REWIND", "REWRITE", "RF", "RH", "RIGHT", "ROUNDED",
+            "RUN", "SAME", "SCREEN", "SD", "SEARCH", "SECTION", "SECURITY", "SEGMENT",
+            "SEGMENT-LIMIT", "SELECT", "SEND", "SENTENCE", "SEPARATE", "SEQUENCE",
+            "SEQUENTIAL", "SET", "SIGN", "SIZE", "SORT", "SOURCE", "SOURCE-COMPUTER",
+            "SPACE", "SPACES", "SPECIAL-NAMES", "STANDARD", "START", "STATUS",
+            "STOP", "STRING", "SUB-QUEUE-1", "SUB-QUEUE-2", "SUB-QUEUE-3",
+            "SUBTRACT", "SUM", "SUPPRESS", "SYMBOLIC", "SYNC", "SYNCHRONIZED",
+            "TABLE", "TALLY", "TAPE", "TERMINAL", "TERMINATE", "TEST", "TEXT",
+            "THAN", "THEN", "THROUGH", "THRU", "TIME", "TIMES", "TO", "TOP", "TRACE",
+            "TRAILING", "TRUE", "TYPE", "UNIT", "UNSTRING", "UNTIL", "UP", "UPON",
+            "USAGE", "USE", "USING", "VALUE", "VALUES", "VARYING", "WHEN",
+            "WHEN-COMPILED", "WITH", "WORDS", "WORKING-STORAGE", "WRITE", "ZERO",
+            "ZEROES", "ZEROS"
         ]);
 
     private static SimpleScanner BuildScanner()
@@ -57,13 +87,13 @@ internal static class CobolScanner
             Rules =
             [
                 new LambdaRule(TokenKindsCobol.Reserved, ReservedMatch),
-                new LambdaRule(TokenKindsCobol.Identifier, CurlyLexerRules.IdentifierMatch),
+                new LambdaRule(TokenKindsCobol.Identifier, CobolIdentifierMatch),
 
                 new LambdaRule(TokenKindsCobol.Comment, CurlyLexerRules.CommentMatch),
                 new LambdaRule(TokenKindsCobol.Operator, OperatorsMatch),
                 new LambdaRule(TokenKindsCobol.Spaces, CurlyLexerRules.SpacesMatch),
                 new LambdaRule(TokenKindsCobol.Eoln, CurlyLexerRules.EolnMatch),
-                
+
                 new LambdaRule(TokenKindsCobol.Number, CurlyLexerRules.NumberMatch),
                 new LambdaRule(TokenKindsCobol.QuotedString, CurlyLexerRules.StringMatch),
             ]
@@ -89,5 +119,26 @@ internal static class CobolScanner
             ? matchReservedLength
             : 0;
     }
-    
+
+    private static int CobolIdentifierMatch(ArraySegment<char> segment)
+    {
+        var identifierMatchLen = CurlyLexerRules.IdentifierMatch(segment);
+        if (identifierMatchLen == 0)
+        {
+            return 0;
+        }
+
+        if (identifierMatchLen == segment.Count)
+        {
+            return identifierMatchLen;
+        }
+
+        if (segment[identifierMatchLen] != '-')
+        {
+            return identifierMatchLen;
+        }
+        var secondPartLen = CobolIdentifierMatch(segment.Slice(identifierMatchLen + 1));
+        return identifierMatchLen + secondPartLen;
+
+    }
 }
