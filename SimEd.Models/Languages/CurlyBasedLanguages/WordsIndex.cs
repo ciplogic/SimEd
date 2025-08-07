@@ -12,7 +12,7 @@ public class WordsIndex
 
     public WordsIndex(string[] wordStrings)
     {
-        _wordsToMatch = wordStrings.Order().ToArray().SelectToArray(w => w.ToCharArray());
+        _wordsToMatch = wordStrings.ToArray().SelectToArray(w => w.ToCharArray());
         _firstChars = _wordsToMatch.SelectToArray(w => w[0]);
         _bitArray = new BitArray(new byte[32]);
         foreach (var c in _firstChars)

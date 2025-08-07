@@ -124,7 +124,7 @@ public static class CurlyLexerRules
             pos++;
         }
 
-        return segment.Count;
+        return segment.Count + 1;
     }
 
     private static bool IsMatchStartForIdentifier(char c)

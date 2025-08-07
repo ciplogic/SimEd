@@ -28,19 +28,19 @@ public class CobolDeclarationsExtraction : IDeclarationsExtraction
             Token currentToken = tokens[index];
             bool tokenMatchPrecondition =
                 prevToken2.Kind == TokenKindsCobol.Reserved
-                && prevToken.Kind == TokenKindsCobol.Reserved
+                && prevToken.Kind == TokenKindsCobol.Operator
                 && currentToken.Kind == TokenKindsCobol.Identifier;
             if (!tokenMatchPrecondition)
             {
                 continue;
             }
 
-            if (!prevToken.IsText("PROGRAM"))
+            if (!prevToken.IsText("."))
             {
                 continue;
             }
 
-            if (!prevToken2.IsText("END"))
+            if (!prevToken2.IsText("PROGRAM-ID"))
             {
                 continue;
             }

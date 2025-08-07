@@ -4,7 +4,7 @@ using SimEd.Models.Languages.Lexer;
 
 namespace SimEd.Models.Languages.CobolLang;
 
-internal static class CobolScanner
+public static class CobolScanner
 {
     public static SimpleScanner Instance { get; } = BuildScanner();
 
@@ -41,10 +41,11 @@ internal static class CobolScanner
             "DE", "DEBUGGING", "DECIMAL-POINT", "DECLARE", "DELETE", "DELIMITED",
             "DELIMITER", "DEPENDING", "DESCENDING", "DESTINATION", "DETAIL", "DISPLAY",
             "DIVIDE", "DIVISION", "DOWN", "DUPLICATES", "DYNAMIC", "EGI", "ELSE",
-            "END", "END-ADD", "END-CALL", "END-COMPUTE", "END-DELETE", "END-DIVIDE",
+            "END-ADD", "END-CALL", "END-COMPUTE", "END-DELETE", "END-DIVIDE",
             "END-EVALUATE", "END-IF", "END-MULTIPLY", "END-PERFORM", "END-READ",
             "END-RETURN", "END-REWRITE", "END-SEARCH", "END-START", "END-STRING",
-            "END-SUBTRACT", "END-UNSTRING", "END-WRITE", "ENTRY", "ENVIRONMENT",
+            "END-SUBTRACT", "END-UNSTRING", "END-WRITE",
+            "END",  "ENTRY", "ENVIRONMENT",
             "EOP", "EQUAL", "ERROR", "EVALUATE", "EVERY", "EXCEPTION", "EXCLUSIVE",
             "EXIT", "EXTEND", "EXTERNAL", "FALSE", "FD", "FILE", "FILLER", "FINAL",
             "FIRST", "FOOTING", "FOR", "FROM", "FUNCTION", "GENERATE", "GIVING",
@@ -61,7 +62,7 @@ internal static class CobolScanner
             "OPTIONAL", "OR", "ORDER", "ORGANIZATION", "OTHER", "OUTPUT", "OVERFLOW",
             "PACKED-DECIMAL", "PADDING", "PAGE", "PARAGRAPH", "PERFORM", "PF", "PH",
             "PIC", "PICTURE", "PLUS", "POINTER", "POSITION", "POSITIVE", "PROCEDURE",
-            "PROCEDURES", "PROCEED", "PROGRAM", "PROGRAM-ID", "QUOTE", "QUOTES",
+            "PROCEDURES", "PROCEED", "PROGRAM-ID", "PROGRAM", "QUOTE", "QUOTES",
             "RANDOM", "RD", "READ", "RECEIVE", "RECORD", "RECORDS", "REDEFINES",
             "REEL", "REFERENCE", "REFERENCES", "RELATIVE", "RELEASE", "REMAINDER",
             "REMOVAL", "RENAMES", "REPLACE", "REPLACING", "REPORT", "REPORTING",
@@ -114,8 +115,8 @@ internal static class CobolScanner
             return 0;
         }
 
-        int matchIdentifier = CurlyLexerRules.IdentifierMatch(segment.Slice(matchReservedLength));
-        return matchIdentifier == 0
+        int matchIdentifier = CobolIdentifierMatch(segment);
+        return matchIdentifier == matchReservedLength
             ? matchReservedLength
             : 0;
     }
@@ -138,7 +139,7 @@ internal static class CobolScanner
             return identifierMatchLen;
         }
         var secondPartLen = CobolIdentifierMatch(segment.Slice(identifierMatchLen + 1));
-        return identifierMatchLen + secondPartLen;
+        return identifierMatchLen + 1 + secondPartLen;
 
     }
 }
