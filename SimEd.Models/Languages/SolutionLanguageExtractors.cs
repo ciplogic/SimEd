@@ -1,5 +1,7 @@
+using SimEd.Models.Languages.CobolLang;
 using SimEd.Models.Languages.Common;
 using SimEd.Models.Languages.CsharpLang;
+using SimEd.Models.Languages.GoLang;
 using SimEd.Models.Languages.JavaLang;
 using SimEd.Models.Languages.JsTsLang;
 using SimEd.Models.Languages.KotlinLang;
@@ -22,7 +24,9 @@ public class SolutionLanguageExtractors
             new JsDeclarationsExtraction(),
             new KotlinDeclarationsExtraction(),
             new PythonDeclarationsExtraction(), 
-            new RustDeclarationsExtraction()
+            new RustDeclarationsExtraction(),
+            new GoDeclarationsExtraction(),
+            new CobolDeclarationsExtraction(),
         ];
         return extractions;
     }
