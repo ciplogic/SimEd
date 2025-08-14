@@ -86,17 +86,17 @@ public class SolutionViewModel : Tool, IViewAware
         {
             return;
         }
-        
-        DirectoryInfo dirInfo = new (SolutionPath);
+
+        DirectoryInfo dirInfo = new(SolutionPath);
         if (!dirInfo.Exists)
         {
             return;
         }
 
-        
+
         GitIgnoreScanner scanner = new GitIgnoreScanner();
         scanner.ScanDirectory(dirInfo);
-        SolutionItem root = SolutionItemScanner.ScanDirectory(dirInfo, scanner, _fileExtensionMapper);
+        SolutionItem root = SolutionItemScanner.ScanDirectory(dirInfo, dirInfo, scanner, _fileExtensionMapper);
         Nodes.Clear();
         Nodes.AddRange(root.Children);
     }
@@ -130,6 +130,7 @@ public class SolutionViewModel : Tool, IViewAware
         {
             return;
         }
+
         SolutionPath = selectedDirectory;
         return;
     }

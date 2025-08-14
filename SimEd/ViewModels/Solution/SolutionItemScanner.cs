@@ -6,7 +6,7 @@ namespace SimEd.ViewModels.Solution;
 
 internal static class SolutionItemScanner
 {
-    public static SolutionItem ScanDirectory(DirectoryInfo dirInfo, GitIgnoreScanner scanner,
+    public static SolutionItem ScanDirectory(DirectoryInfo parentDirInfo, DirectoryInfo dirInfo, GitIgnoreScanner gitIgnoreScanner,
         IFileExtensionMapper fileExtensionMapper)
     {
         DirectoryInfo[] directoryInfos = dirInfo.GetDirectories();
@@ -15,18 +15,18 @@ internal static class SolutionItemScanner
 
         foreach (DirectoryInfo directory in directoryInfos)
         {
-            if (scanner.IgnorePath(directory.FullName))
+            if (gitIgnoreScanner.IgnorePath(directory.FullName))
             {
                 continue;
             }
 
-            SolutionItem child = ScanDirectory(directory, scanner, fileExtensionMapper);
+            SolutionItem child = ScanDirectory(parentDirInfo, directory, gitIgnoreScanner, fileExtensionMapper);
             result.Children.Add(child);
         }
 
         foreach (FileInfo file in fileInfos)
         {
-            if (scanner.IgnorePath(file.FullName))
+            if (gitIgnoreScanner.IgnorePath(file.FullName))
             {
                 continue;
             }
