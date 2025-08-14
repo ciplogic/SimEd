@@ -11,37 +11,7 @@ class GlobFilter
         _operations = BuildOperations(pattern);
     }
     
-    override public string ToString() => string.Join("", _operations);
-
-    private static string[] BuildOperations(string pattern)
-    {
-        var remainder = pattern;
-        List<string> operations = [];
-        do
-        {
-            var index = remainder.IndexOf('*');
-            if (index == -1)
-            {
-                AddOp(remainder);
-                return operations.ToArray();
-            }
-
-            var prefix = remainder.Substring(0, index);
-            AddOp(prefix);
-            AddOp("*");
-            remainder = remainder.Substring(index + 1);
-        } while (remainder.Length > 0);
-
-        return operations.ToArray();
-
-        void AddOp(string op)
-        {
-            if (!string.IsNullOrWhiteSpace(op))
-            {
-                operations.Add(op);
-            }
-        }
-    }
+    public override string ToString() => string.Join("", _operations);
 
     public bool Matches(string path)
     {
@@ -87,5 +57,35 @@ class GlobFilter
         }
 
         return MatchOp(fileInfoName.Substring(indexNext), step + 1);
+    }
+
+    private static string[] BuildOperations(string pattern)
+    {
+        var remainder = pattern;
+        List<string> operations = [];
+        do
+        {
+            var index = remainder.IndexOf('*');
+            if (index == -1)
+            {
+                AddOp(remainder);
+                return operations.ToArray();
+            }
+
+            var prefix = remainder.Substring(0, index);
+            AddOp(prefix);
+            AddOp("*");
+            remainder = remainder.Substring(index + 1);
+        } while (remainder.Length > 0);
+
+        return operations.ToArray();
+
+        void AddOp(string op)
+        {
+            if (!string.IsNullOrWhiteSpace(op))
+            {
+                operations.Add(op);
+            }
+        }
     }
 }
