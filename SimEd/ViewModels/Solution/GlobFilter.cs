@@ -1,16 +1,15 @@
 ﻿namespace SimEd.ViewModels.Solution;
 
-class GlobFilter
+public readonly struct GlobFilter
 {
-    string[] _operations = [];
-    public bool ContainsDirectory { get; private set; } = false;
+    private readonly string[] _operations = [];
+    private bool ContainsDirectory => _operations[0][0] == '/';
 
     public GlobFilter(string pattern)
     {
-        ContainsDirectory = pattern.Contains('/');
-        _operations = BuildOperations(pattern);
+        _operations = pattern.BuildOperations();
     }
-    
+
     public override string ToString() => string.Join("", _operations);
 
     public bool Matches(string path)
@@ -19,11 +18,9 @@ class GlobFilter
         {
             return MatchOp(path, 0);
         }
-        else
-        {
-            var fileInfo = new FileInfo(path);
-            return MatchOp(fileInfo.Name, 0);
-        }
+
+        var fileInfo = new FileInfo(path);
+        return MatchOp(fileInfo.Name, 0);
     }
 
     private bool MatchOp(string fileInfoName, int step)
@@ -33,59 +30,90 @@ class GlobFilter
             return _operations[0] == fileInfoName;
         }
 
-        if (step >= _operations.Length)
+        return MatchOpRecursive(fileInfoName, _operations);
+    }
+
+    private bool MatchOpRecursive(string fileInfoName, ReadOnlySpan<string> operations)
+    {
+        if (operations.Length == 0)
         {
             return true;
         }
 
-        var operationStep = _operations[step];
+        var operationStep = _operations[0];
         if (operationStep != "*")
         {
-            return fileInfoName.StartsWith(operationStep) && MatchOp(fileInfoName[operationStep.Length..], step + 1);
+            return fileInfoName.StartsWith(operationStep) &&
+                   MatchOpRecursive(fileInfoName[operationStep.Length..], operations.Slice(1));
         }
 
-        if (step == _operations.Length - 1)
+        if (operations.Length == 1)
         {
+            //it means that it is just a remaining "*"
             return true;
         }
 
-        var nextItemToSearch = _operations[step + 1];
-        var indexNext = fileInfoName.IndexOf(nextItemToSearch);
-        if (indexNext == -1)
+        if (operations.Length == 2)
+        {
+            return fileInfoName.EndsWith(operations[1]);
+        }
+
+        var midText = operations[1];
+        var indexOfMidText= fileInfoName.IndexOf(midText);
+        if (indexOfMidText == -1)
         {
             return false;
         }
+        
+        return MatchOpRecursive(fileInfoName[(indexOfMidText + midText.Length)..], operations.Slice(2));
 
-        return MatchOp(fileInfoName.Substring(indexNext), step + 1);
+    }
+}
+
+static class GlobFilterExtensions
+{
+    public static string[] BuildOperations(this string pattern)
+    {
+        var result = new List<string>();
+
+        var defaultSplit = ExtractOperationsBySeparator(pattern, "*");
+        foreach (var op in defaultSplit)
+        {
+            var opsSplitBySlash = ExtractOperationsBySeparator(op, "/");
+            result.AddRange(opsSplitBySlash);
+        }
+
+
+        return result.ToArray();
     }
 
-    private static string[] BuildOperations(string pattern)
+    private static string[] ExtractOperationsBySeparator(string pattern, string separator)
     {
         var remainder = pattern;
         List<string> operations = [];
         do
         {
-            var index = remainder.IndexOf('*');
+            var index = remainder.IndexOf(separator);
             if (index == -1)
             {
-                AddOp(remainder);
+                AddOp(operations, remainder);
                 return operations.ToArray();
             }
 
             var prefix = remainder.Substring(0, index);
-            AddOp(prefix);
-            AddOp("*");
+            AddOp(operations, prefix);
+            AddOp(operations, separator);
             remainder = remainder.Substring(index + 1);
         } while (remainder.Length > 0);
 
         return operations.ToArray();
+    }
 
-        void AddOp(string op)
+    static void AddOp(List<string> operations, string op)
+    {
+        if (!string.IsNullOrWhiteSpace(op))
         {
-            if (!string.IsNullOrWhiteSpace(op))
-            {
-                operations.Add(op);
-            }
+            operations.Add(op);
         }
     }
 }

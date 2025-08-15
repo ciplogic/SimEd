@@ -6,6 +6,7 @@ namespace SimEd.ViewModels.Solution;
 public class GitIgnoreScanner
 {
     public Func<string, bool>[] IgnoredFiles { get; set; } = [];
+    public string[] IgnoredFilters { get; set; } = [];
 
     string TargetDirectory { get; set; } = string.Empty;
 
@@ -22,12 +23,13 @@ public class GitIgnoreScanner
         }
 
         string[] lines = File.ReadAllLines(gitIgnoreFile);
-        string[] goodFiles = lines
+        string[] gitIgnoreRules = lines
             .AsValueEnumerable()
             .Select(l => l.Trim())
             .Where(x => x.Length > 0 && x[0] != '#')
             .ToArray();
-        IgnoredFiles = BuildFilters(goodFiles);
+        IgnoredFilters = gitIgnoreRules;
+        IgnoredFiles = BuildFilters(gitIgnoreRules);
     }
 
     private static string GetTargetDirectoryAsUnixPath(DirectoryInfo directoryInfo)
@@ -74,36 +76,32 @@ public class GitIgnoreScanner
         return reducedName;
     }
 
-    static Func<string, bool> MapGitIgnoreEntry(string gitIgnoreFileFilter)
-    {
-        var globFilter = new GlobFilter(gitIgnoreFileFilter);
-        return globFilter.Matches;
-        var containsSlash = gitIgnoreFileFilter.IndexOf('/') != -1;
-        var lastSlashIndex = gitIgnoreFileFilter.LastIndexOf('/');
-
-        var containsStar = gitIgnoreFileFilter.IndexOf('*') != -1;
-        if (!containsSlash && !containsStar)
-        {
-            return fileName =>
-            {
-                var fileInfo = new FileInfo(fileName);
-                return fileInfo.Name == gitIgnoreFileFilter;
-            };
-        }
-
-        return fileName => fileName.Contains(gitIgnoreFileFilter);
-    }
+    private static Func<string, bool> MapGitIgnoreEntry(string gitIgnoreFileFilter)
+        => new GlobFilter(gitIgnoreFileFilter).Matches;
 
     private void Clear()
     {
         IgnoredFiles = [];
     }
 
-    public bool IgnorePath(string directoryFullName)
+    public bool IgnoreFileIfFiltered(string directoryFullName)
     {
         var unixFileName = FormatFileNameToUnix(directoryFullName);
-        return IgnoredFiles
-            .AsValueEnumerable()
-            .Any(ignoredFileFilter => ignoredFileFilter(unixFileName));
+        bool result = false;
+        foreach (var ignoredFileFilter in IgnoredFiles)
+        {
+            if (ignoredFileFilter(unixFileName))
+            {
+                result = true;
+                break;
+            }
+        }
+
+        if (result)
+        {
+            Console.WriteLine($"Ignored file: {unixFileName}");
+        }
+
+        return result;
     }
 }

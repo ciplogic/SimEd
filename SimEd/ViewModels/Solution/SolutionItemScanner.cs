@@ -15,7 +15,7 @@ internal static class SolutionItemScanner
 
         foreach (DirectoryInfo directory in directoryInfos)
         {
-            if (gitIgnoreScanner.IgnorePath(directory.FullName))
+            if (gitIgnoreScanner.IgnoreFileIfFiltered(directory.FullName))
             {
                 continue;
             }
@@ -26,7 +26,7 @@ internal static class SolutionItemScanner
 
         foreach (FileInfo file in fileInfos)
         {
-            if (gitIgnoreScanner.IgnorePath(file.FullName))
+            if (gitIgnoreScanner.IgnoreFileIfFiltered(file.FullName))
             {
                 continue;
             }
