@@ -16,14 +16,14 @@ public readonly struct GlobFilter
     {
         if (ContainsDirectory)
         {
-            return MatchOp(path, 0);
+            return MatchOp(path);
         }
 
         var fileInfo = new FileInfo(path);
-        return MatchOp(fileInfo.Name, 0);
+        return MatchOp(fileInfo.Name);
     }
 
-    private bool MatchOp(string fileInfoName, int step)
+    private bool MatchOp(string fileInfoName)
     {
         if (_operations.Length == 1)
         {
@@ -44,7 +44,7 @@ public readonly struct GlobFilter
         if (operationStep != "*")
         {
             return fileInfoName.StartsWith(operationStep) &&
-                   MatchOpRecursive(fileInfoName[operationStep.Length..], operations.Slice(1));
+                   MatchOpRecursive(fileInfoName[operationStep.Length..], operations[1..]);
         }
 
         if (operations.Length == 1)
@@ -65,7 +65,7 @@ public readonly struct GlobFilter
             return false;
         }
         
-        return MatchOpRecursive(fileInfoName[(indexOfMidText + midText.Length)..], operations.Slice(2));
+        return MatchOpRecursive(fileInfoName[(indexOfMidText + midText.Length)..], operations[2..]);
 
     }
 }
@@ -100,16 +100,16 @@ static class GlobFilterExtensions
                 return operations.ToArray();
             }
 
-            var prefix = remainder.Substring(0, index);
+            var prefix = remainder[..index];
             AddOp(operations, prefix);
             AddOp(operations, separator);
-            remainder = remainder.Substring(index + 1);
+            remainder = remainder[(index + 1)..];
         } while (remainder.Length > 0);
 
         return operations.ToArray();
     }
 
-    static void AddOp(List<string> operations, string op)
+    private static void AddOp(List<string> operations, string op)
     {
         if (!string.IsNullOrWhiteSpace(op))
         {

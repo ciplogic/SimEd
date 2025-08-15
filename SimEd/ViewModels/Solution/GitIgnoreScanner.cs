@@ -72,7 +72,7 @@ public class GitIgnoreScanner
     {
         var fullFileInfo = new FileInfo(fullFileName);
         var replacedName = fullFileInfo.FullName.Replace('\\', '/');
-        var reducedName = replacedName.Substring(TargetDirectory.Length);
+        var reducedName = replacedName[TargetDirectory.Length..];
         return reducedName;
     }
 

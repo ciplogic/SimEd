@@ -39,8 +39,8 @@ public static class MatchExtensions
                 return false;
             }
 
-            filterSpan = filterSpan.Slice(positionInWord);
-            wordsSplitSpan = wordsSplitSpan.Slice(1);
+            filterSpan = filterSpan[positionInWord..];
+            wordsSplitSpan = wordsSplitSpan[1..];
             if (wordsSplitSpan.Length == 0)
             {
                 return filterSpan.Length == 0;
