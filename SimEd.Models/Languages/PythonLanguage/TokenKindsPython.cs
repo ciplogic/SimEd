@@ -1,6 +1,6 @@
 ﻿namespace SimEd.Models.Languages.PythonLanguage;
 
-static class TokenKindsPython
+internal static class TokenKindsPython
 {
     public const int Unknown = 0;
     public const int Spaces = 'S';

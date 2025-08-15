@@ -6,7 +6,7 @@ namespace SimEd.Models;
 
 public class AppSettingsReader : IAppSettingsReader
 {
-    string SettingsJsonPath => Path.Combine(AppCustomDirectories.SettingsDirectory, "appsettings.json");
+    private string SettingsJsonPath => Path.Combine(AppCustomDirectories.SettingsDirectory, "appsettings.json");
 
     public AppSettings Get()
     {

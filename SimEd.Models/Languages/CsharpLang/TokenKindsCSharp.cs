@@ -1,6 +1,6 @@
 namespace SimEd.Models.Languages.CsharpLang;
 
-static class TokenKindsCSharp
+internal static class TokenKindsCSharp
 {
     public const int Unknown = 0;
     public const int Spaces = 'S';

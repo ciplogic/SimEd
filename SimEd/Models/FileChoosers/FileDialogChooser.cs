@@ -3,7 +3,7 @@ using SimEd.ViewModels;
 
 namespace SimEd.Models.FileChoosers;
 
-class FileDialogChooser : IFileDialogChooser
+internal class FileDialogChooser : IFileDialogChooser
 {
     public async Task<string?> ChooseDirectory()
     {

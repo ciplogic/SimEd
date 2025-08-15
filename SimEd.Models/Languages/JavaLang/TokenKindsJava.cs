@@ -1,6 +1,6 @@
 ﻿namespace SimEd.Models.Languages.JavaLang;
 
-static class TokenKindsJava
+internal static class TokenKindsJava
 {
     public const int Unknown = 0;
     public const int Spaces = 'S';

@@ -1,6 +1,6 @@
 namespace SimEd.Models.Languages.RustLang;
 
-static class TokenKindsRust
+internal static class TokenKindsRust
 {
     public const int Unknown = 0;
     public const int Spaces = 'S';

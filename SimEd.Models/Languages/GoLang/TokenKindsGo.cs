@@ -1,6 +1,6 @@
 namespace SimEd.Models.Languages.GoLang;
 
-static class TokenKindsGo
+internal static class TokenKindsGo
 {
     public const int Unknown = 0;
     public const int Spaces = 'S';

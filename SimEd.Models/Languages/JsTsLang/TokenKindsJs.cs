@@ -1,6 +1,6 @@
 ﻿namespace SimEd.Models.Languages.JsTsLang;
 
-static class TokenKindsJs
+internal static class TokenKindsJs
 {
     public const int Unknown = 0;
     public const int Spaces = 'S';

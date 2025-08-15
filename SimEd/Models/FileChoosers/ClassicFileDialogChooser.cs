@@ -6,7 +6,7 @@ using SimEd.ViewModels;
 
 namespace SimEd.Models.FileChoosers;
 
-class ClassicFileDialogChooser : IFileDialogChooser
+internal class ClassicFileDialogChooser : IFileDialogChooser
 {
     public async Task<string?> ChooseDirectory()
     {

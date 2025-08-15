@@ -6,7 +6,7 @@ namespace SimEd.Views.Search;
 
 public partial class ShowGenericFinderWindowView : Window
 {
-    ShowGenericFinderWindowViewModel ViewModel => (ShowGenericFinderWindowViewModel)DataContext!;
+    private ShowGenericFinderWindowViewModel ViewModel => (ShowGenericFinderWindowViewModel)DataContext!;
 
     public ShowGenericFinderWindowView()
     {

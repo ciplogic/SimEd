@@ -1,6 +1,6 @@
 namespace SimEd.Models.Languages.CobolLang;
 
-static class TokenKindsCobol
+internal static class TokenKindsCobol
 {
     public const int Unknown = 0;
     public const int Spaces = 'S';

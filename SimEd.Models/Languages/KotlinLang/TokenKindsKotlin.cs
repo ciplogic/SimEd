@@ -1,6 +1,6 @@
 ﻿namespace SimEd.Models.Languages.KotlinLang;
 
-static class TokenKindsKotlin
+internal static class TokenKindsKotlin
 {
     public const int Unknown = 0;
     public const int Spaces = 'S';

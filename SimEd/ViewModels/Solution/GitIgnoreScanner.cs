@@ -8,7 +8,7 @@ public class GitIgnoreScanner
     public Func<string, bool>[] IgnoredFiles { get; set; } = [];
     public string[] IgnoredFilters { get; set; } = [];
 
-    string TargetDirectory { get; set; } = string.Empty;
+    private string TargetDirectory { get; set; } = string.Empty;
 
     public void ScanDirectory(DirectoryInfo directoryInfo)
     {
@@ -68,7 +68,7 @@ public class GitIgnoreScanner
         return filters.ToArray();
     }
 
-    string FormatFileNameToUnix(string fullFileName)
+    private string FormatFileNameToUnix(string fullFileName)
     {
         var fullFileInfo = new FileInfo(fullFileName);
         var replacedName = fullFileInfo.FullName.Replace('\\', '/');
