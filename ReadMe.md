@@ -10,6 +10,12 @@ basic editor.
 To reach faster responsitivity, it is based on .Net AOT (aka native compilation) and 
 we recommend .Net 9+ for best experience.
 
+Screenshots
+---
+
+![Screenshot 1](https://./Documentation/Screenshot1.png)
+
+
 
 ### Icons:
 * SvgRepo https://www.svgrepo.com/svg/
