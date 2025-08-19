@@ -12,8 +12,11 @@ we recommend .Net 9+ for best experience.
 
 Screenshots
 ---
+Default view with syntax highlight
+![Screenshot 1](https://raw.githubusercontent.com/ciplogic/SimEd/refs/heads/main/Documentation/Screenshot1.png)
 
-![Screenshot 1](https://./Documentation/Screenshot1.png)
+Indexing (using Ctrl+T)
+![Screenshot 2](https://raw.githubusercontent.com/ciplogic/SimEd/refs/heads/main/Documentation/Screenshot2.png)
 
 
 
