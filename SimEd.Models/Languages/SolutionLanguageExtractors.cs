@@ -35,13 +35,13 @@ public class SolutionLanguageExtractors
     {
         IDeclarationsExtraction? extraction = Extractions
             .AsValueEnumerable()
-            .FirstOrDefault(it => it.IsFileMatcher(solutionItem.Path));
+            .FirstOrDefault(it => it.IsFileMatcher(solutionItem.Path.ToString()));
         if (extraction == null)
         {
             return [];
         }
 
-        string dataBytes = await File.ReadAllTextAsync(solutionItem.Path)
+        string dataBytes = await File.ReadAllTextAsync(solutionItem.Path.ToString())
             .ConfigureAwait(false);
         SolutionIndexItem[] items = extraction.ExtractFileDefinitions(
             solutionItem,

@@ -160,7 +160,7 @@ public class MainWindowViewModel : ObservableObject, IDropTarget
 
     private async void OnFileOpened(FileIsOpened fileIsOpened)
     {
-        BaseFileViewModel? untitledFileViewModel = await OpenFileViewModel(fileIsOpened.FileItem.Path);
+        BaseFileViewModel? untitledFileViewModel = await OpenFileViewModel(fileIsOpened.FileItem.Path.ToString());
         if (untitledFileViewModel is null)
         {
             return;

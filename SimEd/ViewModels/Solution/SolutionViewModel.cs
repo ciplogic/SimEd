@@ -13,6 +13,7 @@ using SimEd.Models.FileChoosers;
 using SimEd.Models.Languages;
 using SimEd.ViewModels.Documents;
 using SimEd.Views.Solution;
+using U8;
 
 namespace SimEd.ViewModels.Solution;
 
@@ -51,8 +52,8 @@ public class SolutionViewModel : Tool, IViewAware
 
     private void OnChangedFocusedTab(ChangedFocusedTab focused)
     {
-        string selectedPath = Selected?.Path ?? "";
-        if (selectedPath == focused.FileViewModel.FullFilePath)
+        U8String selectedPath = Selected?.Path ?? U8String.Empty;
+        if (selectedPath.ToString() == focused.FileViewModel.FullFilePath)
         {
             return;
         }
@@ -69,7 +70,7 @@ public class SolutionViewModel : Tool, IViewAware
                 return true;
             }
 
-            if (solutionItem.Path == focusedFileViewModel.FullFilePath)
+            if (solutionItem.Path.ToString() == focusedFileViewModel.FullFilePath)
             {
                 Selected = solutionItem;
                 return true;

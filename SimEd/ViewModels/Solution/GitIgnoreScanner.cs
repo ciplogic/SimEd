@@ -97,11 +97,6 @@ public class GitIgnoreScanner
             }
         }
 
-        if (result)
-        {
-            Console.WriteLine($"Ignored file: {unixFileName}");
-        }
-
         return result;
     }
 }

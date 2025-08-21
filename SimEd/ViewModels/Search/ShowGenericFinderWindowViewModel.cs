@@ -85,7 +85,7 @@ public class ShowGenericFinderWindowViewModel : ObservableObject
 
         _miniPubSub.Command<OpenFileFromAnywhere>(
             new(
-                index.SolutionItem.FileName.Path,
+                index.SolutionItem.FileName.Path.ToString(),
                 index.SolutionItem.Token.Position
             ));
     }

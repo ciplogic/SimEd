@@ -1,5 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <ItemGroup>
+    <PackageReference Include="U8String" Version="0.16.0-alpha" />
     <PackageReference Include="ZLinq" Version="1.5.2" />
   </ItemGroup>
   <ItemGroup>
