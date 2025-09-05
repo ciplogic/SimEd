@@ -9,6 +9,10 @@ internal static class CppNameMangler
 
     public static string Mangle(this Type clrType, RefKind refKind = RefKind.Default)
     {
+        if (clrType.IsArray)
+        {
+            return $"RefArr<{clrType.GetElementType()!.Mangle()}>";
+        }
         if (MappedLibToClrTypes.TryGetValue(clrType, out var mappedClrType))
         {
             clrType = mappedClrType;

@@ -20,4 +20,10 @@ public static class ResolvedMethods
         };
         return result;
     }
+
+    public static void System_Console_WriteLine(string text)
+    {
+        //Nothing for now. Will be filled by C++ code
+    }
+    public static int System_String_get_Length(System_String text) => text.Length;
 }
