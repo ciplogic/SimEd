@@ -11,28 +11,42 @@ class MethodResolver
 {
     public Dictionary<MethodBase, BaseMethod> MethodCache { get; } = [];
 
-    static BaseMethod? ResolveSystemClrMethod(MethodInfo clrMethod)
+    private static BaseMethod? ResolveSystemClrMethod(MethodInfo clrMethod)
     {
-        var parmeterCount = clrMethod.GetParameters().Length;
+        ParameterInfo[] parameterInfos = clrMethod.GetParameters();
+        var parmeterCount = parameterInfos.Length;
         if (!clrMethod.IsStatic)
         {
             parmeterCount++;
         }
 
         var fullTargetMethodName = $"{clrMethod.DeclaringType!.FullName.Mangle()}_{clrMethod.Name}";
-        var methods = typeof(ResolvedMethods)
+        var mappedMethod = typeof(ResolvedMethods)
             .GetMethods(BindingFlags.Static | BindingFlags.Public)
             .Where(x => x.GetParameters().Length == parmeterCount)
             .Where(x => x.Name == fullTargetMethodName)
-            .ToArray();
+            .FirstOrDefault();
 
-        if (methods.Length == 0)
+        if (mappedMethod is null)
         {
             return null;
         }
+        
+        ParameterInfo[] mappedMethodInfo = mappedMethod.GetParameters();
+        bool isStatic = clrMethod.IsStatic;
+        var offset = isStatic ? 0 : 1;
+        for (int i = offset; i < mappedMethodInfo.Length; i++)
+        {
+            var mappedParam = mappedMethodInfo[i];
+            var param = parameterInfos[i];
+            if (mappedParam.ParameterType != param.ParameterType)
+            {
+                CppNameMangler.MappedLibToClrTypes[mappedParam.ParameterType] = param.ParameterType;
+            }
+        }
 
 
-        return TransformCilMethod(methods[0]);
+        return TransformCilMethod(mappedMethod);
     }
 
     public static BaseMethod? Resolve(MethodBase clrMethod)

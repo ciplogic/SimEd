@@ -5,8 +5,15 @@ namespace NativeSharp.CodeGen;
 
 internal static class CppNameMangler
 {
+    public static Dictionary<Type, Type> MappedLibToClrTypes { get; } = new();
+
     public static string Mangle(this Type clrType, RefKind refKind = RefKind.Default)
     {
+        if (MappedLibToClrTypes.TryGetValue(clrType, out var mappedClrType))
+        {
+            clrType = mappedClrType;
+        }
+
         var fullName = clrType.FullName!;
         refKind = refKind == RefKind.Default ? clrType.IsValueType ? RefKind.Value : RefKind.Ref : refKind;
         var resultMangle = Mangle(fullName);

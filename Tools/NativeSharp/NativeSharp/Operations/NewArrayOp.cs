@@ -18,8 +18,6 @@ internal class NewArrayOp : BaseOp
         Count = count;
     }
 
-    public override string GenCode()
-    {
-        return $"{Result.GenCode()} = new_arr<{ElementType.Mangle()}>({Count.GenExpressionCode()});";
-    }
+    public override string GenCode() 
+        => $"{Result.GenCode()} = new_arr<{ElementType.Mangle()}>({Count.GenExpressionCode()});";
 }

@@ -19,4 +19,10 @@
       <ProjectReference Include="..\NativeSharp.Lib\NativeSharp.Lib.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <None Update="native_sharp.hpp">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+    </ItemGroup>
+
 </Project>

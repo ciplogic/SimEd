@@ -168,14 +168,13 @@ internal class InstructionTransformer
 
         var result = NewVirtVar(constructorInfo.DeclaringType!);
         return new NewObjOp(result, args.ToArray());
-        throw new NotImplementedException();
     }
 
     private BaseOp TransformNewArr(Instruction instruction)
     {
         var popCount = LocalVariablesStackAndState.Pop();
 
-        var elementType = instruction.Operand.GetType();
+        var elementType = (Type)instruction.Operand;
         var result = NewVirtVar(elementType);
         return new NewArrayOp(result, elementType, popCount);
     }

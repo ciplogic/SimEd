@@ -1,4 +1,5 @@
-﻿using NativeSharp.Operations;
+﻿using NativeSharp.CodeGen;
+using NativeSharp.Operations;
 using NativeSharp.Operations.Common;
 using NativeSharp.Operations.Vars;
 
@@ -6,18 +7,18 @@ namespace NativeSharp.FrontEnd;
 
 internal class NewObjOp : BaseOp
 {
-    public VReg Result { get; }
+    public VReg Left { get; }
     public IValueExpression[] Arguments { get; }
 
-    public NewObjOp(VReg result, IValueExpression[] arguments)
+    public NewObjOp(VReg left, IValueExpression[] arguments)
     {
-        Result = result;
+        Left = left;
         Arguments = arguments;
     }
 
     public override string GenCode()
     {
         string args = string.Join(", ", Arguments.Select(x => x.GenExpressionCode()));
-        return $"{Result.GenExpressionCode} = clr_new_obj({args});";
+        return $"{Left.GenExpressionCode()} = clr_new_{Left.ExpressionType.Mangle()}({args});";
     }
 }
