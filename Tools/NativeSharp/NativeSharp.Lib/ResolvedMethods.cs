@@ -13,7 +13,7 @@ public static class ResolvedMethods
         Array.Copy(text.Data, data, text.Length);
 
         Array.Copy(text.Data, 0, data, text.Length, text2.Length);
-        System_String result = new System_String()
+        System_String result = new ()
         {
             Coder = 0,
             Data = data,
@@ -25,5 +25,5 @@ public static class ResolvedMethods
     {
         //Nothing for now. Will be filled by C++ code
     }
-    public static int System_String_get_Length(System_String text) => text.Length;
+    public static int System_String_get_Length(System_String text) => text.Data.Length;
 }

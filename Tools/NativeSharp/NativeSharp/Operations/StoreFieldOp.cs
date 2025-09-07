@@ -1,7 +1,6 @@
-﻿using NativeSharp.Operations;
-using NativeSharp.Operations.Common;
+﻿using NativeSharp.Operations.Common;
 
-namespace NativeSharp.FrontEnd;
+namespace NativeSharp.Operations;
 
 internal class StoreFieldOp : BaseOp
 {

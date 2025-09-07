@@ -73,7 +73,7 @@ internal class InstructionTransformer
 
         if (opName.StartsWith("ld"))
         {
-            return TransformLoadOp(instruction);
+            return LoadOperationsTransformer.TransformLoadOp(instruction, Params, LocalVariablesStackAndState);
         }
 
         if (opName.StartsWith("br"))
@@ -81,9 +81,14 @@ internal class InstructionTransformer
             return TransformBranchOperation(instruction, opName);
         }
 
+        if (opName.StartsWith("conv"))
+        {
+            return TransformConvOperation(instruction, opName);
+        }
+
         if (opName.StartsWith("call"))
         {
-            return TransformCallOp(instruction);
+            return CallOperationsTransformer.TransformCallOp(LocalVariablesStackAndState, instruction);
         }
 
         if (opName.StartsWith("stloc"))
@@ -121,6 +126,17 @@ internal class InstructionTransformer
         throw new InvalidOperationException(opName);
     }
 
+    private BaseOp TransformConvOperation(Instruction instruction, string opName)
+    {
+        var split = opName.Split('.');
+        var localVar = LocalVariablesStackAndState.Pop();
+
+        var resultVar = LocalVariablesStackAndState.NewVirtVar(typeof(int));
+        
+        
+        return new ConvOp(opName, resultVar, localVar);
+    }
+
     private BaseOp TransformStoreField(Instruction instruction)
     {
         var fieldInfo = (FieldInfo)instruction.Operand;
@@ -133,9 +149,9 @@ internal class InstructionTransformer
     private BaseOp TransformDup()
     {
         var original = LocalVariablesStackAndState.Pop();
-        var vreg1 = NewVirtVar(original.ExpressionType);
+        var vreg1 = LocalVariablesStackAndState.NewVirtVar(original.ExpressionType);
 
-        var vreg2 = NewVirtVar(original.ExpressionType);
+        var vreg2 = LocalVariablesStackAndState.NewVirtVar(original.ExpressionType);
         return new DupOp(vreg1, vreg2, original);
     }
 
@@ -166,7 +182,7 @@ internal class InstructionTransformer
             args.Add(LocalVariablesStackAndState.Pop());
         }
 
-        var result = NewVirtVar(constructorInfo.DeclaringType!);
+        var result = LocalVariablesStackAndState.NewVirtVar(constructorInfo.DeclaringType!);
         return new NewObjOp(result, args.ToArray());
     }
 
@@ -175,7 +191,7 @@ internal class InstructionTransformer
         var popCount = LocalVariablesStackAndState.Pop();
 
         var elementType = (Type)instruction.Operand;
-        var result = NewVirtVar(elementType);
+        var result = LocalVariablesStackAndState.NewVirtVar(elementType);
         return new NewArrayOp(result, elementType, popCount);
     }
 
@@ -193,7 +209,7 @@ internal class InstructionTransformer
         var rightOp = LocalVariablesStackAndState.Pop();
         return new BinaryOp()
         {
-            Left = NewVirtVar(leftOp.ExpressionType),
+            Left = LocalVariablesStackAndState.NewVirtVar(leftOp.ExpressionType),
             LeftExpression = leftOp,
             RightExpression = rightOp,
             Operator = instruction.OpCode.Name!
@@ -206,7 +222,7 @@ internal class InstructionTransformer
         var rightOp = LocalVariablesStackAndState.Pop();
         return new BinaryOp()
         {
-            Left = NewVirtVar(typeof(bool)),
+            Left = LocalVariablesStackAndState.NewVirtVar(typeof(bool)),
             LeftExpression = leftOp,
             RightExpression = rightOp,
             Operator = instruction.OpCode.Name!
@@ -247,177 +263,4 @@ internal class InstructionTransformer
 
         throw new InvalidOperationException(opName);
     }
-
-    private BaseOp TransformCallOp(Instruction instruction)
-    {
-        var opName = instruction.OpCode.Name;
-        var operand = (MethodBase)instruction.Operand;
-        var operandAsMethodInfo = operand as MethodInfo;
-
-        var paramCount = operandAsMethodInfo?.GetParameters().Length ?? 0;
-
-        var args = new List<IValueExpression>();
-        for (var i = 0; i < paramCount; i++)
-        {
-            args.Add(LocalVariablesStackAndState.Pop());
-        }
-
-        if (operandAsMethodInfo != null && !operandAsMethodInfo.IsStatic)
-        {
-            //makes sure that this pointer is also pushed for non static methods.
-            args.Add(LocalVariablesStackAndState.Pop());
-        }
-
-        var returnType = operandAsMethodInfo?.ReturnType ?? typeof(void);
-        VReg? returnValue = null;
-        if (returnType != typeof(void))
-        {
-            returnValue = NewVirtVar(returnType);
-        }
-
-        CallOp result = new CallOp()
-        {
-            CallType = CallType.Static,
-            TargetMethod = operand,
-            ReturnValue = returnValue,
-            Args = args.ToArray()
-        };
-        return result;
-    }
-
-    private BaseOp TransformLoadOp(Instruction instruction)
-    {
-        var opName = instruction.OpCode.Name;
-        var operand = instruction.Operand;
-
-        if (opName.StartsWith("ldarg"))
-        {
-            return ParseLoadArgument(instruction, opName);
-        }
-
-        if (opName.StartsWith("ldc"))
-        {
-            return ExtractLoadConstant(instruction, opName);
-        }
-
-        if ((opName.StartsWith("ldloc")))
-        {
-            return ExtractLoadLocalVariable(instruction);
-        }
-
-        if (opName == "ldfld")
-        {
-            return ExtractField(instruction);
-        }
-
-        switch (opName)
-        {
-            case "ldstr":
-            {
-                var constValue = ConstantValueExpression.Create((string)instruction.Operand);
-                return ExtractAssignFromConstant(constValue);
-            }
-            case "ldloca":
-            case "ldloca.s":
-            {
-                var operandAsInt = OperandAsInt(operand);
-                var localVar = LocalVariablesStackAndState.LocalVariables[operandAsInt];
-                return new AssignOp()
-                {
-                    Left = NewVirtVar(localVar.ExpressionType),
-                    Expression = localVar
-                };
-            }
-            default:
-                throw new InvalidOperationException(opName);
-        }
-    }
-
-    private BaseOp ExtractField(Instruction instruction)
-    {
-        var thisPtr = LocalVariablesStackAndState.Pop();
-        FieldInfo fieldInfo = (FieldInfo)instruction.Operand;
-        var resultVar = NewVirtVar(fieldInfo.FieldType);
-        return new LoadFieldOp(thisPtr, fieldInfo.Name, resultVar);
-    }
-
-    private BaseOp ExtractLoadLocalVariable(Instruction instruction)
-    {
-        var opName = instruction.OpCode.Name;
-        var split = opName.Split('.');
-        var index = -1;
-        if (split.Length == 2)
-        {
-            if (!int.TryParse(split[1], out index))
-            {
-                index = OperandAsInt(instruction.Operand);
-            }
-        }
-        else
-        {
-            index = (int)instruction.Operand;
-        }
-
-        return new AssignOp()
-        {
-            Left = NewVirtVar(LocalVariablesStackAndState.LocalVariables[index].ExpressionType),
-            Expression = LocalVariablesStackAndState.LocalVariables[index]
-        };
-    }
-
-    private BaseOp ParseLoadArgument(Instruction instruction, string opName)
-    {
-        int index = 0;
-        if (!int.TryParse(opName.Substring(6), out index))
-        {
-            index = (int)instruction.Operand;
-        }
-
-        return new AssignOp()
-        {
-            Left = NewVirtVar(Params[index].ExpressionType),
-            Expression = Params[index]
-        };
-    }
-
-    private BaseOp ExtractLoadConstant(Instruction instruction, string opName)
-    {
-        int index = 0;
-        if (opName.Length < 7 || !int.TryParse(opName.Substring(7), out index))
-        {
-            index = (int)instruction.Operand;
-        }
-
-        var constValue = ConstantValueExpression.Create(index);
-        return ExtractAssignFromConstant(constValue);
-    }
-
-    int OperandAsInt(object operand)
-    {
-        if (operand is int)
-        {
-            return (int)operand;
-        }
-
-        if (operand is LocalVariableInfo localVar)
-        {
-            return localVar.LocalIndex;
-        }
-
-        throw new InvalidOperationException();
-    }
-
-    private BaseOp ExtractAssignFromConstant(ConstantValueExpression constValueExpression)
-    {
-        var virtVar = NewVirtVar(constValueExpression.ExpressionType);
-        var assignOp = new AssignOp()
-        {
-            Left = virtVar,
-            Expression = constValueExpression
-        };
-        return assignOp;
-    }
-
-    private VReg NewVirtVar(Type varType)
-        => LocalVariablesStackAndState.NewVirtVar(varType);
 }

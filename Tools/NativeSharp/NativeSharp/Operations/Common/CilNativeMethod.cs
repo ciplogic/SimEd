@@ -2,9 +2,8 @@
 
 namespace NativeSharp.Operations.Common;
 
-public class CilMethod : BaseMethod
+public class CilNativeMethod : BaseNativeMethod
 {
     public BaseOp[] Instructions { get; set; } = [];
     public IndexedVariable[] Locals { get; set; }
-    public ArgumentVariable[] Args { get; set; }
 }

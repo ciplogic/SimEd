@@ -1,8 +1,7 @@
-﻿using NativeSharp.Operations;
-using NativeSharp.Operations.Common;
+﻿using NativeSharp.Operations.Common;
 using NativeSharp.Operations.Vars;
 
-namespace NativeSharp.FrontEnd;
+namespace NativeSharp.Operations;
 
 internal class LoadFieldOp : BaseOp
 {

@@ -5,14 +5,20 @@ using NativeSharp.Lib;
 using NativeSharp.Operations;
 using NativeSharp.Operations.Common;
 
-namespace NativeSharp;
+namespace NativeSharp.Resolving;
 
 class MethodResolver
 {
-    public Dictionary<MethodBase, BaseMethod> MethodCache { get; } = [];
+    public static Dictionary<MethodBase, BaseNativeMethod> MethodCache { get; } = [];
+    public static Dictionary<MethodBase, MethodBase> RemappedMethods { get; } = [];
 
-    private static BaseMethod? ResolveSystemClrMethod(MethodInfo clrMethod)
+    private static BaseNativeMethod? ResolveSystemClrMethod(MethodInfo clrMethod)
     {
+        if (MethodCache.TryGetValue(clrMethod, out var method)) 
+        {
+            return method;
+        }
+
         ParameterInfo[] parameterInfos = clrMethod.GetParameters();
         var parmeterCount = parameterInfos.Length;
         if (!clrMethod.IsStatic)
@@ -20,7 +26,7 @@ class MethodResolver
             parmeterCount++;
         }
 
-        var fullTargetMethodName = $"{clrMethod.DeclaringType!.FullName.Mangle()}_{clrMethod.Name}";
+        var fullTargetMethodName = $"{clrMethod.MangleMethodName()}";
         var mappedMethod = typeof(ResolvedMethods)
             .GetMethods(BindingFlags.Static | BindingFlags.Public)
             .Where(x => x.GetParameters().Length == parmeterCount)
@@ -31,7 +37,7 @@ class MethodResolver
         {
             return null;
         }
-        
+
         ParameterInfo[] mappedMethodInfo = mappedMethod.GetParameters();
         bool isStatic = clrMethod.IsStatic;
         var offset = isStatic ? 0 : 1;
@@ -45,13 +51,16 @@ class MethodResolver
             }
         }
 
+        RemappedMethods[clrMethod] = mappedMethod;
 
-        return TransformCilMethod(mappedMethod);
+        return TransformCilMethod(clrMethod, mappedMethod);
     }
 
-    public static BaseMethod? Resolve(MethodBase clrMethod)
+    public static BaseNativeMethod? Resolve(MethodBase clrMethod)
     {
-        if (clrMethod.DeclaringType.FullName.StartsWith("System"))
+        Type declaringType = clrMethod.DeclaringType!;
+        var signature = clrMethod.MangleMethodName();
+        if (signature.StartsWith("System"))
         {
             var systemClrMethod = ResolveSystemClrMethod(clrMethod as MethodInfo);
             if (systemClrMethod != null)
@@ -62,25 +71,38 @@ class MethodResolver
             return systemClrMethod;
         }
 
-        return TransformCilMethod(clrMethod);
+        return TransformCilMethod(clrMethod, clrMethod);
     }
 
-    private static BaseMethod? TransformCilMethod(MethodBase clrMethod)
+    private static BaseNativeMethod? TransformCilMethod(MethodBase clrMethod, MethodBase remappedClrMethod)
     {
         var transformer = new InstructionTransformer();
-        var operations = transformer.Transform(clrMethod);
-        return new CilMethod()
+        var transformCilMethod = new CilNativeMethod()
         {
-            Locals = transformer.LocalVariablesStackAndState.LocalVariables.ToArray(),
-            Args = transformer.Params.ToArray(),
-            Instructions = operations,
             Target = clrMethod,
         };
+        MethodCache[clrMethod] = transformCilMethod;
+        var operations = transformer.Transform(remappedClrMethod);
+        transformCilMethod.Locals = transformer.LocalVariablesStackAndState.LocalVariables.ToArray();
+        transformCilMethod.Args = transformer.Params.ToArray();
+        transformCilMethod.Instructions = operations;
+
+        return transformCilMethod;
     }
 
-    public void ResolveCilMethod(BaseMethod? method)
+    public static void ResolveMethod(MethodBase clrMethod)
     {
-        if (method is not CilMethod cilMethod)
+        if (MethodCache.ContainsKey(clrMethod))
+        {
+            return;
+        }
+
+        ResolveCilMethod(ResolveSystemClrMethod(clrMethod as MethodInfo));
+    }
+
+    public static void ResolveCilMethod(BaseNativeMethod? method)
+    {
+        if (method is not CilNativeMethod cilMethod)
         {
             return;
         }

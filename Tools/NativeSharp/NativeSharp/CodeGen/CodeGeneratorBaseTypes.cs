@@ -10,6 +10,7 @@ internal static class CodeGeneratorBaseTypes
         nativeSharpPrimitives.AddLine("#include <cstdint>");
         nativeSharpPrimitives.AddLine("");
         AddMappedType(typeof(int), "int", nativeSharpPrimitives);
+        AddMappedType(typeof(uint), "uint32_t", nativeSharpPrimitives);
         AddMappedType(typeof(byte), "uint8_t", nativeSharpPrimitives);
         AddMappedType(typeof(bool), "bool", nativeSharpPrimitives);
         AddMappedType(typeof(float), "float", nativeSharpPrimitives);
