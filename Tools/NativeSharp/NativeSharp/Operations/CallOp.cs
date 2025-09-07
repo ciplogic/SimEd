@@ -16,7 +16,7 @@ public class CallOp : BaseOp
 
     public override string GenCode()
     {
-        string args = string.Join(", ", Args.Select(x => x.GenExpressionCode()));
+        string args = string.Join(", ", Args.Select(x => x.Code()));
         var result =  $"{TargetMethod.MangleMethodName()}({args});";
         if (ReturnValue is not null)
         {

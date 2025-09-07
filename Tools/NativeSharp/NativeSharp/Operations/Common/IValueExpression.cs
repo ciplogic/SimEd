@@ -3,5 +3,5 @@
 public interface IValueExpression
 {
     public Type ExpressionType { get; set; }
-    string GenExpressionCode();
+    string Code();
 }

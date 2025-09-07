@@ -21,6 +21,6 @@ internal class LoadFieldOp : BaseOp
         var type = ThisPtr.ExpressionType;
         var isByRef = !type.IsValueType;
         var derefText = isByRef ? "->" : ".";
-        return $"{ResultVar.GenCode()} = {ThisPtr.GenExpressionCode()}{derefText}{FieldName};";
+        return $"{ResultVar.GenCode()} = {ThisPtr.Code()}{derefText}{FieldName};";
     }
 }

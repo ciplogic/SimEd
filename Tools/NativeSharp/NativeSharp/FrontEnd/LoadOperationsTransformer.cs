@@ -97,10 +97,12 @@ static class LoadOperationsTransformer
     public static BaseOp ParseLoadArgument(Instruction instruction, string opName,
         LocalVariablesStackAndState localVariablesStackAndState, List<ArgumentVariable> argumentVariables)
     {
+        var components = opName.Split('.');
         int index = 0;
-        if (!int.TryParse(opName.Substring(6), out index))
+        if (!int.TryParse(components[1], out index))
         {
-            index = (int)instruction.Operand;
+            var paramInfo = instruction.Operand as ParameterInfo;
+            index = paramInfo?.Position ?? (int)instruction.Operand;
         }
 
         return new AssignOp()

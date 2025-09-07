@@ -14,10 +14,12 @@ internal class Program
         var entryPoint = asm.EntryPoint!;
 
         MethodResolver.ResolveCilMethod(MethodResolver.Resolve(entryPoint));
-        var stringCreator = typeof(Texts).GetMethod("FromIndex")!;
-        MethodResolver.TransformCilMethod(stringCreator, stringCreator);
+        
+        MethodResolver.TransformCilMethod(typeof(Texts).GetMethod("FromIndex")!);
+        MethodResolver.TransformCilMethod(typeof(Texts).GetMethod("BuildSystemString")!);
+        
         var codeGen = new CodeGenerator();
-        codeGen.WriteMethodsAndMain();
+        codeGen.WriteMethodsAndMain(entryPoint.MangleMethodName());
         CodeGeneratorBaseTypes.GenerateNativeMappings();
     }
 }

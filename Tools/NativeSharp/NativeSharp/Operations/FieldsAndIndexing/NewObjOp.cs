@@ -18,6 +18,6 @@ internal class NewObjOp : BaseOp
     public override string GenCode()
     {
         //string args = string.Join(", ", Arguments.Select(x => x.GenExpressionCode()));
-        return $"{Left.GenExpressionCode()} = std::make_shared<{Left.ExpressionType.Mangle(RefKind.Value)}>();";
+        return $"{Left.Code()} = std::make_shared<{Left.ExpressionType.Mangle(RefKind.Value)}>();";
     }
 }

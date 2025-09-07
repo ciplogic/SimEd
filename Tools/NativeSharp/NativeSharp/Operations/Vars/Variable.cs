@@ -6,7 +6,7 @@ public abstract class Variable : IRefValue, IValueExpression
 {
     public Type ExpressionType { get; set; }
 
-    public string GenExpressionCode()
+    public string Code()
     {
         return GenCodeImpl();
     }

@@ -131,9 +131,9 @@ internal class InstructionTransformer
     {
         var fieldInfo = (FieldInfo)instruction.Operand;
         var valueToSet = localVariablesStackAndState.Pop();
-        var thisPtr = localVariablesStackAndState.Pop();
+        var thisPtr = (IndexedVariable)localVariablesStackAndState.Pop();
 
-        return new StoreFieldOp((IndexedVariable)valueToSet, thisPtr, fieldInfo.Name);
+        return new StoreFieldOp(thisPtr, valueToSet,  fieldInfo.Name);
     }
 
     private BaseOp TransformDup()

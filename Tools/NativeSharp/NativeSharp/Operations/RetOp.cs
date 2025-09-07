@@ -11,5 +11,5 @@ internal class RetOp : BaseOp
     public override string GenCode()
         => ValueExpression is null
             ? ""
-            : $"return {ValueExpression.GenExpressionCode()};";
+            : $"return {ValueExpression.Code()};";
 }

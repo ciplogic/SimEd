@@ -7,7 +7,7 @@ internal class ConstantValueExpression(object value) : IValueExpression
     public object Value { get; } = value;
     public Type ExpressionType { get; set; }
 
-    public string GenExpressionCode()
+    public string Code()
     {
         ArgumentNullException.ThrowIfNull(Value);
         if (Value is string text)

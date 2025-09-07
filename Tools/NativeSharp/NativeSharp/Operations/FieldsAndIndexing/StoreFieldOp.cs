@@ -21,6 +21,6 @@ internal class StoreFieldOp : BaseOp
         var type = ThisPtr.ExpressionType;
         var isByRef = !type.IsValueType;
         var derefText = isByRef ? "->" : ".";
-        return $"{ThisPtr.GenExpressionCode()}{derefText}{FieldName} = {ValueToSet.GenExpressionCode()};";
+        return $"{ThisPtr.Code()}{derefText}{FieldName} = {ValueToSet.Code()};";
     }
 }

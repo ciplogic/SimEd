@@ -12,6 +12,6 @@ internal class ConvOp(string opName, VReg resultVar, IValueExpression rightSideV
 
     public override string GenCode()
     {
-        return $"{ResultVar.GenExpressionCode()} = {OpName} ({RightSideVar.GenExpressionCode()});";
+        return $"{ResultVar.Code()} = {OpName} ({RightSideVar.Code()});";
     }
 }

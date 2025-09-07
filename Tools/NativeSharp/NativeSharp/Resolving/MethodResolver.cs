@@ -75,8 +75,9 @@ class MethodResolver
         return TransformCilMethod(clrMethod, clrMethod);
     }
 
-    public static BaseNativeMethod? TransformCilMethod(MethodBase clrMethod, MethodBase remappedClrMethod)
+    public static BaseNativeMethod? TransformCilMethod(MethodBase clrMethod, MethodBase? remappedClrMethod = null)
     {
+        remappedClrMethod ??= clrMethod;
         var transformer = new InstructionTransformer();
         var transformCilMethod = new CilNativeMethod()
         {

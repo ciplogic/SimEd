@@ -41,3 +41,7 @@ inline bool brfalse_s(bool left) {
 inline bool brtrue_s(bool left) {
     return left;
 }
+
+inline int32_t conv_i4(uint32_t left) {
+    return left;
+}

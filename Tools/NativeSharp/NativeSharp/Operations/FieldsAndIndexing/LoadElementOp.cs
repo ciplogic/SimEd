@@ -17,5 +17,5 @@ internal class LoadElementOp : BaseOp
     }
 
     public override string GenCode() 
-        => $"{ResultElement.GenCode()} = (*{Array.GenCode()})[{Index.GenExpressionCode()}];";
+        => $"{ResultElement.GenCode()} = (*{Array.GenCode()})[{Index.Code()}];";
 }

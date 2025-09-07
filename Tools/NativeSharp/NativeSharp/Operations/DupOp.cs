@@ -18,6 +18,6 @@ internal class DupOp : BaseOp
 
     public override string GenCode()
     {
-        return $"{Vreg1.GenCode()} = {Original.GenExpressionCode()}; {Vreg2.GenCode()} = {Vreg1.GenExpressionCode()};";
+        return $"{Vreg1.GenCode()} = {Original.Code()}; {Vreg2.GenCode()} = {Vreg1.Code()};";
     }
 }

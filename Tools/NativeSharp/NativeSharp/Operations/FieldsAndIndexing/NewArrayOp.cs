@@ -18,5 +18,5 @@ internal class NewArrayOp : BaseOp
     }
 
     public override string GenCode() 
-        => $"{Result.GenCode()} = new_arr<{ElementType.Mangle()}>({Count.GenExpressionCode()});";
+        => $"{Result.GenCode()} = new_arr<{ElementType.Mangle()}>({Count.Code()});";
 }

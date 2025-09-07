@@ -8,5 +8,5 @@ class AssignOp : BaseOp
     public IValueExpression Expression { get; set; }
 
     public override string GenCode()
-        => $"{Left.GenCode()} = {Expression.GenExpressionCode()};";
+        => $"{Left.GenCode()} = {Expression.Code()};";
 }
