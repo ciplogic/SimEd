@@ -2,6 +2,7 @@
 using NativeSharp.Common;
 using NativeSharp.Operations;
 using NativeSharp.Operations.Common;
+using NativeSharp.Operations.FieldsAndIndexing;
 using NativeSharp.Operations.Values;
 using NativeSharp.Operations.Vars;
 
@@ -83,7 +84,7 @@ internal class InstructionTransformer
 
         if (opName.StartsWith("conv"))
         {
-            return TransformConvOperation(instruction, opName);
+            return ConvertOperationTransformer.TransformConvOperation(opName, LocalVariablesStackAndState);
         }
 
         if (opName.StartsWith("call"))
@@ -98,7 +99,7 @@ internal class InstructionTransformer
 
         if (opName == "stfld")
         {
-            return TransformStoreField(instruction);
+            return TransformStoreField(instruction, LocalVariablesStackAndState);
         }
 
 
@@ -126,24 +127,13 @@ internal class InstructionTransformer
         throw new InvalidOperationException(opName);
     }
 
-    private BaseOp TransformConvOperation(Instruction instruction, string opName)
-    {
-        var split = opName.Split('.');
-        var localVar = LocalVariablesStackAndState.Pop();
-
-        var resultVar = LocalVariablesStackAndState.NewVirtVar(typeof(int));
-        
-        
-        return new ConvOp(opName, resultVar, localVar);
-    }
-
-    private BaseOp TransformStoreField(Instruction instruction)
+    private BaseOp TransformStoreField(Instruction instruction, LocalVariablesStackAndState localVariablesStackAndState)
     {
         var fieldInfo = (FieldInfo)instruction.Operand;
-        var valueToSet = LocalVariablesStackAndState.Pop();
-        var thisPtr = LocalVariablesStackAndState.Pop();
+        var valueToSet = localVariablesStackAndState.Pop();
+        var thisPtr = localVariablesStackAndState.Pop();
 
-        return new StoreFieldOp(valueToSet, thisPtr, fieldInfo.Name);
+        return new StoreFieldOp((IndexedVariable)valueToSet, thisPtr, fieldInfo.Name);
     }
 
     private BaseOp TransformDup()
@@ -191,7 +181,8 @@ internal class InstructionTransformer
         var popCount = LocalVariablesStackAndState.Pop();
 
         var elementType = (Type)instruction.Operand;
-        var result = LocalVariablesStackAndState.NewVirtVar(elementType);
+        var arrayType = elementType.MakeArrayType();
+        var result = LocalVariablesStackAndState.NewVirtVar(arrayType);
         return new NewArrayOp(result, elementType, popCount);
     }
 

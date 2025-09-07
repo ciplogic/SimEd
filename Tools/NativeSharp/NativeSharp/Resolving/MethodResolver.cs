@@ -11,10 +11,11 @@ class MethodResolver
 {
     public static Dictionary<MethodBase, BaseNativeMethod> MethodCache { get; } = [];
     public static Dictionary<MethodBase, MethodBase> RemappedMethods { get; } = [];
+    public static TwoWayDictionary<Type> MappedType { get; } = new();
 
     private static BaseNativeMethod? ResolveSystemClrMethod(MethodInfo clrMethod)
     {
-        if (MethodCache.TryGetValue(clrMethod, out var method)) 
+        if (MethodCache.TryGetValue(clrMethod, out var method))
         {
             return method;
         }
@@ -47,7 +48,7 @@ class MethodResolver
             var param = parameterInfos[i];
             if (mappedParam.ParameterType != param.ParameterType)
             {
-                CppNameMangler.MappedLibToClrTypes[mappedParam.ParameterType] = param.ParameterType;
+                MappedType[mappedParam.ParameterType] = param.ParameterType;
             }
         }
 
@@ -74,7 +75,7 @@ class MethodResolver
         return TransformCilMethod(clrMethod, clrMethod);
     }
 
-    private static BaseNativeMethod? TransformCilMethod(MethodBase clrMethod, MethodBase remappedClrMethod)
+    public static BaseNativeMethod? TransformCilMethod(MethodBase clrMethod, MethodBase remappedClrMethod)
     {
         var transformer = new InstructionTransformer();
         var transformCilMethod = new CilNativeMethod()

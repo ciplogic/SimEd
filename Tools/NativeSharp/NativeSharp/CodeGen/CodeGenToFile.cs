@@ -11,5 +11,20 @@ public class CodeGenToFile(string FileName)
         File.WriteAllText(FileName, Text.ToString());
     }
 
-    public void AddLine(string text) => Text.AppendLine(text);
+    public CodeGenToFile AddLine(string text)
+    {
+        if (string.IsNullOrWhiteSpace(text))
+        {
+            return this;
+        }
+
+        Text.AppendLine(text);
+        return this;
+    }
+
+    public CodeGenToFile AddLine()
+    {
+        Text.AppendLine();
+        return this;
+    }
 }

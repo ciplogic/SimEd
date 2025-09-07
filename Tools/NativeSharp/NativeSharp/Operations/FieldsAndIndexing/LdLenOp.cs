@@ -1,6 +1,6 @@
 ﻿using NativeSharp.Operations.Vars;
 
-namespace NativeSharp.Operations;
+namespace NativeSharp.Operations.FieldsAndIndexing;
 
 public class LdLenOp : BaseOp
 {

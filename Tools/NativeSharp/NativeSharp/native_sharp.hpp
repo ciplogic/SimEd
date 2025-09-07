@@ -9,16 +9,16 @@ template <typename T>
 using Ref = std::shared_ptr<T>;
 
 template <typename T>
-using RefArr = Ref<std::vector<T>>;
+using Arr = std::vector<T>;
 
-struct System_String {
-};
-
-Ref<System_String> _clr_str(int index);
-
+template <typename T>
+using RefArr = Ref<Arr<T>>;
 
 inline int add(int left, int right) {
     return left + right;
+}
+inline int sub(int left, int right) {
+    return left - right;
 }
 
 inline int mul(int left, int right) {

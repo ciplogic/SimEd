@@ -1,4 +1,5 @@
-﻿using NativeSharp.Operations;
+﻿using System.Reflection;
+using NativeSharp.Operations;
 using NativeSharp.Operations.Common;
 using NativeSharp.Operations.Vars;
 using NativeSharp.Resolving;
@@ -11,6 +12,8 @@ public class CodeGenerator
 
     public void WriteMethodsAndMain()
     {
+        Code.AddLine("#include \"native_sharp.hpp\"");
+        WriteReferencedTypes();
         WriteInitialCode();
 
         foreach (var method in MethodResolver.MethodCache.Values)
@@ -26,29 +29,58 @@ public class CodeGenerator
             if (method is CilNativeMethod cilMethod)
             {
                 WriteCilMethod(cilMethod);
+                Code.AddLine();
             }
         }
 
         Code.WriteToFile();
     }
 
+    public void WriteReferencedTypes()
+    {
+        var mappedTypes = MethodResolver.MappedType.Straight;
+        foreach (var kv in mappedTypes)
+        {
+            this.Code.AddLine($"struct {kv.Value.Mangle(RefKind.Value)};");
+        }
+
+        foreach (var kv in mappedTypes)
+        {
+            this.Code.AddLine($"struct {kv.Value.Mangle(RefKind.Value)} {{");
+            var mappedType = kv.Key;
+            foreach (FieldInfo variable in mappedType.GetFields())
+            {
+                if (variable.IsStatic)
+                {
+                    continue;
+                }
+
+                Code.AddLine($"{variable.FieldType.Mangle()} {variable.Name};");
+            }
+
+            this.Code.AddLine("};");
+        }
+    }
+
     private void WriteInitialCode()
     {
-
         Code.AddLine(
             """
-                 #include "native_sharp.hpp"
+            
+
+            namespace {
+
+                Ref<System_String> _clr_str(int index);
                  
-                 namespace {
-                     template <class T>
-                     auto new_arr(int size) {
-                         RefArr<T> result = std::make_shared<Arr<T>>();
-                         result->resize(size);
-                         return result;
-                     }
-                 }
-                 
-                 """);
+                template <class T>
+                    RefArr<T> new_arr(int size) {
+                    RefArr<T> result = std::make_shared<Arr<T>>();
+                    result->resize(size);
+                    return result;
+                }
+            }
+
+            """);
     }
 
     private void WriteInstructions(BaseOp[] instructions)

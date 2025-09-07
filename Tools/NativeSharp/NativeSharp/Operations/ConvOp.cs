@@ -3,21 +3,15 @@ using NativeSharp.Operations.Vars;
 
 namespace NativeSharp.Operations;
 
-internal class ConvOp : BaseOp
+internal class ConvOp(string opName, VReg resultVar, IValueExpression rightSideVar)
+    : BaseOp
 {
-    private readonly string opName;
-    private readonly VReg resultVar;
-    private readonly IValueExpression rightSideVar;
-
-    public ConvOp(string opName, VReg resultVar, IValueExpression rightSideVar)
-    {
-        this.opName = opName;
-        this.resultVar = resultVar;
-        this.rightSideVar = rightSideVar;
-    }
+    public string OpName { get; } = opName.Replace('.', '_');
+    public VReg ResultVar { get; } = resultVar;
+    public IValueExpression RightSideVar { get; } = rightSideVar;
 
     public override string GenCode()
     {
-        return $"{resultVar.GenExpressionCode()} = {opName} ({rightSideVar.GenExpressionCode()});";
+        return $"{ResultVar.GenExpressionCode()} = {OpName} ({RightSideVar.GenExpressionCode()});";
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System.Reflection;
 using NativeSharp.Common;
 using NativeSharp.Operations;
+using NativeSharp.Operations.FieldsAndIndexing;
 using NativeSharp.Operations.Values;
 using NativeSharp.Operations.Vars;
 
@@ -19,7 +20,7 @@ static class LoadOperationsTransformer
             return ParseLoadArgument(instruction, opName, variablesStackAndState,
                 argumentVariables);
         }
-        
+
         if (opName == "ldlen")
             return ParseLoadLen(variablesStackAndState);
 
@@ -36,6 +37,12 @@ static class LoadOperationsTransformer
         if (opName == "ldfld")
         {
             return ExtractField(instruction, variablesStackAndState);
+        }
+        
+
+        if (opName.StartsWith("ldelem"))
+        {
+            return ExtractLoadElement(instruction, variablesStackAndState);
         }
 
         switch (opName)
@@ -61,6 +68,16 @@ static class LoadOperationsTransformer
         }
     }
 
+    private static BaseOp ExtractLoadElement(Instruction instruction, LocalVariablesStackAndState variablesStackAndState)
+    {
+        var index = variablesStackAndState.Pop();
+        var array = (IndexedVariable)variablesStackAndState.Pop();
+
+        var resultElement = variablesStackAndState.NewVirtVar(array.ExpressionType.GetElementType());
+        var op = new LoadElementOp(resultElement, array, index);
+        return op;
+    }
+
     private static BaseOp ParseLoadLen(LocalVariablesStackAndState variablesStackAndState)
     {
         var arrVar = (IndexedVariable)variablesStackAndState.Pop();
@@ -70,7 +87,7 @@ static class LoadOperationsTransformer
 
     private static BaseOp ExtractField(Instruction instruction, LocalVariablesStackAndState localVariablesStackAndState)
     {
-        var thisPtr = localVariablesStackAndState.Pop();
+        var thisPtr = (IndexedVariable)localVariablesStackAndState.Pop();
         FieldInfo fieldInfo = (FieldInfo)instruction.Operand;
         var resultVar = localVariablesStackAndState.NewVirtVar(fieldInfo.FieldType);
         return new LoadFieldOp(thisPtr, fieldInfo.Name, resultVar);

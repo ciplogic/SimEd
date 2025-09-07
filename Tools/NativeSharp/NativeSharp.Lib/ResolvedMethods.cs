@@ -26,4 +26,14 @@ public static class ResolvedMethods
         //Nothing for now. Will be filled by C++ code
     }
     public static int System_String_get_Length(System_String text) => text.Data.Length;
+
+    public static void System_Array_Copy(byte[] sourceArray, byte[] destinationArray, int len)
+    {
+        
+    }
+    public static void System_Array_Copy(byte[] sourceArray, int sourceIndex, byte[] destinationArray, int destinationIndex, int len)
+    {
+        
+    }
+
 }

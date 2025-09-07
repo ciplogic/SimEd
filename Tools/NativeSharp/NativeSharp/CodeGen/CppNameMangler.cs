@@ -1,11 +1,11 @@
 ﻿using System.Reflection;
 using NativeSharp.Operations.Common;
+using NativeSharp.Resolving;
 
 namespace NativeSharp.CodeGen;
 
 internal static class CppNameMangler
 {
-    public static Dictionary<Type, Type> MappedLibToClrTypes { get; } = new();
 
     public static string Mangle(this Type clrType, RefKind refKind = RefKind.Default)
     {
@@ -13,7 +13,7 @@ internal static class CppNameMangler
         {
             return $"RefArr<{clrType.GetElementType()!.Mangle()}>";
         }
-        if (MappedLibToClrTypes.TryGetValue(clrType, out var mappedClrType))
+        if (MethodResolver.MappedType.TryGetValue(clrType, out var mappedClrType))
         {
             clrType = mappedClrType;
         }

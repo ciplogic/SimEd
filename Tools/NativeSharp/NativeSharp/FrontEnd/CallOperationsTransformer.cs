@@ -12,10 +12,8 @@ static class CallOperationsTransformer
 {
     public static BaseOp TransformCallOp(LocalVariablesStackAndState locals, Instruction instruction)
     {
-        var opName = instruction.OpCode.Name;
         var operand = (MethodBase)instruction.Operand;
         var operandAsMethodInfo = operand as MethodInfo;
-        Console.WriteLine($"Method: {operand.MangleMethodName()}");
 
         var paramCount = operandAsMethodInfo?.GetParameters().Length ?? 0;
 
@@ -30,6 +28,8 @@ static class CallOperationsTransformer
             //makes sure that this pointer is also pushed for non static methods.
             args.Add(locals.Pop());
         }
+
+        args.Reverse();
 
         var returnType = operandAsMethodInfo?.ReturnType ?? typeof(void);
         VReg? returnValue = null;

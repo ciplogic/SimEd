@@ -1,5 +1,6 @@
 ﻿using System.Reflection;
 using NativeSharp.CodeGen;
+using NativeSharp.Lib;
 using NativeSharp.Operations.Common;
 using NativeSharp.Resolving;
 
@@ -13,7 +14,8 @@ internal class Program
         var entryPoint = asm.EntryPoint!;
 
         MethodResolver.ResolveCilMethod(MethodResolver.Resolve(entryPoint));
-
+        var stringCreator = typeof(Texts).GetMethod("FromIndex")!;
+        MethodResolver.TransformCilMethod(stringCreator, stringCreator);
         var codeGen = new CodeGenerator();
         codeGen.WriteMethodsAndMain();
         CodeGeneratorBaseTypes.GenerateNativeMappings();
