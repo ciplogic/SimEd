@@ -52,8 +52,8 @@ public static class BackingFieldResolver
                 return;
             }
 
-            var match = GetLastMatchingInstruction(context);
-            var field = (FieldInfo)match.Operand;
+            Instruction match = GetLastMatchingInstruction(context);
+            FieldInfo field = (FieldInfo)match.Operand;
             context.AddData(FieldKey, field);
         }
     }
@@ -91,7 +91,7 @@ public static class BackingFieldResolver
 
     private static FieldInfo GetBackingField(MethodInfo method, ILPattern pattern)
     {
-        var result = ILPattern.Match(method, pattern);
+        MatchContext result = ILPattern.Match(method, pattern);
         if (!result.success)
         {
             throw new ArgumentException();
@@ -110,13 +110,13 @@ public static class BackingFieldResolver
     {
         ArgumentNullException.ThrowIfNull(self);
 
-        var getter = self.GetGetMethod(true);
+        MethodInfo? getter = self.GetGetMethod(true);
         if (getter != null)
         {
             return GetBackingField(getter, GetterPattern);
         }
 
-        var setter = self.GetSetMethod(true);
+        MethodInfo? setter = self.GetSetMethod(true);
         if (setter != null)
         {
             return GetBackingField(setter, SetterPattern);

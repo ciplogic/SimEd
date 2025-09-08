@@ -79,7 +79,7 @@ public abstract class ILPattern
 
         public override void Match(MatchContext context)
         {
-            foreach (var pattern in patterns)
+            foreach (ILPattern pattern in patterns)
             {
                 pattern.Match(context);
 
@@ -157,7 +157,7 @@ public abstract class ILPattern
 
     public bool TryMatch(MatchContext context)
     {
-        var instruction = context.instruction;
+        Instruction instruction = context.instruction;
         Match(context);
 
         if (context.success)
@@ -174,13 +174,13 @@ public abstract class ILPattern
         ArgumentNullException.ThrowIfNull(method);
         ArgumentNullException.ThrowIfNull(pattern);
 
-        var instructions = method.GetInstructions();
+        IList<Instruction> instructions = method.GetInstructions();
         if (instructions.Count == 0)
         {
             throw new ArgumentException();
         }
 
-        var context = new MatchContext(instructions[0]);
+        MatchContext context = new MatchContext(instructions[0]);
         pattern.Match(context);
         return context;
     }

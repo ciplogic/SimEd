@@ -1,5 +1,7 @@
-﻿using System.Reflection.Emit;
+﻿using System.Reflection;
+using System.Reflection.Emit;
 using NativeSharp.Common;
+using NativeSharp.Operations.Vars;
 
 namespace NativeSharp.Extensions;
 
@@ -7,8 +9,8 @@ public static class CollectionUtils
 {
     public static TOut[] SelectToArray<TIn, TOut>(this TIn[] source, Func<TIn, TOut> selector)
     {
-        var result = new TOut[source.Length];
-        for (var i = 0; i < source.Length; i++)
+        TOut[] result = new TOut[source.Length];
+        for (int i = 0; i < source.Length; i++)
         {
             result[i] = selector(source[i]);
         }
@@ -17,10 +19,10 @@ public static class CollectionUtils
 
     public static int[] BuildTargetBranches(this Instruction[] instructions2)
     {
-        var targets = new HashSet<int>();
-        foreach (var instruction in instructions2)
+        HashSet<int> targets = new HashSet<int>();
+        foreach (Instruction instruction in instructions2)
         {
-            var opKind = instruction.OpCode.OperandType;
+            OperandType opKind = instruction.OpCode.OperandType;
             switch (opKind)
             {
                 case OperandType.InlineBrTarget:
@@ -35,4 +37,22 @@ public static class CollectionUtils
         return targetBranches;
     }
 
+
+    public static ArgumentVariable[] GetMethodArguments(this MethodBase method)
+    {
+        var argumentList = new List<ArgumentVariable>();
+        ParameterInfo[] methodParams = method.GetParameters() ?? [];
+        for (int index = 0; index < methodParams.Length; index++)
+        {
+            ParameterInfo parameterInfo = methodParams[index];
+            ArgumentVariable localVariable = new ArgumentVariable()
+            {
+                Index = index,
+                ExpressionType = parameterInfo.ParameterType,
+            };
+            argumentList.Add(localVariable);
+        }
+
+        return argumentList.ToArray();
+    }
 }

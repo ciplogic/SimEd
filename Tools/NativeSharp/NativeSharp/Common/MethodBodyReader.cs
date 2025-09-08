@@ -41,12 +41,12 @@ public class MethodBodyReader
         one_byte_opcodes = new OpCode [0xe1];
         two_bytes_opcodes = new OpCode [0x1f];
 
-        var fields = typeof(OpCodes).GetFields(
+        FieldInfo[] fields = typeof(OpCodes).GetFields(
             BindingFlags.Public | BindingFlags.Static);
 
-        foreach (var field in fields)
+        foreach (FieldInfo field in fields)
         {
-            var opcode = (OpCode)field.GetValue(null);
+            OpCode opcode = (OpCode)field.GetValue(null);
             if (opcode.OpCodeType == OpCodeType.Nternal)
             {
                 continue;
@@ -83,7 +83,7 @@ public class MethodBodyReader
             throw new ArgumentException("Method has no body");
         }
 
-        var bytes = body.GetILAsByteArray();
+        byte[]? bytes = body.GetILAsByteArray();
         if (bytes == null)
         {
             throw new ArgumentException("Can not get the body of the method");
@@ -112,7 +112,7 @@ public class MethodBodyReader
 
         while (il.position < il.buffer.Length)
         {
-            var instruction = new Instruction(il.position, ReadOpCode());
+            Instruction instruction = new Instruction(il.position, ReadOpCode());
 
             ReadOperand(instruction);
 
@@ -136,10 +136,10 @@ public class MethodBodyReader
             case OperandType.InlineNone:
                 break;
             case OperandType.InlineSwitch:
-                var length = il.ReadInt32();
-                var base_offset = il.position + 4 * length;
-                var branches = new int [length];
-                for (var i = 0; i < length; i++)
+                int length = il.ReadInt32();
+                int base_offset = il.position + 4 * length;
+                int[] branches = new int [length];
+                for (int i = 0; i < length; i++)
                     branches[i] = il.ReadInt32() + base_offset;
 
                 instruction.Operand = branches;
@@ -198,7 +198,7 @@ public class MethodBodyReader
 
     private void ResolveBranches()
     {
-        foreach (var instruction in instructions)
+        foreach (Instruction instruction in instructions)
             switch (instruction.OpCode.OperandType)
             {
                 case OperandType.ShortInlineBrTarget:
@@ -206,9 +206,9 @@ public class MethodBodyReader
                     instruction.Operand = GetInstruction(instructions, (int)instruction.Operand);
                     break;
                 case OperandType.InlineSwitch:
-                    var offsets = (int[])instruction.Operand;
-                    var branches = new Instruction [offsets.Length];
-                    for (var j = 0; j < offsets.Length; j++)
+                    int[] offsets = (int[])instruction.Operand;
+                    Instruction[] branches = new Instruction [offsets.Length];
+                    for (int j = 0; j < offsets.Length; j++)
                         branches[j] = GetInstruction(instructions, offsets[j]);
 
                     instruction.Operand = branches;
@@ -218,19 +218,19 @@ public class MethodBodyReader
 
     private static Instruction GetInstruction(List<Instruction> instructions, int offset)
     {
-        var size = instructions.Count;
+        int size = instructions.Count;
         if (offset < 0 || offset > instructions[size - 1].Offset)
         {
             return null;
         }
 
-        var min = 0;
-        var max = size - 1;
+        int min = 0;
+        int max = size - 1;
         while (min <= max)
         {
-            var mid = min + (max - min) / 2;
-            var instruction = instructions[mid];
-            var instructionOffset = instruction.Offset;
+            int mid = min + (max - min) / 2;
+            Instruction instruction = instructions[mid];
+            int instructionOffset = instruction.Offset;
 
             if (offset == instructionOffset)
             {
@@ -274,7 +274,7 @@ public class MethodBodyReader
 
     private OpCode ReadOpCode()
     {
-        var op = il.ReadByte();
+        byte op = il.ReadByte();
         return op != 0xfe
             ? one_byte_opcodes[op]
             : two_bytes_opcodes[il.ReadByte()];
@@ -282,7 +282,7 @@ public class MethodBodyReader
 
     public static Instruction[] GetInstructions(MethodBase method)
     {
-        var reader = new MethodBodyReader(method);
+        MethodBodyReader reader = new MethodBodyReader(method);
         reader.ReadInstructions();
         return reader.instructions.ToArray();
     }

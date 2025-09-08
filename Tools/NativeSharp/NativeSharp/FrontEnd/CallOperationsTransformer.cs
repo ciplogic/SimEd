@@ -12,13 +12,13 @@ static class CallOperationsTransformer
 {
     public static BaseOp TransformCallOp(LocalVariablesStackAndState locals, Instruction instruction)
     {
-        var operand = (MethodBase)instruction.Operand;
-        var operandAsMethodInfo = operand as MethodInfo;
+        MethodBase operand = (MethodBase)instruction.Operand;
+        MethodInfo? operandAsMethodInfo = operand as MethodInfo;
 
-        var paramCount = operandAsMethodInfo?.GetParameters().Length ?? 0;
+        int paramCount = operandAsMethodInfo?.GetParameters().Length ?? 0;
 
-        var args = new List<IValueExpression>();
-        for (var i = 0; i < paramCount; i++)
+        List<IValueExpression> args = new List<IValueExpression>();
+        for (int i = 0; i < paramCount; i++)
         {
             args.Add(locals.Pop());
         }
@@ -31,7 +31,7 @@ static class CallOperationsTransformer
 
         args.Reverse();
 
-        var returnType = operandAsMethodInfo?.ReturnType ?? typeof(void);
+        Type returnType = operandAsMethodInfo?.ReturnType ?? typeof(void);
         VReg? returnValue = null;
         if (returnType != typeof(void))
         {

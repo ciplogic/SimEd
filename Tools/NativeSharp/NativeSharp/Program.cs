@@ -10,8 +10,8 @@ internal class Program
 {
     private static void Main(string[] args)
     {
-        var asm = Assembly.LoadFrom("TargetApp.dll");
-        var entryPoint = asm.EntryPoint!;
+        Assembly asm = Assembly.LoadFrom("TargetApp.dll");
+        MethodInfo entryPoint = asm.EntryPoint!;
         
         MethodResolver.ScanAssembly(typeof(Texts).Assembly);
 
@@ -20,7 +20,7 @@ internal class Program
         MethodResolver.TransformCilMethod(typeof(Texts).GetMethod("FromIndex")!);
         MethodResolver.TransformCilMethod(typeof(Texts).GetMethod("BuildSystemString")!);
         
-        var codeGen = new CodeGenerator();
+        CodeGenerator codeGen = new CodeGenerator();
         codeGen.WriteMethodsAndMain(entryPoint.MangleMethodName());
         CodeGeneratorBaseTypes.GenerateNativeMappings();
     }

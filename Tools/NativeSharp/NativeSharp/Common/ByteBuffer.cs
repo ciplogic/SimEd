@@ -44,7 +44,7 @@ internal class ByteBuffer
     public byte[] ReadBytes(int length)
     {
         CheckCanRead(length);
-        var value = new byte [length];
+        byte[] value = new byte [length];
         Array.Copy(buffer, position, value, 0, length);
         position += length;
         return value;
@@ -53,8 +53,8 @@ internal class ByteBuffer
     public short ReadInt16()
     {
         CheckCanRead(2);
-        var value = (short)(buffer[position]
-                            | (buffer[position + 1] << 8));
+        short value = (short)(buffer[position]
+                              | (buffer[position + 1] << 8));
         position += 2;
         return value;
     }
@@ -62,7 +62,7 @@ internal class ByteBuffer
     public int ReadInt32()
     {
         CheckCanRead(4);
-        var value = buffer[position]
+        int value = buffer[position]
                     | (buffer[position + 1] << 8)
                     | (buffer[position + 2] << 16)
                     | (buffer[position + 3] << 24);
@@ -73,17 +73,17 @@ internal class ByteBuffer
     public long ReadInt64()
     {
         CheckCanRead(8);
-        var low = (uint)(buffer[position]
-                         | (buffer[position + 1] << 8)
-                         | (buffer[position + 2] << 16)
-                         | (buffer[position + 3] << 24));
+        uint low = (uint)(buffer[position]
+                          | (buffer[position + 1] << 8)
+                          | (buffer[position + 2] << 16)
+                          | (buffer[position + 3] << 24));
 
-        var high = (uint)(buffer[position + 4]
-                          | (buffer[position + 5] << 8)
-                          | (buffer[position + 6] << 16)
-                          | (buffer[position + 7] << 24));
+        uint high = (uint)(buffer[position + 4]
+                           | (buffer[position + 5] << 8)
+                           | (buffer[position + 6] << 16)
+                           | (buffer[position + 7] << 24));
 
-        var value = ((long)high << 32) | low;
+        long value = ((long)high << 32) | low;
         position += 8;
         return value;
     }
@@ -92,13 +92,13 @@ internal class ByteBuffer
     {
         if (!BitConverter.IsLittleEndian)
         {
-            var bytes = ReadBytes(4);
+            byte[] bytes = ReadBytes(4);
             Array.Reverse(bytes);
             return BitConverter.ToSingle(bytes, 0);
         }
 
         CheckCanRead(4);
-        var value = BitConverter.ToSingle(buffer, position);
+        float value = BitConverter.ToSingle(buffer, position);
         position += 4;
         return value;
     }
@@ -107,13 +107,13 @@ internal class ByteBuffer
     {
         if (!BitConverter.IsLittleEndian)
         {
-            var bytes = ReadBytes(8);
+            byte[] bytes = ReadBytes(8);
             Array.Reverse(bytes);
             return BitConverter.ToDouble(bytes, 0);
         }
 
         CheckCanRead(8);
-        var value = BitConverter.ToDouble(buffer, position);
+        double value = BitConverter.ToDouble(buffer, position);
         position += 8;
         return value;
     }

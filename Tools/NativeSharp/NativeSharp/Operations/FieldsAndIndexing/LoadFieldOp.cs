@@ -18,9 +18,9 @@ internal class LoadFieldOp : BaseOp
 
     public override string GenCode()
     {
-        var type = ThisPtr.ExpressionType;
-        var isByRef = !type.IsValueType;
-        var derefText = isByRef ? "->" : ".";
+        Type type = ThisPtr.ExpressionType;
+        bool isByRef = !type.IsValueType;
+        string derefText = isByRef ? "->" : ".";
         return $"{ResultVar.GenCode()} = {ThisPtr.Code()}{derefText}{FieldName};";
     }
 }

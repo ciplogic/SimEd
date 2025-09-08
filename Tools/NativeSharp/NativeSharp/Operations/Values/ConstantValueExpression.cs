@@ -12,7 +12,7 @@ internal class ConstantValueExpression(object value) : IValueExpression
         ArgumentNullException.ThrowIfNull(Value);
         if (Value is string text)
         {
-            var index = StringPool.Instance.GetIndex(text);
+            int index = StringPool.Instance.GetIndex(text);
             return $"_clr_str({index})";
         }
 

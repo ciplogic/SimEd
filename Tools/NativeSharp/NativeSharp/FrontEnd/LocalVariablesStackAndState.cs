@@ -16,7 +16,7 @@ class LocalVariablesStackAndState
 
     public VReg NewVirtVar(Type varType)
     {
-        var virtVar = new VReg()
+        VReg virtVar = new VReg()
         {
             Index = _vregIndex++,
             ExpressionType = varType
@@ -32,10 +32,10 @@ class LocalVariablesStackAndState
         _variableStack.Clear();
         LocalVariables.Clear();
 
-        var locals = parentMethod.GetMethodBody()!.LocalVariables ?? [];
-        foreach (var localVariableInfo in locals)
+        IList<LocalVariableInfo> locals = parentMethod.GetMethodBody()!.LocalVariables ?? [];
+        foreach (LocalVariableInfo localVariableInfo in locals)
         {
-            var localVariable = new LocalVariable()
+            LocalVariable localVariable = new LocalVariable()
             {
                 Index = localVariableInfo.LocalIndex,
                 ExpressionType = localVariableInfo.LocalType
@@ -43,7 +43,7 @@ class LocalVariablesStackAndState
             LocalVariables.Add(localVariable);
         }
 
-        var instructions2 = MethodBodyReader.GetInstructions(parentMethod);
+        Instruction[] instructions2 = MethodBodyReader.GetInstructions(parentMethod);
         _targetBranches = instructions2.BuildTargetBranches();
     }
 

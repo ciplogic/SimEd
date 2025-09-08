@@ -66,7 +66,7 @@ public sealed class Instruction
     {
         get
         {
-            var size = opcode.Size;
+            int size = opcode.Size;
 
             switch (opcode.OperandType)
             {
@@ -109,7 +109,7 @@ public sealed class Instruction
 
     public override string ToString()
     {
-        var instruction = new StringBuilder();
+        StringBuilder instruction = new StringBuilder();
 
         AppendLabel(instruction, this);
         instruction.Append(':');
@@ -130,8 +130,8 @@ public sealed class Instruction
                 AppendLabel(instruction, (Instruction)operand);
                 break;
             case OperandType.InlineSwitch:
-                var labels = (Instruction[])operand;
-                for (var i = 0; i < labels.Length; i++)
+                Instruction[] labels = (Instruction[])operand;
+                for (int i = 0; i < labels.Length; i++)
                 {
                     if (i > 0)
                     {

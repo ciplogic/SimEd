@@ -17,23 +17,25 @@ public class CodeGenerator
         WriteReferencedTypes();
         WriteInitialCode();
 
-        foreach (var method in MethodResolver.MethodCache.Values)
+        foreach (BaseNativeMethod method in MethodResolver.MethodCache.Values)
         {
-            if (method is CilNativeMethod cilMethod)
-            {
-                WriteCilMethodHeader(cilMethod);
-            }
+            WriteCilMethodHeader(method);
         }
 
         WriteMainBody(entryPoint);
 
-        foreach (var method in MethodResolver.MethodCache.Values)
+        foreach (BaseNativeMethod method in MethodResolver.MethodCache.Values)
         {
             if (method is CilNativeMethod cilMethod)
             {
                 WriteCilMethod(cilMethod);
-                Code.AddLine();
             }
+            else if (method is CppNativeMethod cppMethod)
+            {
+                WriteCppMethod(cppMethod);
+            }
+
+            Code.AddLine();
         }
 
         WriteStringPool();
@@ -41,27 +43,32 @@ public class CodeGenerator
         Code.WriteToFile();
     }
 
-    private void WriteMainBody(string entryPoint, string args = "")
+    private void WriteCppMethod(CppNativeMethod cppMethod)
     {
+        Code.AddLine($"{cppMethod.MangledMethodHeader()} {{");
+
+        Code.AddLine("}");
+    }
+
+    private void WriteMainBody(string entryPoint, string args = "") =>
         Code
             .AddLine("int main() {")
             .AddLine(entryPoint + "();")
             .AddLine("return 0;")
             .AddLine("}");
-    }
 
     public void WriteReferencedTypes()
     {
-        var mappedTypes = MethodResolver.MappedType.Straight;
-        foreach (var kv in mappedTypes)
+        Dictionary<Type, Type> mappedTypes = MethodResolver.MappedType.Straight;
+        foreach (KeyValuePair<Type, Type> kv in mappedTypes)
         {
-            this.Code.AddLine($"struct {kv.Value.Mangle(RefKind.Value)};");
+            Code.AddLine($"struct {kv.Value.Mangle(RefKind.Value)};");
         }
 
-        foreach (var kv in mappedTypes)
+        foreach (KeyValuePair<Type, Type> kv in mappedTypes)
         {
-            this.Code.AddLine($"struct {kv.Value.Mangle(RefKind.Value)} {{");
-            var mappedType = kv.Key;
+            Code.AddLine($"struct {kv.Value.Mangle(RefKind.Value)} {{");
+            Type mappedType = kv.Key;
             foreach (FieldInfo variable in mappedType.GetFields())
             {
                 if (variable.IsStatic)
@@ -72,7 +79,7 @@ public class CodeGenerator
                 Code.AddLine($"{variable.FieldType.Mangle()} {variable.Name};");
             }
 
-            this.Code.AddLine("};");
+            Code.AddLine("};");
         }
     }
 
@@ -80,20 +87,15 @@ public class CodeGenerator
     {
         Code.AddLine(
             """
-
-
             namespace {
-
                 Ref<System_String> _clr_str(int index);
                  
-                template <class T>
-                    RefArr<T> new_arr(int size) {
+                template <class T> RefArr<T> new_arr(int size) {
                     RefArr<T> result = std::make_shared<Arr<T>>();
                     result->resize(size);
                     return result;
                 }
             }
-
             """);
     }
 
@@ -105,14 +107,14 @@ public class CodeGenerator
         }
     }
 
-    private void WriteCilMethodHeader(CilNativeMethod cilNativeMethod)
+    private void WriteCilMethodHeader(BaseNativeMethod cilNativeMethod)
     {
         Code.AddLine($"{cilNativeMethod.MangledMethodHeader()};");
     }
 
     private void WriteCilMethod(CilNativeMethod cilNativeMethod)
     {
-        var methodHeader = cilNativeMethod.MangledMethodHeader();
+        string methodHeader = cilNativeMethod.MangledMethodHeader();
         Code.AddLine(methodHeader);
 
         Code.AddLine("{");
@@ -132,10 +134,10 @@ public class CodeGenerator
     private void WriteStringPool()
     {
         StringPool stringPool = StringPool.Instance;
-        var coders = stringPool.Coders;
-        var endPos = new List<int>();
-        var joinedTexts = new List<byte>();
-        var startPos = 0;
+        List<int> coders = stringPool.Coders;
+        List<int> endPos = new List<int>();
+        List<byte> joinedTexts = new List<byte>();
+        int startPos = 0;
         foreach (byte[] utf8Text in stringPool.Values)
         {
             startPos += utf8Text.Length;

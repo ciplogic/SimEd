@@ -1,5 +1,6 @@
 ﻿using System.Reflection;
 using NativeSharp.Common;
+using NativeSharp.Extensions;
 using NativeSharp.Operations;
 using NativeSharp.Operations.Common;
 using NativeSharp.Operations.FieldsAndIndexing;
@@ -20,10 +21,10 @@ internal class InstructionTransformer
     {
         BuildLocalVariables(parentMethod);
 
-        var instructions2 = MethodBodyReader.GetInstructions(parentMethod);
+        Instruction[] instructions2 = MethodBodyReader.GetInstructions(parentMethod);
 
-        var resultList = new List<BaseOp>();
-        foreach (var instruction in instructions2)
+        List<BaseOp> resultList = new List<BaseOp>();
+        foreach (Instruction instruction in instructions2)
         {
             if (LocalVariablesStackAndState._targetBranches.Contains(instruction.Offset))
             {
@@ -40,26 +41,15 @@ internal class InstructionTransformer
     {
         LocalVariablesStackAndState.BuildLocalVariables(parentMethod);
         Params.Clear();
-
-        var methodParams = parentMethod.GetParameters() ?? [];
-        for (var index = 0; index < methodParams.Length; index++)
-        {
-            var parameterInfo = methodParams[index];
-            var localVariable = new ArgumentVariable()
-            {
-                Index = index,
-                ExpressionType = parameterInfo.ParameterType,
-            };
-            Params.Add(localVariable);
-        }
+        Params.AddRange(parentMethod.GetMethodArguments());
 
         ReturnType = (parentMethod as MethodInfo)?.ReturnType ?? typeof(void);
     }
 
     private BaseOp TransformOp(Instruction instruction)
     {
-        var opName = instruction.OpCode.Name;
-        var operand = instruction.Operand;
+        string? opName = instruction.OpCode.Name;
+        object operand = instruction.Operand;
         if (opName == "nop")
         {
             return new Nop();
@@ -129,25 +119,25 @@ internal class InstructionTransformer
 
     private BaseOp TransformStoreField(Instruction instruction, LocalVariablesStackAndState localVariablesStackAndState)
     {
-        var fieldInfo = (FieldInfo)instruction.Operand;
-        var valueToSet = localVariablesStackAndState.Pop();
-        var thisPtr = (IndexedVariable)localVariablesStackAndState.Pop();
+        FieldInfo fieldInfo = (FieldInfo)instruction.Operand;
+        IValueExpression valueToSet = localVariablesStackAndState.Pop();
+        IndexedVariable thisPtr = (IndexedVariable)localVariablesStackAndState.Pop();
 
         return new StoreFieldOp(thisPtr, valueToSet,  fieldInfo.Name);
     }
 
     private BaseOp TransformDup()
     {
-        var original = LocalVariablesStackAndState.Pop();
-        var vreg1 = LocalVariablesStackAndState.NewVirtVar(original.ExpressionType);
+        IValueExpression original = LocalVariablesStackAndState.Pop();
+        VReg vreg1 = LocalVariablesStackAndState.NewVirtVar(original.ExpressionType);
 
-        var vreg2 = LocalVariablesStackAndState.NewVirtVar(original.ExpressionType);
+        VReg vreg2 = LocalVariablesStackAndState.NewVirtVar(original.ExpressionType);
         return new DupOp(vreg1, vreg2, original);
     }
 
     private BaseOp TransformNewDeclarations(Instruction instruction)
     {
-        var opName = instruction.OpCode.Name;
+        string? opName = instruction.OpCode.Name;
 
         if (opName == "newarr")
         {
@@ -164,40 +154,40 @@ internal class InstructionTransformer
 
     private BaseOp TransformNewObj(Instruction instruction)
     {
-        var constructorInfo = (ConstructorInfo)instruction.Operand;
-        var argumentCount = constructorInfo.GetParameters().Length;
-        var args = new List<IValueExpression>();
-        for (var i = 0; i < argumentCount; i++)
+        ConstructorInfo constructorInfo = (ConstructorInfo)instruction.Operand;
+        int argumentCount = constructorInfo.GetParameters().Length;
+        List<IValueExpression> args = new List<IValueExpression>();
+        for (int i = 0; i < argumentCount; i++)
         {
             args.Add(LocalVariablesStackAndState.Pop());
         }
 
-        var result = LocalVariablesStackAndState.NewVirtVar(constructorInfo.DeclaringType!);
+        VReg result = LocalVariablesStackAndState.NewVirtVar(constructorInfo.DeclaringType!);
         return new NewObjOp(result, args.ToArray());
     }
 
     private BaseOp TransformNewArr(Instruction instruction)
     {
-        var popCount = LocalVariablesStackAndState.Pop();
+        IValueExpression popCount = LocalVariablesStackAndState.Pop();
 
-        var elementType = (Type)instruction.Operand;
-        var arrayType = elementType.MakeArrayType();
-        var result = LocalVariablesStackAndState.NewVirtVar(arrayType);
+        Type elementType = (Type)instruction.Operand;
+        Type arrayType = elementType.MakeArrayType();
+        VReg result = LocalVariablesStackAndState.NewVirtVar(arrayType);
         return new NewArrayOp(result, elementType, popCount);
     }
 
     private BaseOp TransformBranchOperation(Instruction instruction, string opName)
     {
-        var isConditional = opName.StartsWith("brfalse") || opName.StartsWith("brtrue");
-        var targetInstruction = (Instruction)instruction.Operand;
+        bool isConditional = opName.StartsWith("brfalse") || opName.StartsWith("brtrue");
+        Instruction targetInstruction = (Instruction)instruction.Operand;
         return new BranchOperation(targetInstruction.Offset, opName,
             isConditional ? LocalVariablesStackAndState.Pop() : null);
     }
 
     private BaseOp TransformBinaryOp(Instruction instruction)
     {
-        var leftOp = LocalVariablesStackAndState.Pop();
-        var rightOp = LocalVariablesStackAndState.Pop();
+        IValueExpression leftOp = LocalVariablesStackAndState.Pop();
+        IValueExpression rightOp = LocalVariablesStackAndState.Pop();
         return new BinaryOp()
         {
             Left = LocalVariablesStackAndState.NewVirtVar(leftOp.ExpressionType),
@@ -209,8 +199,8 @@ internal class InstructionTransformer
 
     private BaseOp TransformLogicalBinaryOp(Instruction instruction)
     {
-        var leftOp = LocalVariablesStackAndState.Pop();
-        var rightOp = LocalVariablesStackAndState.Pop();
+        IValueExpression leftOp = LocalVariablesStackAndState.Pop();
+        IValueExpression rightOp = LocalVariablesStackAndState.Pop();
         return new BinaryOp()
         {
             Left = LocalVariablesStackAndState.NewVirtVar(typeof(bool)),
@@ -226,8 +216,8 @@ internal class InstructionTransformer
 
     private BaseOp TransformStoreOp(Instruction instruction)
     {
-        var opName = instruction.OpCode.Name;
-        var components = opName.Split('.');
+        string? opName = instruction.OpCode.Name;
+        string[] components = opName.Split('.');
         int index = 0;
         if (components[0] == ("stloc"))
         {
@@ -235,7 +225,7 @@ internal class InstructionTransformer
             {
                 if (components[1] == "s")
                 {
-                    var localVar = (LocalVariableInfo)instruction.Operand;
+                    LocalVariableInfo localVar = (LocalVariableInfo)instruction.Operand;
                     index = localVar.LocalIndex;
                 }
                 else
@@ -244,7 +234,7 @@ internal class InstructionTransformer
                 }
             }
 
-            var assignOp = new AssignOp()
+            AssignOp assignOp = new AssignOp()
             {
                 Left = LocalVariablesStackAndState.LocalVariables[index],
                 Expression = LocalVariablesStackAndState.Pop()

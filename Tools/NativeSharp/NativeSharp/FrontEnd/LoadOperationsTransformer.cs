@@ -1,6 +1,7 @@
 ﻿using System.Reflection;
 using NativeSharp.Common;
 using NativeSharp.Operations;
+using NativeSharp.Operations.Common;
 using NativeSharp.Operations.FieldsAndIndexing;
 using NativeSharp.Operations.Values;
 using NativeSharp.Operations.Vars;
@@ -12,8 +13,8 @@ static class LoadOperationsTransformer
     public static BaseOp TransformLoadOp(Instruction instruction, List<ArgumentVariable> argumentVariables,
         LocalVariablesStackAndState variablesStackAndState)
     {
-        var opName = instruction.OpCode.Name;
-        var operand = instruction.Operand;
+        string? opName = instruction.OpCode.Name;
+        object operand = instruction.Operand;
 
         if (opName.StartsWith("ldarg"))
         {
@@ -49,14 +50,14 @@ static class LoadOperationsTransformer
         {
             case "ldstr":
             {
-                var constValue = ConstantValueExpression.Create((string)instruction.Operand);
+                ConstantValueExpression constValue = ConstantValueExpression.Create((string)instruction.Operand);
                 return ExtractAssignFromConstant(constValue, variablesStackAndState);
             }
             case "ldloca":
             case "ldloca.s":
             {
-                var operandAsInt = OperandAsInt(operand);
-                var localVar = variablesStackAndState.LocalVariables[operandAsInt];
+                int operandAsInt = OperandAsInt(operand);
+                IndexedVariable localVar = variablesStackAndState.LocalVariables[operandAsInt];
                 return new AssignOp()
                 {
                     Left = variablesStackAndState.NewVirtVar(localVar.ExpressionType),
@@ -70,26 +71,26 @@ static class LoadOperationsTransformer
 
     private static BaseOp ExtractLoadElement(Instruction instruction, LocalVariablesStackAndState variablesStackAndState)
     {
-        var index = variablesStackAndState.Pop();
-        var array = (IndexedVariable)variablesStackAndState.Pop();
+        IValueExpression index = variablesStackAndState.Pop();
+        IndexedVariable array = (IndexedVariable)variablesStackAndState.Pop();
 
-        var resultElement = variablesStackAndState.NewVirtVar(array.ExpressionType.GetElementType());
-        var op = new LoadElementOp(resultElement, array, index);
+        VReg resultElement = variablesStackAndState.NewVirtVar(array.ExpressionType.GetElementType());
+        LoadElementOp op = new LoadElementOp(resultElement, array, index);
         return op;
     }
 
     private static BaseOp ParseLoadLen(LocalVariablesStackAndState variablesStackAndState)
     {
-        var arrVar = (IndexedVariable)variablesStackAndState.Pop();
-        var resultVar = variablesStackAndState.NewVirtVar(typeof(uint));
+        IndexedVariable arrVar = (IndexedVariable)variablesStackAndState.Pop();
+        VReg resultVar = variablesStackAndState.NewVirtVar(typeof(uint));
         return new LdLenOp(resultVar, arrVar);
     }
 
     private static BaseOp ExtractField(Instruction instruction, LocalVariablesStackAndState localVariablesStackAndState)
     {
-        var thisPtr = (IndexedVariable)localVariablesStackAndState.Pop();
+        IndexedVariable thisPtr = (IndexedVariable)localVariablesStackAndState.Pop();
         FieldInfo fieldInfo = (FieldInfo)instruction.Operand;
-        var resultVar = localVariablesStackAndState.NewVirtVar(fieldInfo.FieldType);
+        VReg resultVar = localVariablesStackAndState.NewVirtVar(fieldInfo.FieldType);
         return new LoadFieldOp(thisPtr, fieldInfo.Name, resultVar);
     }
 
@@ -97,11 +98,11 @@ static class LoadOperationsTransformer
     public static BaseOp ParseLoadArgument(Instruction instruction, string opName,
         LocalVariablesStackAndState localVariablesStackAndState, List<ArgumentVariable> argumentVariables)
     {
-        var components = opName.Split('.');
+        string[] components = opName.Split('.');
         int index = 0;
         if (!int.TryParse(components[1], out index))
         {
-            var paramInfo = instruction.Operand as ParameterInfo;
+            ParameterInfo? paramInfo = instruction.Operand as ParameterInfo;
             index = paramInfo?.Position ?? (int)instruction.Operand;
         }
 
@@ -132,9 +133,9 @@ static class LoadOperationsTransformer
     public static BaseOp ExtractLoadLocalVariable(Instruction instruction,
         LocalVariablesStackAndState localVariablesStackAndState)
     {
-        var opName = instruction.OpCode.Name;
-        var split = opName.Split('.');
-        var index = -1;
+        string? opName = instruction.OpCode.Name;
+        string[] split = opName.Split('.');
+        int index = -1;
         if (split.Length == 2)
         {
             if (!int.TryParse(split[1], out index))
@@ -158,8 +159,8 @@ static class LoadOperationsTransformer
     public static BaseOp ExtractAssignFromConstant(ConstantValueExpression constValueExpression,
         LocalVariablesStackAndState localVariablesStackAndState)
     {
-        var virtVar = localVariablesStackAndState.NewVirtVar(constValueExpression.ExpressionType);
-        var assignOp = new AssignOp()
+        VReg virtVar = localVariablesStackAndState.NewVirtVar(constValueExpression.ExpressionType);
+        AssignOp assignOp = new AssignOp()
         {
             Left = virtVar,
             Expression = constValueExpression
@@ -176,7 +177,7 @@ static class LoadOperationsTransformer
             index = (int)instruction.Operand;
         }
 
-        var constValue = ConstantValueExpression.Create(index);
+        ConstantValueExpression constValue = ConstantValueExpression.Create(index);
         return ExtractAssignFromConstant(constValue,
             localVariablesStackAndState);
     }

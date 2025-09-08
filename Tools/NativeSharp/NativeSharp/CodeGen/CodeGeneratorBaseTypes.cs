@@ -4,7 +4,7 @@ internal static class CodeGeneratorBaseTypes
 {
     public static void GenerateNativeMappings()
     {
-        var nativeSharpPrimitives = new CodeGenToFile("native_sharp_primitives.hpp");
+        CodeGenToFile nativeSharpPrimitives = new CodeGenToFile("native_sharp_primitives.hpp");
         nativeSharpPrimitives.AddLine("#pragma once");
         nativeSharpPrimitives.AddLine("");
         nativeSharpPrimitives.AddLine("#include <cstdint>");

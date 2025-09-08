@@ -6,21 +6,21 @@ namespace NativeSharp.CodeGen;
 
 internal static class CppNameMangler
 {
-
     public static string Mangle(this Type clrType, RefKind refKind = RefKind.Default)
     {
         if (clrType.IsArray)
         {
             return $"RefArr<{clrType.GetElementType()!.Mangle()}>";
         }
-        if (MethodResolver.MappedType.TryGetValue(clrType, out var mappedClrType))
+
+        if (MethodResolver.MappedType.TryGetValue(clrType, out Type mappedClrType))
         {
             clrType = mappedClrType;
         }
 
-        var fullName = clrType.FullName!;
+        string fullName = clrType.FullName!;
         refKind = refKind == RefKind.Default ? clrType.IsValueType ? RefKind.Value : RefKind.Ref : refKind;
-        var resultMangle = Mangle(fullName);
+        string resultMangle = Mangle(fullName);
         return refKind switch
         {
             RefKind.Ref => $"Ref<{resultMangle}>",
@@ -33,8 +33,8 @@ internal static class CppNameMangler
 
     public static string MangleMethodName(this MethodBase method)
     {
-        var declaringType = method.DeclaringType.Mangle(RefKind.Value);
-        var methodName = "ctor";
+        string declaringType = method.DeclaringType.Mangle(RefKind.Value);
+        string methodName = "ctor";
         if (method is MethodInfo methodInfo)
         {
             methodName = methodInfo.Name;
@@ -43,10 +43,10 @@ internal static class CppNameMangler
         return $"{declaringType}_{methodName}";
     }
 
-
-    public static string MangledMethodHeader(this CilNativeMethod cilNativeMethod)
+    public static string MangledMethodHeader(this BaseNativeMethod cilNativeMethod)
     {
-        var args = string.Join(", ", cilNativeMethod.Args.Select(x => $"{x.ExpressionType.Mangle()} {x.GenCodeImpl()}"));
+        string args = string.Join(", ",
+            cilNativeMethod.Args.Select(x => $"{x.ExpressionType.Mangle()} {x.GenCodeImpl()}"));
         string methodHeader =
             $"{cilNativeMethod.Target.MangleMethodReturnType()} {cilNativeMethod.Target.MangleMethodName()}({args})";
         return methodHeader;
@@ -61,12 +61,4 @@ internal static class CppNameMangler
 
         return typeof(void).Mangle();
     }
-}
-
-internal enum RefKind
-{
-    Default,
-    Ref,
-    Value,
-    Ptr
 }

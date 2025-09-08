@@ -2,14 +2,10 @@
 
 namespace NativeSharp.CodeGen;
 
-public class CodeGenToFile(string FileName)
+public class CodeGenToFile(string fileName)
 {
+    public string FileName { get; } = fileName;
     private StringBuilder Text { get; } = new();
-
-    public void WriteToFile()
-    {
-        File.WriteAllText(FileName, Text.ToString());
-    }
 
     public CodeGenToFile AddLine(string text)
     {
@@ -27,4 +23,7 @@ public class CodeGenToFile(string FileName)
         Text.AppendLine();
         return this;
     }
+
+    public void WriteToFile()
+        => File.WriteAllText(FileName, Text.ToString());
 }

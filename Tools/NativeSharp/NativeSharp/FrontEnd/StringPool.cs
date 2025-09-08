@@ -11,7 +11,7 @@ class StringPool
 
     public int GetIndex(string value)
     {
-        if (Pool.TryGetValue(value, out var result))
+        if (Pool.TryGetValue(value, out int result))
         {
             return result;
         }
@@ -34,11 +34,11 @@ class StringPool
 
     private static byte[] DecodeUnicode(string value)
     {
-        var result = new byte[value.Length * 2];
+        byte[] result = new byte[value.Length * 2];
 
-        for (var index = 0; index < value.Length; index++)
+        for (int index = 0; index < value.Length; index++)
         {
-            var ch = value[index];
+            char ch = value[index];
             result[index] = (byte)ch;
             result[index + 1] = (byte)(ch >> 8);
         }
@@ -48,11 +48,11 @@ class StringPool
 
     private static byte[] DecodeLatin(string value)
     {
-        var result = new byte[value.Length];
+        byte[] result = new byte[value.Length];
 
-        for (var index = 0; index < value.Length; index++)
+        for (int index = 0; index < value.Length; index++)
         {
-            var ch = value[index];
+            char ch = value[index];
             result[index] = (byte)ch;
         }
 
