@@ -2,6 +2,7 @@
 using NativeSharp.CodeGen;
 using NativeSharp.FrontEnd;
 using NativeSharp.Lib;
+using NativeSharp.Lib.Resolvers;
 using NativeSharp.Operations;
 using NativeSharp.Operations.Common;
 
@@ -12,6 +13,8 @@ class MethodResolver
     public static Dictionary<MethodBase, BaseNativeMethod> MethodCache { get; } = [];
     public static Dictionary<MethodBase, MethodBase> RemappedMethods { get; } = [];
     public static TwoWayDictionary<Type> MappedType { get; } = new();
+
+    static List<IMethodResolver> AllMethodResolvers { get; } = [];
 
     private static BaseNativeMethod? ResolveSystemClrMethod(MethodInfo clrMethod)
     {
@@ -53,6 +56,15 @@ class MethodResolver
         }
 
         RemappedMethods[clrMethod] = mappedMethod;
+        var cppCodeAttribute = mappedMethod.GetCustomAttribute<CppCodeAttribute>();
+        if (cppCodeAttribute is not null)
+        {
+            return new CppNativeMethod(cppCodeAttribute.NativeContent)
+            {
+                Target = clrMethod,
+                Args = [],
+            };
+        }
 
         return TransformCilMethod(clrMethod, mappedMethod);
     }
@@ -120,5 +132,23 @@ class MethodResolver
                 MethodCache[target] = resolved!;
             }
         }
+    }
+
+    public static void ScanAssembly(Assembly assembly)
+    {
+        List<IMethodResolver> resolvers = new();
+        var types = assembly.GetTypes()
+            .Where(it => it is { IsAbstract: false, IsInterface: false })
+            .ToArray();
+        foreach (Type type in types)
+        {
+            if (type.IsAssignableTo(typeof(IMethodResolver)))
+            {
+                IMethodResolver resolver = (IMethodResolver)Activator.CreateInstance(type)!;
+                resolvers.Add(resolver);
+            }
+        }
+
+        AllMethodResolvers.AddRange(resolvers);
     }
 }

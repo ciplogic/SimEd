@@ -12,6 +12,8 @@ internal class Program
     {
         var asm = Assembly.LoadFrom("TargetApp.dll");
         var entryPoint = asm.EntryPoint!;
+        
+        MethodResolver.ScanAssembly(typeof(Texts).Assembly);
 
         MethodResolver.ResolveCilMethod(MethodResolver.Resolve(entryPoint));
         
