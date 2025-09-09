@@ -44,8 +44,10 @@ public static class ResolvedMethods
     {
         for (var i = 0; i < len; i++)
         {
-            var byteValue = sourceArray[sourceIndex + i];
-            destinationArray[destinationIndex + i] = byteValue;
+            int index = sourceIndex + i;
+            int destArrayIndex = destinationIndex + i;
+            byte byteValue = sourceArray[index];
+            destinationArray[destArrayIndex] = byteValue;
         }
     }
 }

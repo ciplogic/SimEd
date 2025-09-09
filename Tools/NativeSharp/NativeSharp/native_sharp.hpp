@@ -32,6 +32,10 @@ inline bool cgt(int left, int right) {
     return left > right;
 }
 
+inline bool clt(int left, int right) {
+    return left < right;
+}
+
 inline bool ceq(int left, int right) {
     return left == right;
 }

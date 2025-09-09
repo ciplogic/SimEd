@@ -92,6 +92,11 @@ internal class InstructionTransformer
             return TransformStoreField(instruction, LocalVariablesStackAndState);
         }
 
+        if (opName.StartsWith("stelem"))
+        {
+            return TransformStoreElement(instruction, LocalVariablesStackAndState);
+        }
+
 
         if (LogicalBinaryOp.Contains(opName))
         {
@@ -105,7 +110,7 @@ internal class InstructionTransformer
 
         if (opName.StartsWith("new"))
         {
-            return TransformNewDeclarations(instruction);
+            return TransformNewOps.TransformNewDeclarations(instruction, LocalVariablesStackAndState);
         }
 
         if (opName == "dup")
@@ -115,6 +120,15 @@ internal class InstructionTransformer
 
 
         throw new InvalidOperationException(opName);
+    }
+
+    private BaseOp TransformStoreElement(Instruction instruction, LocalVariablesStackAndState localVariablesStackAndState)
+    {
+        var valueToSet = localVariablesStackAndState.Pop();
+        var index = localVariablesStackAndState.Pop();
+        var arrPtr = (IndexedVariable)localVariablesStackAndState.Pop();
+
+        return new StoreElementOp(arrPtr, index, valueToSet);;
     }
 
     private BaseOp TransformStoreField(Instruction instruction, LocalVariablesStackAndState localVariablesStackAndState)
@@ -133,47 +147,6 @@ internal class InstructionTransformer
 
         VReg vreg2 = LocalVariablesStackAndState.NewVirtVar(original.ExpressionType);
         return new DupOp(vreg1, vreg2, original);
-    }
-
-    private BaseOp TransformNewDeclarations(Instruction instruction)
-    {
-        string? opName = instruction.OpCode.Name;
-
-        if (opName == "newarr")
-        {
-            return TransformNewArr(instruction);
-        }
-
-        if (opName == "newobj")
-        {
-            return TransformNewObj(instruction);
-        }
-
-        throw new InvalidOperationException(opName);
-    }
-
-    private BaseOp TransformNewObj(Instruction instruction)
-    {
-        ConstructorInfo constructorInfo = (ConstructorInfo)instruction.Operand;
-        int argumentCount = constructorInfo.GetParameters().Length;
-        List<IValueExpression> args = new List<IValueExpression>();
-        for (int i = 0; i < argumentCount; i++)
-        {
-            args.Add(LocalVariablesStackAndState.Pop());
-        }
-
-        VReg result = LocalVariablesStackAndState.NewVirtVar(constructorInfo.DeclaringType!);
-        return new NewObjOp(result, args.ToArray());
-    }
-
-    private BaseOp TransformNewArr(Instruction instruction)
-    {
-        IValueExpression popCount = LocalVariablesStackAndState.Pop();
-
-        Type elementType = (Type)instruction.Operand;
-        Type arrayType = elementType.MakeArrayType();
-        VReg result = LocalVariablesStackAndState.NewVirtVar(arrayType);
-        return new NewArrayOp(result, elementType, popCount);
     }
 
     private BaseOp TransformBranchOperation(Instruction instruction, string opName)
