@@ -33,10 +33,19 @@ public static class ResolvedMethods
 
     public static void System_Array_Copy(byte[] sourceArray, byte[] destinationArray, int len)
     {
+        for (var i = 0; i < len; i++)
+        {
+            destinationArray[i] = sourceArray[i];
+        }
     }
 
     public static void System_Array_Copy(byte[] sourceArray, int sourceIndex, byte[] destinationArray,
         int destinationIndex, int len)
     {
+        for (var i = 0; i < len; i++)
+        {
+            var byteValue = sourceArray[sourceIndex + i];
+            destinationArray[destinationIndex + i] = byteValue;
+        }
     }
 }
