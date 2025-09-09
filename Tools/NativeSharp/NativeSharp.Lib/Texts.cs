@@ -2,25 +2,23 @@
 
 public static class Texts
 {
-    public static System_String FromIndex(int index, int[] codes, int[] endPositions, byte[] data)
+    public static System_String FromIndex(int index, int[] codes, int[] startPos, int[] lengths, byte[] data)
     {
-        var startPos = 0;
-        if (index > 0)
-        {
-            startPos = endPositions[index - 1];
-        }
-        var endPos = endPositions[index];
-        var len =  endPos - startPos;
-        return BuildSystemString(index, codes, data, len, startPos);
+        var start = startPos[index];
+        var len = lengths[index];
+        var code = codes[index];
+        return BuildSystemString(code, data, start, len);
     }
 
-    public static System_String BuildSystemString(int index, int[] codes, byte[] data, int len, int startPos)
+    public static System_String BuildSystemString(int code, byte[] data, int startPos, int len)
     {
         var resultData = new byte[len];
         Array.Copy(data, startPos, resultData, 0, len);
-        System_String result = new System_String();
-        result.Coder = codes[index];
-        result.Data = resultData;
+        System_String result = new()
+        {
+            Coder = code,
+            Data = resultData
+        };
         return result;
     }
 }

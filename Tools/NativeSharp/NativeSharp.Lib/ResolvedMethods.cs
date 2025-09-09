@@ -23,7 +23,16 @@ public static class ResolvedMethods
         return result;
     }
 
-    [CppCode("wsprintf(\"%s\", arg_0->Data);", "stdio.h", "")]
+    [CppCode("""
+             if (arg_0->Coder){
+                 wchar_t *text = (wchar_t*)arg_0->Data->data();
+                 wprintf(L"%ls\n", text);
+             } else {
+               char *text = (char*)arg_0->Data->data();
+               printf("%s\n", text);
+             }
+             """,
+        "cstdio", "")]
     public static void System_Console_WriteLine(string text)
     {
         //Nothing for now. Will be filled by C++ code

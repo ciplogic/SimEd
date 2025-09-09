@@ -45,8 +45,9 @@ public class CodeGenerator
 
     private void WriteCppMethod(CppNativeMethod cppMethod)
     {
+        var code = cppMethod.Content;
         Code.AddLine($"{cppMethod.MangledMethodHeader()} {{");
-
+        Code.AddLine(code.MethodBody);
         Code.AddLine("}");
     }
 
@@ -134,26 +135,30 @@ public class CodeGenerator
     private void WriteStringPool()
     {
         StringPool stringPool = StringPool.Instance;
-        List<int> coders = stringPool.Coders;
-        List<int> endPos = new List<int>();
-        List<byte> joinedTexts = new List<byte>();
+        List<int> startPositions = [];
+        List<int> lenPos = [];
+        List<byte> joinedTexts = [];
         int startPos = 0;
         foreach (byte[] utf8Text in stringPool.Values)
         {
+            
+            startPositions.Add(startPos);
+            lenPos.Add(utf8Text.Length);
             startPos += utf8Text.Length;
             joinedTexts.AddRange(utf8Text);
-            endPos.Add(startPos);
         }
 
-        Code.AddLine("namespace {")
-            .AddLine(
-                $"RefArr<int> _coders = std::make_shared<Arr<int>> (Arr<int>{{{string.Join(',', stringPool.Coders)}}});")
-            .AddLine($"RefArr<int> _endPos = std::make_shared<Arr<int>> (Arr<int>{{{string.Join(',', endPos)}}});")
-            .AddLine(
-                $"RefArr<uint8_t> _joinedTexts = std::make_shared<Arr<uint8_t>> (Arr<uint8_t>{{{string.Join(',', joinedTexts)}}});")
-            .AddLine("Ref<System_String> _clr_str(int index) {")
-            .AddLine("    return Texts_FromIndex(index, _coders, _endPos, _joinedTexts);")
-            .AddLine("}")
-            .AddLine("}");
+        Code
+            .AddLine("namespace {")
+            .AddLine($"RefArr<int> _coders = std::make_shared<Arr<int>> (Arr<int>{{{string.Join(',', stringPool.Coders)}}});")
+            .AddLine($"RefArr<int> _startPos = std::make_shared<Arr<int>> (Arr<int>{{{string.Join(',', startPositions)}}});")
+            .AddLine($"RefArr<int> _lengths = std::make_shared<Arr<int>> (Arr<int>{{{string.Join(',', lenPos)}}});")
+            .AddLine($"RefArr<uint8_t> _joinedTexts = std::make_shared<Arr<uint8_t>> (Arr<uint8_t>{{{string.Join(',', joinedTexts)}}});")
+            .AddLine("""
+                     Ref<System_String> _clr_str(int index) {
+                        return Texts_FromIndex(index, _coders, _startPos, _lengths, _joinedTexts);
+                     }
+                     }
+                     """);
     }
 }
