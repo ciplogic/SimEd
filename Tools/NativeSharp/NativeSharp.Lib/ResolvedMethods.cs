@@ -15,7 +15,7 @@ public static class ResolvedMethods
         var data = new byte[text.Length + text2.Length];
         Array.Copy(text.Data, data, text.Length);
 
-        Array.Copy(text.Data, 0, data, text.Length, text2.Length);
+        Array.Copy(text2.Data, 0, data, text.Length, text2.Length);
         System_String result = new()
         {
             Coder = 0,
@@ -27,7 +27,9 @@ public static class ResolvedMethods
     [CppCode("""
              Arr<uint8_t> arrText {*(arg_0->Data)};
              arrText.push_back(0);
-             arrText.push_back(0);
+             if (arg_0->Coder != 0) {
+                arrText.push_back(0);
+             }
              if (arg_0->Coder){
                  wchar_t *text = (wchar_t*)arrText.data();
                  wprintf(L"%ls\n", text);

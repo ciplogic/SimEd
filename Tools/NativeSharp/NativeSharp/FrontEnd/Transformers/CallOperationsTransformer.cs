@@ -32,18 +32,23 @@ static class CallOperationsTransformer
 
         Type returnType = operandAsMethodInfo?.ReturnType ?? typeof(void);
         VReg? returnValue = null;
+
+        MethodResolver.ResolveMethod(operand);
         if (returnType != typeof(void))
         {
             returnValue = locals.NewVirtVar(returnType);
+            return new CallReturnOp(returnValue, CallType.Static)
+            {
+                TargetMethod = operand,
+                Args = args.ToArray()
+            };
         }
 
-        MethodResolver.ResolveMethod(operand);
-
+        
         CallOp result = new CallOp()
         {
             CallType = CallType.Static,
             TargetMethod = operand,
-            ReturnValue = returnValue,
             Args = args.ToArray()
         };
         return result;

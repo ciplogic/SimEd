@@ -44,7 +44,10 @@ internal class InstructionTransformer
             }
         }
 
-        return resultList.ToArray();
+        BaseOp[] ops = resultList.ToArray();
+        PhiFixup.FixupMerges(ops);
+
+        return ops;
     }
 
     private void BuildLocalVariables(MethodBase parentMethod)
@@ -139,7 +142,6 @@ internal class InstructionTransformer
         var arrPtr = (IndexedVariable)localVariablesStackAndState.Pop();
 
         return new StoreElementOp(arrPtr, index, valueToSet);
-        ;
     }
 
     private BaseOp TransformStoreField(Instruction instruction, LocalVariablesStackAndState localVariablesStackAndState)
@@ -156,9 +158,9 @@ internal class InstructionTransformer
         IValueExpression original = LocalVariablesStackAndState.Pop();
         VReg vreg1 = LocalVariablesStackAndState.NewVirtVar(original.ExpressionType);
         VReg vreg2 = LocalVariablesStackAndState.NewVirtVar(original.ExpressionType);
-        AssignOp assignOp1 = new (vreg1, original);
-        AssignOp assignOp2 = new (vreg2, original);
-        
+        AssignOp assignOp1 = new(vreg1, original);
+        AssignOp assignOp2 = new(vreg2, original);
+
         return new CompositeOp([assignOp1, assignOp2]);
     }
 
@@ -229,7 +231,7 @@ internal class InstructionTransformer
             var leftVar = LocalVariablesStackAndState.LocalVariables[index];
 
             var expression = LocalVariablesStackAndState.Pop();
-            AssignOp assignOp = new (leftVar, expression);
+            AssignOp assignOp = new(leftVar, expression);
             return assignOp;
         }
 

@@ -25,13 +25,15 @@ class Program
         return true;
     }
 
-    static void Main2()
+    static void Main()
     {
         Console.WriteLine("Hello, World!" + IsPrime(997));
     }
-    static void Main()
+    static void Main_()
     {
+        bool isTrue = false;
+        var trueText = isTrue.ToString();
         Console.WriteLine("Hello..." );
-        Console.WriteLine("World!" );
+        Console.WriteLine(trueText);
     }
 }

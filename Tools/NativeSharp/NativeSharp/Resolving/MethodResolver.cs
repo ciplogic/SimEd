@@ -133,4 +133,31 @@ class MethodResolver
             }
         }
     }
+
+    public static void ResolveAllTree(MethodBase entryPoint)
+    {
+        if (MethodCache.ContainsKey(entryPoint))
+        {
+            return;
+        }
+        
+        var resolvedMethod = Resolve(entryPoint);
+        if (resolvedMethod is not CilNativeMethod cilMethod)
+        {
+            return;
+        }
+        var methodsVoid = cilMethod.Instructions.OfType<CallOp>().Select(x=>x.TargetMethod).ToArray();
+        var methodsReturn = cilMethod.Instructions.OfType<CallReturnOp>().Select(x => x.TargetMethod).ToArray();
+        var joinedMethodsToResolve = methodsVoid.Concat(methodsReturn).ToArray();
+        if (joinedMethodsToResolve.Length == 0)
+        {
+            return;
+        }
+
+        foreach (MethodBase method in joinedMethodsToResolve)
+        {
+            ResolveAllTree(method);
+        }
+        
+    }
 }

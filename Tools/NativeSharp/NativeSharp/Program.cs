@@ -12,6 +12,9 @@ internal class Program
         MethodInfo entryPoint = asm.EntryPoint!;
         AssemblyScanner.DefaultMappings();
         AssemblyScanner.ScanAssembly(typeof(Texts).Assembly);
+        
+        
+        MethodResolver.ResolveAllTree(entryPoint);
 
         MethodResolver.ResolveCilMethod(MethodResolver.Resolve(entryPoint));
         

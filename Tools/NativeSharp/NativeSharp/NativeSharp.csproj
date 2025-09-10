@@ -16,11 +16,15 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\NativeSharp.Common\NativeSharp.Common.csproj" />
       <ProjectReference Include="..\NativeSharp.Lib\NativeSharp.Lib.csproj" />
     </ItemGroup>
 
     <ItemGroup>
       <None Update="native_sharp.hpp">
+        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      </None>
+      <None Update="native_rc.hpp">
         <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       </None>
     </ItemGroup>

@@ -7,15 +7,6 @@ namespace NativeSharp.Extensions;
 
 public static class CollectionUtils
 {
-    public static TOut[] SelectToArray<TIn, TOut>(this TIn[] source, Func<TIn, TOut> selector)
-    {
-        TOut[] result = new TOut[source.Length];
-        for (int i = 0; i < source.Length; i++)
-        {
-            result[i] = selector(source[i]);
-        }
-        return result;
-    }
 
     public static int[] BuildTargetBranches(this Instruction[] instructions2)
     {
@@ -36,7 +27,6 @@ public static class CollectionUtils
         int[] targetBranches = targets.Order().ToArray();
         return targetBranches;
     }
-
 
     public static ArgumentVariable[] GetMethodArguments(this MethodBase method)
     {
