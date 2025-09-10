@@ -20,6 +20,18 @@ internal class ConstantValueExpression(object value) : IValueExpression
         return Value.ToString();
     }
 
+    public override bool Equals(object? obj)
+    {
+        if (obj is not ConstantValueExpression constant)
+        {
+            return false;
+        }
+
+        return Value.Equals(constant.Value);
+    }
+
+    public override int GetHashCode() => Value.GetHashCode();
+
     public static ConstantValueExpression Create(object value) => new(value)
     {
         ExpressionType = value.GetType()

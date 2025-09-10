@@ -90,12 +90,6 @@ public class CodeGenerator
             """
             namespace {
                 Ref<System_String> _clr_str(int index);
-                 
-                template <class T> RefArr<T> new_arr(int size) {
-                    RefArr<T> result = new_ref<Arr<T>>();
-                    result->resize(size);
-                    return result;
-                }
             }
             """);
     }

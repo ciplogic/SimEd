@@ -1,11 +1,15 @@
 ﻿using NativeSharp.Operations.Common;
+using NativeSharp.Operations.Vars;
 
 namespace NativeSharp.Operations;
 
-class BinaryOp : BaseOp
+class BinaryOp : LeftOp
 {
+    public BinaryOp(IndexedVariable left) : base(left)
+    {
+    }
+
     public string Operator { get; set; } = null!;
-    public IRefValue Left { get; set; }
     public IValueExpression LeftExpression { get; set; }
     public IValueExpression RightExpression { get; set; }
 

@@ -174,7 +174,7 @@ internal class InstructionTransformer
             return new GotoOp(targetInstructionOffset);
         }
 
-        return new BranchOperation(targetInstructionOffset, opName,
+        return new BranchOp(targetInstructionOffset, opName,
             isConditional ? LocalVariablesStackAndState.Pop() : null);
     }
 
@@ -182,9 +182,9 @@ internal class InstructionTransformer
     {
         IValueExpression rightOp = LocalVariablesStackAndState.Pop();
         IValueExpression leftOp = LocalVariablesStackAndState.Pop();
-        return new BinaryOp()
+        var left = LocalVariablesStackAndState.NewVirtVar(leftOp.ExpressionType);
+        return new BinaryOp(left)
         {
-            Left = LocalVariablesStackAndState.NewVirtVar(leftOp.ExpressionType),
             LeftExpression = leftOp,
             RightExpression = rightOp,
             Operator = instruction.OpCode.Name!
@@ -195,9 +195,9 @@ internal class InstructionTransformer
     {
         IValueExpression rightOp = LocalVariablesStackAndState.Pop();
         IValueExpression leftOp = LocalVariablesStackAndState.Pop();
-        return new BinaryOp()
+        var left = LocalVariablesStackAndState.NewVirtVar(leftOp.ExpressionType);
+        return new BinaryOp(left)
         {
-            Left = LocalVariablesStackAndState.NewVirtVar(typeof(bool)),
             LeftExpression = leftOp,
             RightExpression = rightOp,
             Operator = instruction.OpCode.Name!
