@@ -2,7 +2,7 @@
 using NativeSharp.Operations.Common;
 using NativeSharp.Operations.Vars;
 
-namespace NativeSharp.Operations;
+namespace NativeSharp.Operations.FieldsAndIndexing;
 
 internal class NewObjOp : BaseOp
 {
