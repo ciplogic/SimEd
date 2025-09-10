@@ -17,6 +17,6 @@ internal class NewObjOp : LeftOp
     public override string GenCode()
     {
         var expressionTypeName = Left.ExpressionType.Mangle(RefKind.Value);
-        return $"{Left.Code()} = Ref<{expressionTypeName}>(new {expressionTypeName});";
+        return $"{Left.Code()} = new_ref<{expressionTypeName}>();";
     }
 }

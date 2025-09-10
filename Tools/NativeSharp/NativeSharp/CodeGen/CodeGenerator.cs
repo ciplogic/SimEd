@@ -92,7 +92,7 @@ public class CodeGenerator
                 Ref<System_String> _clr_str(int index);
                  
                 template <class T> RefArr<T> new_arr(int size) {
-                    RefArr<T> result (new Arr<T>);
+                    RefArr<T> result = new_ref<Arr<T>>();
                     result->resize(size);
                     return result;
                 }
@@ -150,10 +150,10 @@ public class CodeGenerator
 
         Code
             .AddLine("namespace {")
-            .AddLine($"    RefArr<int> _coders (new Arr<int>{{{string.Join(',', stringPool.Coders)}}});")
-            .AddLine($"    RefArr<int> _startPos (new Arr<int>{{{string.Join(',', startPositions)}}});")
-            .AddLine($"    RefArr<int> _lengths (new Arr<int>{{{string.Join(',', lenPos)}}});")
-            .AddLine($"    RefArr<uint8_t> _joinedTexts (new Arr<uint8_t>{{{string.Join(',', joinedTexts)}}});")
+            .AddLine($"    RefArr<int> _coders = new_ref_data<Arr<int>> ({{{string.Join(',', stringPool.Coders)}}});")
+            .AddLine($"    RefArr<int> _startPos = new_ref_data<Arr<int>> ({{{string.Join(',', startPositions)}}});")
+            .AddLine($"    RefArr<int> _lengths = new_ref_data<Arr<int>> ({{{string.Join(',', lenPos)}}});")
+            .AddLine($"    RefArr<uint8_t> _joinedTexts = new_ref_data<Arr<uint8_t>> ({{{string.Join(',', joinedTexts)}}});")
             .AddLine("""
                          Ref<System_String> _clr_str(int index) {
                             return Texts_FromIndex(index, _coders, _startPos, _lengths, _joinedTexts);
