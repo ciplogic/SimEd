@@ -1,4 +1,4 @@
-﻿namespace NativeSharp.Operations.Values;
+﻿namespace NativeSharp.FrontEnd;
 
 class StringPool
 {

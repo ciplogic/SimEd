@@ -1,4 +1,5 @@
-﻿using NativeSharp.Operations.Common;
+﻿using NativeSharp.FrontEnd;
+using NativeSharp.Operations.Common;
 
 namespace NativeSharp.Operations.Values;
 

@@ -1,20 +1,18 @@
-﻿using NativeSharp.Operations.Vars;
+﻿using NativeSharp.Operations.Common;
+using NativeSharp.Operations.Vars;
 
 namespace NativeSharp.Operations.FieldsAndIndexing;
 
-public class LdLenOp : BaseOp
+internal class LdLenOp : LeftOp
 {
-    private readonly IndexedVariable left;
-    private readonly IndexedVariable right;
+    public IndexedVariable Right { get; }
 
     public LdLenOp(IndexedVariable left, IndexedVariable right)
+        : base(left)
     {
-        this.left = left;
-        this.right = right;
+        Right = right;
     }
 
     public override string GenCode()
-    {
-        return $"{left.GenCode()} = {right.GenCode()}->size();";
-    }
+        => $"{Left.GenCode()} = {Right.GenCode()}->size();";
 }

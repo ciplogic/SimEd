@@ -4,7 +4,6 @@ using NativeSharp.Extensions;
 using NativeSharp.Operations;
 using NativeSharp.Operations.Common;
 using NativeSharp.Operations.FieldsAndIndexing;
-using NativeSharp.Operations.Values;
 using NativeSharp.Operations.Vars;
 
 namespace NativeSharp.FrontEnd;
@@ -31,7 +30,18 @@ internal class InstructionTransformer
                 resultList.Add(new LabelOp(instruction.Offset));
             }
 
-            resultList.Add(TransformOp(instruction));
+            var transformedOp = TransformOp(instruction);
+            if (transformedOp is CompositeOp compositeOp)
+            {
+                foreach (BaseOp baseOp in compositeOp.Ops)
+                {
+                    resultList.Add(baseOp);
+                }
+            }
+            else
+            {
+                resultList.Add(transformedOp);
+            }
         }
 
         return resultList.ToArray();
@@ -49,10 +59,9 @@ internal class InstructionTransformer
     private BaseOp TransformOp(Instruction instruction)
     {
         string? opName = instruction.OpCode.Name;
-        object operand = instruction.Operand;
         if (opName == "nop")
         {
-            return new Nop();
+            return new CompositeOp([]);
         }
 
         if (opName == "ret")
@@ -146,9 +155,11 @@ internal class InstructionTransformer
     {
         IValueExpression original = LocalVariablesStackAndState.Pop();
         VReg vreg1 = LocalVariablesStackAndState.NewVirtVar(original.ExpressionType);
-
         VReg vreg2 = LocalVariablesStackAndState.NewVirtVar(original.ExpressionType);
-        return new DupOp(vreg1, vreg2, original);
+        AssignOp assignOp1 = new (vreg1, original);
+        AssignOp assignOp2 = new (vreg2, original);
+        
+        return new CompositeOp([assignOp1, assignOp2]);
     }
 
     private BaseOp TransformBranchOperation(Instruction instruction, string opName)
@@ -215,11 +226,10 @@ internal class InstructionTransformer
                 }
             }
 
-            AssignOp assignOp = new AssignOp()
-            {
-                Left = LocalVariablesStackAndState.LocalVariables[index],
-                Expression = LocalVariablesStackAndState.Pop()
-            };
+            var leftVar = LocalVariablesStackAndState.LocalVariables[index];
+
+            var expression = LocalVariablesStackAndState.Pop();
+            AssignOp assignOp = new (leftVar, expression);
             return assignOp;
         }
 

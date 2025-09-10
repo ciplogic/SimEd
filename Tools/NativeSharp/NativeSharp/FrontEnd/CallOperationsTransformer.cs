@@ -1,5 +1,4 @@
 ﻿using System.Reflection;
-using NativeSharp.CodeGen;
 using NativeSharp.Common;
 using NativeSharp.Operations;
 using NativeSharp.Operations.Common;

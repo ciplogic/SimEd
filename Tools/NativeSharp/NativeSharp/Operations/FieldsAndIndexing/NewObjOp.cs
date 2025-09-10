@@ -4,17 +4,19 @@ using NativeSharp.Operations.Vars;
 
 namespace NativeSharp.Operations.FieldsAndIndexing;
 
-internal class NewObjOp : BaseOp
+internal class NewObjOp : LeftOp
 {
-    public VReg Left { get; }
     public IValueExpression[] Arguments { get; }
 
     public NewObjOp(VReg left, IValueExpression[] arguments)
+        : base(left)
     {
-        Left = left;
         Arguments = arguments;
     }
 
-    public override string GenCode() 
-        => $"{Left.Code()} = Ref(new {Left.ExpressionType.Mangle(RefKind.Value)});";
+    public override string GenCode()
+    {
+        var expressionTypeName = Left.ExpressionType.Mangle(RefKind.Value);
+        return $"{Left.Code()} = Ref<{expressionTypeName}>(new {expressionTypeName});";
+    }
 }

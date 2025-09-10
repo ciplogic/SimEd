@@ -1,4 +1,4 @@
-﻿namespace NativeSharp.Resolving;
+﻿namespace NativeSharp.Common;
 
 class TwoWayDictionary<T>
 {

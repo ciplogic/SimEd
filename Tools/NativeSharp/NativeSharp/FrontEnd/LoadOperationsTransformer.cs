@@ -39,7 +39,7 @@ static class LoadOperationsTransformer
         {
             return ExtractField(instruction, variablesStackAndState);
         }
-        
+
 
         if (opName.StartsWith("ldelem"))
         {
@@ -58,18 +58,16 @@ static class LoadOperationsTransformer
             {
                 int operandAsInt = OperandAsInt(operand);
                 IndexedVariable localVar = variablesStackAndState.LocalVariables[operandAsInt];
-                return new AssignOp()
-                {
-                    Left = variablesStackAndState.NewVirtVar(localVar.ExpressionType),
-                    Expression = localVar
-                };
+                var variableToAssign = variablesStackAndState.NewVirtVar(localVar.ExpressionType);
+                return new AssignOp(variableToAssign, localVar);
             }
             default:
                 throw new InvalidOperationException(opName);
         }
     }
 
-    private static BaseOp ExtractLoadElement(Instruction instruction, LocalVariablesStackAndState variablesStackAndState)
+    private static BaseOp ExtractLoadElement(Instruction instruction,
+        LocalVariablesStackAndState variablesStackAndState)
     {
         IValueExpression index = variablesStackAndState.Pop();
         IndexedVariable array = (IndexedVariable)variablesStackAndState.Pop();
@@ -106,11 +104,9 @@ static class LoadOperationsTransformer
             index = paramInfo?.Position ?? (int)instruction.Operand;
         }
 
-        return new AssignOp()
-        {
-            Left = localVariablesStackAndState.NewVirtVar(argumentVariables[index].ExpressionType),
-            Expression = argumentVariables[index]
-        };
+        VReg left = localVariablesStackAndState.NewVirtVar(argumentVariables[index].ExpressionType);
+
+        return new AssignOp(left, argumentVariables[index]);
     }
 
 
@@ -148,23 +144,18 @@ static class LoadOperationsTransformer
             index = (int)instruction.Operand;
         }
 
-        return new AssignOp()
-        {
-            Left = localVariablesStackAndState.NewVirtVar(localVariablesStackAndState.LocalVariables[index]
-                .ExpressionType),
-            Expression = localVariablesStackAndState.LocalVariables[index]
-        };
+        var expressionType = localVariablesStackAndState.LocalVariables[index].ExpressionType;
+        VReg left = localVariablesStackAndState.NewVirtVar(expressionType);
+
+        var expression = localVariablesStackAndState.LocalVariables[index];
+        return new AssignOp(left, expression);
     }
 
     public static BaseOp ExtractAssignFromConstant(ConstantValueExpression constValueExpression,
         LocalVariablesStackAndState localVariablesStackAndState)
     {
         VReg virtVar = localVariablesStackAndState.NewVirtVar(constValueExpression.ExpressionType);
-        AssignOp assignOp = new AssignOp()
-        {
-            Left = virtVar,
-            Expression = constValueExpression
-        };
+        AssignOp assignOp = new AssignOp(virtVar, constValueExpression);
         return assignOp;
     }
 

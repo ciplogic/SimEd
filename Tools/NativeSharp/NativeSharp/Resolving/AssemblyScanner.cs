@@ -1,5 +1,4 @@
 ﻿using System.Reflection;
-using NativeSharp.Lib;
 using NativeSharp.Lib.Resolvers;
 using NativeSharp.Lib.System;
 

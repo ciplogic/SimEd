@@ -2,21 +2,20 @@
 using NativeSharp.Operations.Common;
 using NativeSharp.Operations.Vars;
 
-namespace NativeSharp.Operations;
+namespace NativeSharp.Operations.FieldsAndIndexing;
 
-internal class NewArrayOp : BaseOp
+internal class NewArrayOp : LeftOp
 {
-    public VReg Result { get; }
     public Type ElementType { get; }
     public IValueExpression Count { get; }
 
     public NewArrayOp(VReg result, Type elementType, IValueExpression count)
+    : base(result)
     {
-        Result = result;
         ElementType = elementType;
         Count = count;
     }
 
     public override string GenCode() 
-        => $"{Result.GenCode()} = new_arr<{ElementType.Mangle()}>({Count.Code()});";
+        => $"{Left.GenCode()} = new_arr<{ElementType.Mangle()}>({Count.Code()});";
 }

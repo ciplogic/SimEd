@@ -1,5 +1,6 @@
 ﻿using System.Reflection;
 using NativeSharp.CodeGen;
+using NativeSharp.Common;
 using NativeSharp.Extensions;
 using NativeSharp.FrontEnd;
 using NativeSharp.Lib;
