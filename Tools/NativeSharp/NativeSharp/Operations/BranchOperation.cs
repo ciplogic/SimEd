@@ -26,3 +26,16 @@ internal class BranchOperation : BaseOp
             : $"if ({Name.Mangle()}({Condition})) goto label_{Offset};";
     }
 }
+
+internal class GotoOp : BaseOp
+{
+    public int Offset { get; }
+
+    public GotoOp(int offset)
+    {
+        Offset = offset;
+    }
+    
+    public override string GenCode() 
+        => $"goto label_{Offset};";
+}

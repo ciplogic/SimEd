@@ -1,4 +1,4 @@
-﻿namespace NativeSharp.Lib;
+﻿namespace NativeSharp.Lib.System;
 
 public class System_String
 {

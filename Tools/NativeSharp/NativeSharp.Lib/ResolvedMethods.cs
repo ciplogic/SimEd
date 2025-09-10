@@ -1,4 +1,5 @@
 ﻿using NativeSharp.Lib.Resolvers;
+using NativeSharp.Lib.System;
 
 namespace NativeSharp.Lib;
 
@@ -24,11 +25,14 @@ public static class ResolvedMethods
     }
 
     [CppCode("""
+             Arr<uint8_t> arrText {*(arg_0->Data)};
+             arrText.push_back(0);
+             arrText.push_back(0);
              if (arg_0->Coder){
-                 wchar_t *text = (wchar_t*)arg_0->Data->data();
+                 wchar_t *text = (wchar_t*)arrText.data();
                  wprintf(L"%ls\n", text);
              } else {
-               char *text = (char*)arg_0->Data->data();
+               char *text = (char*)arrText.data();
                printf("%s\n", text);
              }
              """,

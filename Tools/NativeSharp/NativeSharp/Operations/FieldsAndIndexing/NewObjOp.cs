@@ -15,9 +15,6 @@ internal class NewObjOp : BaseOp
         Arguments = arguments;
     }
 
-    public override string GenCode()
-    {
-        //string args = string.Join(", ", Arguments.Select(x => x.GenExpressionCode()));
-        return $"{Left.Code()} = std::make_shared<{Left.ExpressionType.Mangle(RefKind.Value)}>();";
-    }
+    public override string GenCode() 
+        => $"{Left.Code()} = Ref(new {Left.ExpressionType.Mangle(RefKind.Value)});";
 }

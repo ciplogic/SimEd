@@ -122,13 +122,15 @@ internal class InstructionTransformer
         throw new InvalidOperationException(opName);
     }
 
-    private BaseOp TransformStoreElement(Instruction instruction, LocalVariablesStackAndState localVariablesStackAndState)
+    private BaseOp TransformStoreElement(Instruction instruction,
+        LocalVariablesStackAndState localVariablesStackAndState)
     {
         var valueToSet = localVariablesStackAndState.Pop();
         var index = localVariablesStackAndState.Pop();
         var arrPtr = (IndexedVariable)localVariablesStackAndState.Pop();
 
-        return new StoreElementOp(arrPtr, index, valueToSet);;
+        return new StoreElementOp(arrPtr, index, valueToSet);
+        ;
     }
 
     private BaseOp TransformStoreField(Instruction instruction, LocalVariablesStackAndState localVariablesStackAndState)
@@ -137,7 +139,7 @@ internal class InstructionTransformer
         IValueExpression valueToSet = localVariablesStackAndState.Pop();
         IndexedVariable thisPtr = (IndexedVariable)localVariablesStackAndState.Pop();
 
-        return new StoreFieldOp(thisPtr, valueToSet,  fieldInfo.Name);
+        return new StoreFieldOp(thisPtr, valueToSet, fieldInfo.Name);
     }
 
     private BaseOp TransformDup()
@@ -153,14 +155,20 @@ internal class InstructionTransformer
     {
         bool isConditional = opName.StartsWith("brfalse") || opName.StartsWith("brtrue");
         Instruction targetInstruction = (Instruction)instruction.Operand;
-        return new BranchOperation(targetInstruction.Offset, opName,
+        int targetInstructionOffset = targetInstruction.Offset;
+        if (!isConditional)
+        {
+            return new GotoOp(targetInstructionOffset);
+        }
+
+        return new BranchOperation(targetInstructionOffset, opName,
             isConditional ? LocalVariablesStackAndState.Pop() : null);
     }
 
     private BaseOp TransformBinaryOp(Instruction instruction)
     {
-        IValueExpression leftOp = LocalVariablesStackAndState.Pop();
         IValueExpression rightOp = LocalVariablesStackAndState.Pop();
+        IValueExpression leftOp = LocalVariablesStackAndState.Pop();
         return new BinaryOp()
         {
             Left = LocalVariablesStackAndState.NewVirtVar(leftOp.ExpressionType),
@@ -172,8 +180,8 @@ internal class InstructionTransformer
 
     private BaseOp TransformLogicalBinaryOp(Instruction instruction)
     {
-        IValueExpression leftOp = LocalVariablesStackAndState.Pop();
         IValueExpression rightOp = LocalVariablesStackAndState.Pop();
+        IValueExpression leftOp = LocalVariablesStackAndState.Pop();
         return new BinaryOp()
         {
             Left = LocalVariablesStackAndState.NewVirtVar(typeof(bool)),

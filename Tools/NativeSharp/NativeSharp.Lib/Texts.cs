@@ -1,4 +1,5 @@
 ﻿using NativeSharp.Lib;
+using NativeSharp.Lib.System;
 
 public static class Texts
 {

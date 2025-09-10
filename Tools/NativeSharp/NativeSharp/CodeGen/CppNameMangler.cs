@@ -8,16 +8,15 @@ internal static class CppNameMangler
 {
     public static string Mangle(this Type clrType, RefKind refKind = RefKind.Default)
     {
-        if (clrType.IsArray)
-        {
-            return $"RefArr<{clrType.GetElementType()!.Mangle()}>";
-        }
-
         if (MethodResolver.MappedType.TryGetValue(clrType, out Type mappedClrType))
         {
             clrType = mappedClrType;
         }
 
+        if (clrType.IsArray)
+        {
+            return $"RefArr<{clrType.GetElementType()!.Mangle()}>";
+        }
         string fullName = clrType.FullName!;
         refKind = refKind == RefKind.Default ? clrType.IsValueType ? RefKind.Value : RefKind.Ref : refKind;
         string resultMangle = Mangle(fullName);

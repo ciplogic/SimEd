@@ -15,7 +15,7 @@ class MethodResolver
     public static Dictionary<MethodBase, MethodBase> RemappedMethods { get; } = [];
     public static TwoWayDictionary<Type> MappedType { get; } = new();
 
-    static List<IMethodResolver> AllMethodResolvers { get; } = [];
+    public static List<IMethodResolver> AllMethodResolvers { get; } = [];
 
     private static BaseNativeMethod? ResolveSystemClrMethod(MethodInfo clrMethod)
     {
@@ -50,17 +50,13 @@ class MethodResolver
         {
             ParameterInfo mappedParam = mappedMethodInfo[i];
             ParameterInfo param = parameterInfos[i];
-            if (mappedParam.ParameterType != param.ParameterType)
-            {
-                MappedType[mappedParam.ParameterType] = param.ParameterType;
-            }
         }
 
         RemappedMethods[clrMethod] = mappedMethod;
         CppCodeAttribute? cppCodeAttribute = mappedMethod.GetCustomAttribute<CppCodeAttribute>();
         if (cppCodeAttribute is not null)
         {
-            CppNativeMethod resolveSystemClrMethod = new (cppCodeAttribute.NativeContent)
+            CppNativeMethod resolveSystemClrMethod = new(cppCodeAttribute.NativeContent)
             {
                 Target = clrMethod,
                 Args = clrMethod.GetMethodArguments(),
@@ -135,23 +131,5 @@ class MethodResolver
                 MethodCache[target] = resolved!;
             }
         }
-    }
-
-    public static void ScanAssembly(Assembly assembly)
-    {
-        List<IMethodResolver> resolvers = new();
-        Type[] types = assembly.GetTypes()
-            .Where(it => it is { IsAbstract: false, IsInterface: false })
-            .ToArray();
-        foreach (Type type in types)
-        {
-            if (type.IsAssignableTo(typeof(IMethodResolver)))
-            {
-                IMethodResolver resolver = (IMethodResolver)Activator.CreateInstance(type)!;
-                resolvers.Add(resolver);
-            }
-        }
-
-        AllMethodResolvers.AddRange(resolvers);
     }
 }

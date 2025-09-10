@@ -6,7 +6,55 @@
 #include <vector>
 
 template <typename T>
-using Ref = std::shared_ptr<T>;
+class Rc {
+    T* ptr;
+    unsigned* count;
+
+public:
+    // Constructor
+    explicit Rc(T* p = nullptr) : ptr(p), count(new unsigned(1)) {}
+
+    // Copy constructor
+    Rc(const Rc& other) : ptr(other.ptr), count(other.count) {
+        ++(*count);
+    }
+
+    // Assignment operator
+    Rc& operator=(const Rc& other) {
+        if (this != &other) {
+            release();
+            ptr = other.ptr;
+            count = other.count;
+            ++(*count);
+        }
+        return *this;
+    }
+
+    // Destructor
+    ~Rc() {
+        release();
+    }
+
+    // Dereference operators
+    T& operator*() const { return *ptr; }
+    T* operator->() const { return ptr; }
+
+    // Access reference count
+    unsigned use_count() const { return *count; }
+
+private:
+    void release() {
+        if (--(*count) == 0) {
+            delete ptr;
+            delete count;
+        }
+    }
+};
+
+
+template <typename T>
+//using Ref = std::shared_ptr<T>;
+using Ref = Rc<T>;
 
 template <typename T>
 using Arr = std::vector<T>;
