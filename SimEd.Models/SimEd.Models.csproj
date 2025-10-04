@@ -1,7 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <ItemGroup>
+    <PackageReference Include="Avalonia.Fonts.Inter" Version="11.3.7" />
     <PackageReference Include="U8String" Version="0.16.0-alpha" />
-    <PackageReference Include="ZLinq" Version="1.5.2" />
+    <PackageReference Include="ZLinq" Version="1.5.3" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SimEd.Common\SimEd.Common.csproj" />
