@@ -5,133 +5,14 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:solution="clr-namespace:SimEd.ViewModels.Solution"
              xmlns:languages="clr-namespace:SimEd.Models.Languages;assembly=SimEd.Models"
-             xmlns:converters="clr-namespace:SimEd.Converters"
+             xmlns:controls="clr-namespace:SimEd.Views.Controls"
              mc:Ignorable="d"
              d:DesignWidth="600" d:DesignHeight="20"
              x:CompileBindings="True" x:DataType="solution:SolutionViewModel">
-
-    <UserControl.Resources>
-        <converters:StringToBoolByKindTypeParameter x:Key="StringToBoolByKindTypeParameter" />
-        
-        <SvgSource x:Key="SquareIcon"
-                   Path="/Assets/Icons/square.svg"/>
-        <SvgSource x:Key="JavaIcon"
-                   Path="/Assets/Icons/java-plain.svg" />
-        <SvgSource x:Key="CSharpIcon"
-                   Path="/Assets/Icons/csharp-line.svg" />        
-        <SvgSource x:Key="FolderIcon"
-                   Path="/Assets/Icons/folder.svg" /> 
-        <SvgSource x:Key="CsProjIcon"
-                   Path="/Assets/Icons/csproj.svg" />        
-        <SvgSource x:Key="DllIcon"
-                   Path="/Assets/Icons/dll.svg" />
-        <SvgSource x:Key="PdbIcon"
-                   Path="/Assets/Icons/pdb.svg" />
-        <SvgSource x:Key="PyIcon"
-                   Path="/Assets/Icons/python.svg" />
-        <SvgSource x:Key="SlnIcon"
-                   Path="/Assets/Icons/sln-svgrepo-com.svg" />
-        <SvgSource x:Key="JsonIcon"
-                   Path="/Assets/Icons/brackets-svgrepo-com.svg" />
-        <SvgSource x:Key="SettingsIcon"
-                   Path="/Assets/Icons/settings-svgrepo-com.svg" />
-        <SvgSource x:Key="MdIcon"
-                   Path="/Assets/Icons/markdown-svgrepo-com.svg" />
-    </UserControl.Resources>
-    
     <UserControl.Styles>
-        <Style Selector="Image.Folder">
-            <Style.Setters>
-                <Setter Property="Source">
-                    <Setter.Value>
-                        <SvgImage Source="{DynamicResource FolderIcon}"></SvgImage>
-                    </Setter.Value>
-                </Setter>
-            </Style.Setters>
-        </Style>
-        <Style Selector="Image.CSharp">
-            <Style.Setters>
-                <Setter Property="Source">
-                    <Setter.Value>
-                        <SvgImage Source="{DynamicResource CSharpIcon}"></SvgImage>
-                    </Setter.Value>
-                </Setter>
-            </Style.Setters>
-        </Style>
-        <Style Selector="Image.CSProj">
-            <Style.Setters>
-                <Setter Property="Source">
-                    <Setter.Value>
-                        <SvgImage Source="{DynamicResource CsProjIcon}"></SvgImage>
-                    </Setter.Value>
-                </Setter>
-            </Style.Setters>
-        </Style>
-        <Style Selector="Image.Dll">
-            <Style.Setters>
-                <Setter Property="Source">
-                    <Setter.Value>
-                        <SvgImage Source="{DynamicResource DllIcon}"></SvgImage>
-                    </Setter.Value>
-                </Setter>
-            </Style.Setters>
-        </Style>
-        <Style Selector="Image.Pdb">
-            <Style.Setters>
-                <Setter Property="Source">
-                    <Setter.Value>
-                        <SvgImage Source="{DynamicResource PdbIcon}"></SvgImage>
-                    </Setter.Value>
-                </Setter>
-            </Style.Setters>
-        </Style>
-        <Style Selector="Image.Py">
-            <Style.Setters>
-                <Setter Property="Source">
-                    <Setter.Value>
-                        <SvgImage Source="{DynamicResource PyIcon}"></SvgImage>
-                    </Setter.Value>
-                </Setter>
-            </Style.Setters>
-        </Style>
-        <Style Selector="Image.Sln">
-            <Style.Setters>
-                <Setter Property="Source">
-                    <Setter.Value>
-                        <SvgImage Source="{DynamicResource SlnIcon}"></SvgImage>
-                    </Setter.Value>
-                </Setter>
-            </Style.Setters>
-        </Style>
-        <Style Selector="Image.Json">
-            <Style.Setters>
-                <Setter Property="Source">
-                    <Setter.Value>
-                        <SvgImage Source="{DynamicResource JsonIcon}"></SvgImage>
-                    </Setter.Value>
-                </Setter>
-            </Style.Setters>
-        </Style>
-        <Style Selector="Image.Settings">
-            <Style.Setters>
-                <Setter Property="Source">
-                    <Setter.Value>
-                        <SvgImage Source="{DynamicResource SettingsIcon}"></SvgImage>
-                    </Setter.Value>
-                </Setter>
-            </Style.Setters>
-        </Style>
-        <Style Selector="Image.Md">
-            <Style.Setters>
-                <Setter Property="Source">
-                    <Setter.Value>
-                        <SvgImage Source="{DynamicResource MdIcon}"></SvgImage>
-                    </Setter.Value>
-                </Setter>
-            </Style.Setters>
-        </Style>
+        <StyleInclude Source="avares://SimEd/Views/Controls/SolutionViewItemTemplate.axaml"/>
     </UserControl.Styles>
-    
+
     <Grid RowDefinitions="Auto,*,Auto">
         <StackPanel>
             <Grid ColumnDefinitions="Auto,*,Auto">
@@ -207,23 +88,8 @@
 
             <TreeView.ItemTemplate>
                 <TreeDataTemplate ItemsSource="{Binding Children}">
-                    <DockPanel>
-                        <Image Height="10"
-                               Width="10"
-                               Margin="0 0 2 0"
-                               Classes.Folder="{Binding Kind, Converter={StaticResource StringToBoolByKindTypeParameter}, ConverterParameter=''}" 
-                               Classes.CSharp="{Binding Kind, Converter={StaticResource StringToBoolByKindTypeParameter}, ConverterParameter='cs'}"
-                               Classes.CSProj="{Binding Kind, Converter={StaticResource StringToBoolByKindTypeParameter}, ConverterParameter='csproj'}"
-                               Classes.Dll="{Binding Kind, Converter={StaticResource StringToBoolByKindTypeParameter}, ConverterParameter='dll'}"
-                               Classes.Pdb="{Binding Kind, Converter={StaticResource StringToBoolByKindTypeParameter}, ConverterParameter='pdb'}"
-                               Classes.Py="{Binding Kind, Converter={StaticResource StringToBoolByKindTypeParameter}, ConverterParameter='py'}"
-                               Classes.Sln="{Binding Kind, Converter={StaticResource StringToBoolByKindTypeParameter}, ConverterParameter='sln'}"
-                               Classes.Json="{Binding Kind, Converter={StaticResource StringToBoolByKindTypeParameter}, ConverterParameter='json'}"
-                               Classes.Md="{Binding Kind, Converter={StaticResource StringToBoolByKindTypeParameter}, ConverterParameter='md'}"
-                               Classes.Settings="{Binding Kind, Converter={StaticResource StringToBoolByKindTypeParameter}, ConverterParameter='props,manifest,userSettings,settings,config,user'}">
-                        </Image>
-                        <TextBlock Text="{Binding Name}" />
-                    </DockPanel>
+                    <controls:SolutionViewItemTemplate Source="{Binding Metadata.IconSource}"
+                                                       Name="{Binding Name}"/>
                 </TreeDataTemplate>
             </TreeView.ItemTemplate>
         </TreeView>

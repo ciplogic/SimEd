@@ -12,7 +12,7 @@ internal static class SolutionItemScanner
     {
         DirectoryInfo[] directoryInfos = dirInfo.GetDirectories();
         FileInfo[] fileInfos = dirInfo.GetFiles();
-        SolutionItem result = new SolutionItem(dirInfo.Name.SharedExtension(extensions), new U8String(dirInfo.FullName), [], false, string.Empty);
+        SolutionItem result = new SolutionItem(dirInfo.Name.SharedExtension(extensions), new U8String(dirInfo.FullName), [], false, string.Empty, new SolutionItemMetadata(string.Empty));
 
         foreach (DirectoryInfo directory in directoryInfos)
         {

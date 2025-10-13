@@ -73,51 +73,39 @@
         <AvaloniaResource Include="Assets\Icons\csharp-original.png">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </AvaloniaResource>
-        <None Remove="Assets\Icons\csharp-line.svg" />
         <AvaloniaResource Include="Assets\Icons\csharp-line.svg">
           <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </AvaloniaResource>
-        <None Remove="Assets\Icons\gear.svg" />
-        <None Remove="Assets\Icons\java-plain.svg" />
         <AvaloniaResource Include="Assets\Icons\java-plain.svg">
           <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </AvaloniaResource>
-        <None Remove="Assets\Icons\square.svg" />
         <AvaloniaResource Include="Assets\Icons\pdb.svg">
           <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </AvaloniaResource>
         <AvaloniaResource Include="Assets\Icons\square.svg">
           <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </AvaloniaResource>
-        <None Remove="Assets\Icons\folder.svg" />
         <AvaloniaResource Include="Assets\Icons\folder.svg">
           <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </AvaloniaResource>
-        <None Remove="Assets\Icons\csproj.svg" />
         <AvaloniaResource Include="Assets\Icons\csproj.svg">
           <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </AvaloniaResource>
-        <None Remove="Assets\Icons\dll.svg" />
         <AvaloniaResource Include="Assets\Icons\dll.svg">
           <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </AvaloniaResource>
-        <None Remove="Assets\Icons\python.svg" />
         <AvaloniaResource Include="Assets\Icons\python.svg">
           <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </AvaloniaResource>
-        <None Remove="Assets\Icons\brackets-svgrepo-com.svg" />
         <AvaloniaResource Include="Assets\Icons\brackets-svgrepo-com.svg">
           <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </AvaloniaResource>
-        <None Remove="Assets\Icons\sln-svgrepo-com.svg" />
         <AvaloniaResource Include="Assets\Icons\sln-svgrepo-com.svg">
           <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </AvaloniaResource>
-        <None Remove="Assets\Icons\settings-svgrepo-com.svg" />
         <AvaloniaResource Include="Assets\Icons\settings-svgrepo-com.svg">
           <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </AvaloniaResource>
-        <None Remove="Assets\Icons\markdown-svgrepo-com.svg" />
         <AvaloniaResource Include="Assets\Icons\markdown-svgrepo-com.svg">
           <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </AvaloniaResource>

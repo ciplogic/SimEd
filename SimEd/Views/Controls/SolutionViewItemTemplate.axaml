@@ -1,0 +1,22 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:controls="using:SimEd.Views.Controls">
+    <Design.PreviewWith>
+        <controls:SolutionViewItemTemplate />
+    </Design.PreviewWith>
+
+    <Style Selector="controls|SolutionViewItemTemplate">
+        <!-- Set Defaults -->
+        <Setter Property="Template">
+            <ControlTemplate>
+                <DockPanel>
+                    <Image Width="9"
+                           Height="9"
+                           Margin="1"
+                           Source="{TemplateBinding Source}" />
+                    <TextBlock Text="{TemplateBinding Name}" />
+                </DockPanel>
+            </ControlTemplate>
+        </Setter>
+    </Style>
+</Styles>
