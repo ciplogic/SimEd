@@ -12,7 +12,8 @@ internal static class SolutionItemScanner
     {
         DirectoryInfo[] directoryInfos = dirInfo.GetDirectories();
         FileInfo[] fileInfos = dirInfo.GetFiles();
-        SolutionItem result = new SolutionItem(dirInfo.Name.SharedExtension(extensions), new U8String(dirInfo.FullName), [], false, string.Empty, new SolutionItemMetadata(string.Empty));
+        SolutionItemMetadata folderMetadata = new SolutionItemMetadata(string.Empty);
+        SolutionItem result = new SolutionItem(dirInfo.Name.SharedExtension(extensions), new U8String(dirInfo.FullName), [], false, folderMetadata);
 
         foreach (DirectoryInfo directory in directoryInfos)
         {
@@ -34,8 +35,9 @@ internal static class SolutionItemScanner
 
             string extension = fileExtensionMapper.MapExtension(file.FullName) ?? file.Extension;
             extension = extension.Replace(".", string.Empty);
-
-            result.AddChild(file.Name.SharedExtension(extensions), new U8String(file.FullName), extension.SharedExtension(extensions));
+            
+            SolutionItemMetadata metadata = new SolutionItemMetadata(extension.SharedExtension(extensions));
+            result.AddChild(file.Name.SharedExtension(extensions), new U8String(file.FullName), metadata);
         }
 
         return result;
