@@ -34,6 +34,6 @@ public partial class ViewLocator : IDataTemplate
         return resultControl;
     }
 
-    public bool Match(object? data) 
+    public bool Match(object? data)
         => data is ObservableObject or IDockable;
 }
